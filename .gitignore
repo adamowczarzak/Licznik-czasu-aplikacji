@@ -1,0 +1,13 @@
+ApplicationLog/bin
+ApplicationLog/obj
+ApplicationTimeCounter/bin
+ApplicationTimeCounter/obj
+ApplicationTimeCounter.Test/bin
+ApplicationTimeCounter.Test/obj
+*.exe
+*.pdb
+*.dll
+*.manifest
+*.cache
+*.suo
+*.csproj
