@@ -18,8 +18,6 @@ namespace ApplicationTimeCounter
         {
             command = new MySqlCommand();
             dataBase = new DataBase();
-
-
         }
 
         /// <summary>
@@ -38,6 +36,11 @@ namespace ApplicationTimeCounter
             dataBase.CloseConnection();
         }
 
+
+        /// <summary>
+        /// Sprawdzanie czy obecna data jest kolejnym dniem, którego jeszcze nie ma w tabeli.
+        /// </summary>
+        /// <returns></returns>
         public bool CheckIfIsNextDay()
         {
             string contentCommand = "SELECT idAllDate from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
@@ -46,6 +49,9 @@ namespace ApplicationTimeCounter
             else return true;
         }
 
+        /// <summary>
+        /// Sprawdzanie czy dane w tabeli w bazie są kompletne, jeśli nie uzupenia je.
+        /// </summary>
         public void CheckIfIsActualDataInBaseAndUpdate()
         {
             int coutDay;
@@ -58,8 +64,7 @@ namespace ApplicationTimeCounter
                     {
                         Add("Wył. komputer", 60 * 24, -i);
                         ApplicationLog.LogService.AddRaportInformation("Information\tTabela 'alldata' została uzupełniona o brakujące rekordy.");
-                    }
-                        
+                    }                      
                 }      
             }
             else

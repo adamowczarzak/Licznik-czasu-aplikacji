@@ -22,21 +22,19 @@ namespace ApplicationTimeCounter
 
         }
 
-        public void ConnectToDataBase()
+        public bool ConnectToDataBase()
         {   
             GetMySqlConnection();     
             try
             {
-                Connection.Open();
-                if (Connection.State.ToString() != "Open")
-                {
-                    MessageBox.Show("Application could not connect to server ", "Connection Failed ", MessageBoxButton.OK, MessageBoxImage.Error);
-                }              
+                Connection.Open();            
             }
             catch (Exception _ex)
             {
+                // tu dodaj błąd łączenia się z bazą
                 MessageBox.Show(_ex.ToString());
             }
+            return true;
         }
 
         public void GetMySqlConnection()
@@ -51,6 +49,34 @@ namespace ApplicationTimeCounter
         public void CloseConnection()
         {
             Connection.Close();
+        }
+
+        public bool CheckDataBase()
+        {
+            // sprawdzenie czy istnieje
+            // jeśli nie podjecie próby utworznia
+            // jeśli nie tyświetlić że się nie da i zrzucić loga
+            //s0 = "CREATE DATABASE IF NOT EXISTS `hello`;";
+            GetDataBaseWindow getDataBaseWindow = new GetDataBaseWindow();
+            getDataBaseWindow.ShowDialog();
+            
+            string myConnectionString = "server=localhost;user=root;password=1994aaxd";
+            MySqlConnection connection = new MySqlConnection(myConnectionString);
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = "SHOW DATABASES";
+            MySqlDataReader Reader;
+            connection.Open();
+            Reader = command.ExecuteReader();
+            while (Reader.Read())
+            {
+                string row = "";
+                for (int i = 0; i < Reader.FieldCount; i++)
+                    row += Reader.GetValue(i).ToString() + ", ";
+                ApplicationLog.LogService.AddRaportTest(row);
+            }
+            connection.Close();
+
+            return true;
         }
 
         

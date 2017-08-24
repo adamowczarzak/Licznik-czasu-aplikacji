@@ -37,11 +37,20 @@ namespace ApplicationLog
             SaveRaportInFileLog(raport);
         }
 
+        /// <summary>
+        /// Metoda dodaje wpis informacyjny do pliku log.
+        /// </summary>
+        /// <param name="statement">Treś komunikatu.</param>
         public static void AddRaportInformation(string statement)
         {
             if (string.IsNullOrEmpty(statement)) statement = "Brak zawartości";
             string raport = statement + Environment.NewLine + DateTime.Now + Environment.NewLine;
             SaveRaportInFileLog(raport);
+        }
+
+        public static void AddRaportTest(string statement)
+        {
+            SaveRaportInFileLog(statement);
         }
 
         /// <summary>

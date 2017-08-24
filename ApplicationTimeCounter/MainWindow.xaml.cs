@@ -24,11 +24,14 @@ namespace ApplicationTimeCounter
         private CategoryForm categoryForm;
         private Activity activity;
 
+        private DataBase db = new DataBase();
+
         private DispatcherTimer timer;
 
 
         public MainWindow()
         {
+            db.CheckDataBase();
             InitializeComponent();
             SetDispatcherTimer();
 
@@ -50,6 +53,7 @@ namespace ApplicationTimeCounter
                 counter.UpdateTimeDisableCompurte();
             }
             activity.CheckIfIsActualDataInBaseAndUpdate();
+           
 
         }
 
@@ -89,7 +93,7 @@ namespace ApplicationTimeCounter
 
         private void hideWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            notifyIcon.SetMainWindow();        
+            notifyIcon.SetMainWindow();
         }
 
         private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

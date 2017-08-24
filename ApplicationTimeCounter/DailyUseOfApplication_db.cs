@@ -16,9 +16,9 @@ namespace ApplicationTimeCounter
         private DataBase dataBase;
         private AllData_db allData_db;
 
+
         public DailyUseOfApplication_db()
         {
-            
             activeWindow = new ActiveWindow();
             command = new MySqlCommand();
             dataBase = new DataBase();
@@ -39,6 +39,11 @@ namespace ApplicationTimeCounter
             dataBase.CloseConnection();
         }
 
+        /// <summary>
+        /// Pobiera czas aktywności dla tytułu aplikacji.
+        /// </summary>
+        /// <param name="title">Tytuł aplikacji/onaczenie czynności.</param>
+        /// <returns></returns>
         public int GetTimeForTitle(string title)
         {
             int time = 0;
