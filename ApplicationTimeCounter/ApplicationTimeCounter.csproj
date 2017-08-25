@@ -90,6 +90,7 @@
     <Compile Include="MyLabel.cs" />
     <Compile Include="MyRectangle.cs" />
     <Compile Include="NameDailyActivity_db.cs" />
+    <Compile Include="RunApplication.cs" />
     <Compile Include="SpendingTime.cs" />
     <Compile Include="TimeUsingApplication.cs" />
     <Compile Include="ViewContent.cs" />

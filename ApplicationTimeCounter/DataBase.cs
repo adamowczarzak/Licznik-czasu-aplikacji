@@ -12,17 +12,12 @@ using System.Windows;
 
 namespace ApplicationTimeCounter
 {
-    public class DataBase
+    static public class DataBase
     {
-        public MySqlConnection Connection { get; set; }
+        static public MySqlConnection Connection { get; set; }
 
-        
-        public DataBase()
-        {
 
-        }
-
-        public bool ConnectToDataBase()
+        static public bool ConnectToDataBase()
         {   
             GetMySqlConnection();     
             try
@@ -37,7 +32,7 @@ namespace ApplicationTimeCounter
             return true;
         }
 
-        public void GetMySqlConnection()
+        static public void GetMySqlConnection()
         {
             string password = "1994aaxd";
             string connStr =
@@ -46,19 +41,18 @@ namespace ApplicationTimeCounter
             Connection = new MySqlConnection(connStr);
         }
 
-        public void CloseConnection()
+        static public void CloseConnection()
         {
             Connection.Close();
         }
 
-        public bool CheckDataBase()
+        static public bool CheckDataBase()
         {
             // sprawdzenie czy istnieje
             // jeśli nie podjecie próby utworznia
             // jeśli nie tyświetlić że się nie da i zrzucić loga
             //s0 = "CREATE DATABASE IF NOT EXISTS `hello`;";
-            GetDataBaseWindow getDataBaseWindow = new GetDataBaseWindow();
-            getDataBaseWindow.ShowDialog();
+            
             
             string myConnectionString = "server=localhost;user=root;password=1994aaxd";
             MySqlConnection connection = new MySqlConnection(myConnectionString);

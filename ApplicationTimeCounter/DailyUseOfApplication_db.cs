@@ -13,7 +13,6 @@ namespace ApplicationTimeCounter
         private string nameTitle;
         private ActiveWindow activeWindow;
         private MySqlCommand command;
-        private DataBase dataBase;
         private AllData_db allData_db;
 
 
@@ -21,22 +20,21 @@ namespace ApplicationTimeCounter
         {
             activeWindow = new ActiveWindow();
             command = new MySqlCommand();
-            dataBase = new DataBase();
             allData_db = new AllData_db();           
         }
 
         public void Update()
         {         
             nameTitle = "'" + activeWindow.GetNameActiveWindow().Replace("'","") + "'";
-            dataBase.ConnectToDataBase();
-            command.Connection = dataBase.Connection;
+            DataBase.ConnectToDataBase();
+            command.Connection = DataBase.Connection;
             
             if (GetNumberElementFromTable() > 0)
                 UpDateTimeThisTitle();
             else
                 AddNameTitleToTableDailyUse();
 
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
         }
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace ApplicationTimeCounter
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read())time = Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
             return time;
         }
 
@@ -63,7 +61,7 @@ namespace ApplicationTimeCounter
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
             return time;
         }
 
@@ -73,7 +71,7 @@ namespace ApplicationTimeCounter
             string contentCommand = "SELECT ActivityTime from dailyuseofapplication WHERE idTitle > 2";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
             return time;
         }
         
@@ -89,7 +87,7 @@ namespace ApplicationTimeCounter
             }
             reader.Dispose();                       
             RestartContentTable();
-            dataBase.CloseConnection();        
+            DataBase.CloseConnection();        
         }
 
         public string[,] GetBiggestResults()
@@ -106,19 +104,19 @@ namespace ApplicationTimeCounter
                 i++;
             }
             reader.Dispose();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
 
             return biggestResults;
         }
 
         public void UpdateTimeNonActiv()
         {
-            dataBase.ConnectToDataBase();
-            command.Connection = dataBase.Connection;
+            DataBase.ConnectToDataBase();
+            command.Connection = DataBase.Connection;
             command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
                 + 1 + " WHERE Title = 'Brak Aktyw.'";
             command.ExecuteNonQuery();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
         }
 
         public void AddTimeToNowDisableComputer()
@@ -135,8 +133,8 @@ namespace ApplicationTimeCounter
 
         private MySqlDataReader GetExecuteReader(string contentCommand)
         {
-            dataBase.ConnectToDataBase();
-            command.Connection = dataBase.Connection;
+            DataBase.ConnectToDataBase();
+            command.Connection = DataBase.Connection;
             command.CommandText = contentCommand;
             MySqlDataReader reader = command.ExecuteReader();
             return reader;
@@ -194,12 +192,12 @@ namespace ApplicationTimeCounter
 
         private void AddTimeToDisabledComputer(int time)
         {
-            dataBase.ConnectToDataBase();
-            command.Connection = dataBase.Connection;
+            DataBase.ConnectToDataBase();
+            command.Connection = DataBase.Connection;
             command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
                 + time + " WHERE Title = 'Wyl. komputer'";
             command.ExecuteNonQuery();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
         }
 
         private int GetAllTimeActivity()
@@ -210,7 +208,7 @@ namespace ApplicationTimeCounter
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) timeActivity += Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
 
             return timeActivity;
         }

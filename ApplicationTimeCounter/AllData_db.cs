@@ -11,13 +11,11 @@ namespace ApplicationTimeCounter
     {
 
         private MySqlCommand command;
-        private DataBase dataBase;
 
 
         public AllData_db()
         {
             command = new MySqlCommand();
-            dataBase = new DataBase();
         }
 
         /// <summary>
@@ -28,12 +26,12 @@ namespace ApplicationTimeCounter
         /// <param name="daysDifferenceFromToday">Dni różnicy od dzisiejszego dnia.</param>
         public void Add(string title, int activityTime, int daysDifferenceFromToday = 1)
         {
-            dataBase.ConnectToDataBase();
-            command.Connection = dataBase.Connection;
+            DataBase.ConnectToDataBase();
+            command.Connection = DataBase.Connection;
             command.CommandText = "INSERT INTO alldate (Date, Title, ActivityTime) VALUES (CURDATE() - INTERVAL "+daysDifferenceFromToday+" DAY" +
             " , '" + title + "' , '" + activityTime + "')";
             command.ExecuteNonQuery();
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
         }
 
 
@@ -105,8 +103,8 @@ namespace ApplicationTimeCounter
         /// <param name="nameReturnColumn">Nazwa kolumny z której ma być zwracana wartość.</param>
         private string GetStringFromExecuteReader(string contentCommand, string nameReturnColumn)
         {
-            dataBase.ConnectToDataBase();
-            command.Connection = dataBase.Connection;
+            DataBase.ConnectToDataBase();
+            command.Connection = DataBase.Connection;
             command.CommandText = contentCommand;
             MySqlDataReader reader = command.ExecuteReader();
             string returnString = string.Empty;
@@ -122,7 +120,7 @@ namespace ApplicationTimeCounter
                 } 
             }
 
-            dataBase.CloseConnection();
+            DataBase.CloseConnection();
             reader.Dispose();
             return returnString;
         }

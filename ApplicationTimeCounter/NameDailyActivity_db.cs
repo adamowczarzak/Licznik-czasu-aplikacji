@@ -10,12 +10,10 @@ namespace ApplicationTimeCounter
     class NameDailyActivity_db
     {
         private MySqlCommand command;
-        private DataBase dataBase;
 
         public NameDailyActivity_db()
         {
             command = new MySqlCommand();
-            dataBase = new DataBase();
         }
 
       

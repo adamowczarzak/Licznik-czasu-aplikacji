@@ -97,11 +97,12 @@
                 </LinearGradientBrush>
             </Button.OpacityMask>
         </Button>
-        <TextBox x:Name="nameUser" HorizontalAlignment="Left" Height="32" Margin="171,88,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="171" Background="#FF007BFF" FontSize="18" FontWeight="Bold" UndoLimit="1" MaxLines="1" MinLines="1" VerticalContentAlignment="Center"/>
-        <PasswordBox HorizontalAlignment="Left" Margin="171,151,0,0" VerticalAlignment="Top" Width="171" Height="32" Background="#FF007BFF" FontSize="20"/>
-        <TextBlock HorizontalAlignment="Left" Margin="31,91,0,0" TextWrapping="Wrap" Text="Użytkownik" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
-        <TextBlock HorizontalAlignment="Left" Margin="31,155,0,0" TextWrapping="Wrap" Text="Hasło" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
+        <TextBox x:Name="nameUser" HorizontalAlignment="Left" Height="32" Margin="171,79,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="171" Background="#FF007BFF" FontSize="18" FontWeight="Bold" UndoLimit="1" MaxLines="1" MinLines="1" VerticalContentAlignment="Center" PreviewMouseLeftButtonDown="nameUser_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="nameUser_PreviewMouseRightButtonDown"/>
+        <PasswordBox x:Name="password" HorizontalAlignment="Left" Margin="171,142,0,0" VerticalAlignment="Top" Width="171" Height="32" Background="#FF007BFF" FontSize="20" PreviewMouseLeftButtonDown="password_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="password_PreviewMouseRightButtonDown"/>
+        <TextBlock HorizontalAlignment="Left" Margin="31,82,0,0" TextWrapping="Wrap" Text="Użytkownik" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
+        <TextBlock HorizontalAlignment="Left" Margin="31,146,0,0" TextWrapping="Wrap" Text="Hasło" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" Text="Dane logowania do połączenia z bazą" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="389"/>
+        <TextBlock x:Name="loginMessages" HorizontalAlignment="Left" Margin="31,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="334" Height="25" FontSize="16" FontWeight="Bold" Foreground="#FFFF7B7B"/>
 
     </Grid>
 </Window>

@@ -23,25 +23,28 @@ namespace ApplicationTimeCounter
         private HomeForm homeForm;
         private CategoryForm categoryForm;
         private Activity activity;
+        private RunApplication runApplication;
 
-        private DataBase db = new DataBase();
+        
 
         private DispatcherTimer timer;
 
 
         public MainWindow()
         {
-            db.CheckDataBase();
+            runApplication = new RunApplication();
             InitializeComponent();
             SetDispatcherTimer();
 
+            
             interfaceApplication = new InterfaceApplication();
             counter = new Counter();
             viewContent = new ViewContent();
             homeForm = new HomeForm(contentPage, ref viewContent);
             categoryForm = new CategoryForm(contentPage, ref viewContent);
             notifyIcon = new IconInTaskbar(ref mainWindow, ref homeForm);
-            activity = new Activity();          
+            activity = new Activity();
+            
 
             if (activity.CheckIfIsNextDay() == true)
             {
