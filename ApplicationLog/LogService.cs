@@ -37,6 +37,14 @@ namespace ApplicationLog
             SaveRaportInFileLog(raport);
         }
 
+        public static void AddRaportError(string statement, string nameMethod, string path)
+        {
+            CheckIfVariablesIsCorrect(ref statement, ref nameMethod, ref path);
+            string raport = statement + Environment.NewLine + "Metoda : " +nameMethod + "   " + path +
+                Environment.NewLine + path + Environment.NewLine + DateTime.Now + Environment.NewLine;
+            SaveRaportInFileLog(raport);
+        }
+
         /// <summary>
         /// Metoda dodaje wpis informacyjny do pliku log.
         /// </summary>
@@ -87,6 +95,16 @@ namespace ApplicationLog
             if (string.IsNullOrEmpty(var2)) var2 = "Brak zawartości";
             if (string.IsNullOrEmpty(var3)) var3 = "Brak zawartości";
             if (string.IsNullOrEmpty(var4)) var4 = "Brak zawartości";
+        }
+
+        /// <summary>
+        /// Sprawdza czy zmienne nie są puste, jeśli są uzupełnia jest informacją o tym że są puste.
+        /// </summary>
+        private static void CheckIfVariablesIsCorrect(ref string var1, ref string var2, ref string var3)
+        {
+            if (string.IsNullOrEmpty(var1)) var1 = "Brak zawartości";
+            if (string.IsNullOrEmpty(var2)) var2 = "Brak zawartości";
+            if (string.IsNullOrEmpty(var3)) var3 = "Brak zawartości";
         }
 
         /// <summary>

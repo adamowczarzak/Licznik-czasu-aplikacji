@@ -29,10 +29,20 @@ namespace ApplicationTimeCounter
         {
             if(CheckIfGiveDataIsCorrect())
             {
+                if (DataBase.TryConnectToMySql(nameUser.Text, password.Password))
+                {
+                    if (DataBase.ConnectToDataBase()) this.Close();
+                    else { }// komunikaty że się nie udało!!
 
+                    // nie wiem, wyświetlenie komunikatu że się udało czy coś
 
+                }
+                else
+                {
+                    // komunikaty o nie powodzeniach łączenia
+                }
             }
-            //this.Close();
+            //
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
@@ -67,13 +77,13 @@ namespace ApplicationTimeCounter
         {
             if (nameUser.Background == Brushes.Red && password.Background == Brushes.Red)
             {
-                loginMessages.Text = "Podaj Login oraz Hasło do połączenia.";
+                loginMessages.Text = "Podaj Użytkownika oraz Hasło do połączenia.";
                 loginMessages.Foreground = Brushes.Coral;
             }
 
             else if (nameUser.Background == Brushes.Red && password.Background != Brushes.Red)
             {
-                loginMessages.Text = "Podaj Login do połączenia.";
+                loginMessages.Text = "Podaj Użytkownika do połączenia.";
                 loginMessages.Foreground = Brushes.Coral;
             }
 

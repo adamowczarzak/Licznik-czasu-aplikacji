@@ -83,7 +83,7 @@ namespace ApplicationTimeCounter
             {
                 var Title = reader["Title"];
                 var ActivityTime = reader["ActivityTime"];
-                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime));
+                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection:true);
             }
             reader.Dispose();                       
             RestartContentTable();
@@ -144,14 +144,14 @@ namespace ApplicationTimeCounter
         {
             command.CommandText = "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ("
                 + nameTitle + "," + 1 + "," + 2 + ")";
-            command.ExecuteNonQuery();
+            DataBase.ExecuteNonQuery(command);
         }
 
         private void UpDateTimeThisTitle()
         {
             command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
                 + 1 + " WHERE Title =" + nameTitle;
-            command.ExecuteNonQuery();
+            DataBase.ExecuteNonQuery(command);
         }
 
         private int GetNumberElementFromTable()
@@ -168,13 +168,13 @@ namespace ApplicationTimeCounter
         private void RestartContentTable()
         {
             command.CommandText = "TRUNCATE TABLE dailyuseofapplication";
-            command.ExecuteNonQuery();
+            DataBase.ExecuteNonQuery(command);
             command.CommandText =
                 "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Wył. komputer', + 0 , 0)";
-            command.ExecuteNonQuery();
+            DataBase.ExecuteNonQuery(command);
             command.CommandText =
                 "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Brak Aktyw.', + 0 , 0)";
-            command.ExecuteNonQuery();
+            DataBase.ExecuteNonQuery(command);
         }
 
         private int GetTimeDisabledComputerToNow()
@@ -196,7 +196,7 @@ namespace ApplicationTimeCounter
             command.Connection = DataBase.Connection;
             command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
                 + time + " WHERE Title = 'Wyl. komputer'";
-            command.ExecuteNonQuery();
+            DataBase.ExecuteNonQuery(command);
             DataBase.CloseConnection();
         }
 
