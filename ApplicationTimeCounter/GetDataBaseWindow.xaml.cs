@@ -19,9 +19,11 @@ namespace ApplicationTimeCounter
     /// </summary>
     public partial class GetDataBaseWindow : Window
     {
+        public bool CanRunApplication { get; set; }
         public GetDataBaseWindow()
         {
             InitializeComponent();
+            CanRunApplication = false;
         }
 
 
@@ -31,23 +33,30 @@ namespace ApplicationTimeCounter
             {
                 if (DataBase.TryConnectToMySql(nameUser.Text, password.Password))
                 {
-                    if (DataBase.ConnectToDataBase()) this.Close();
-                    else { }// komunikaty że się nie udało!!
-
-                    // nie wiem, wyświetlenie komunikatu że się udało czy coś
-
+                    if (DataBase.ConnectToDataBase())
+                    {
+                        DataBase.CloseConnection();
+                        CanRunApplication = true;
+                        this.Close();
+                    }
+                    else
+                    {
+                        CanRunApplication = false;
+                        BuildAndDisplayMessageErrorConnectToDataBase();
+                    }
                 }
                 else
                 {
-                    // komunikaty o nie powodzeniach łączenia
+                    CanRunApplication = false;
+                    BuildAndDisplayMessageErrorConnectToMySql();
                 }
             }
-            //
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            CanRunApplication = false;
             System.Windows.Application.Current.Shutdown();
 
         }
@@ -75,42 +84,34 @@ namespace ApplicationTimeCounter
 
         private void BuildAndDisplayMessage()
         {
+            loginMessages.Foreground = Brushes.Coral;
             if (nameUser.Background == Brushes.Red && password.Background == Brushes.Red)
-            {
                 loginMessages.Text = "Podaj Użytkownika oraz Hasło do połączenia.";
-                loginMessages.Foreground = Brushes.Coral;
-            }
 
             else if (nameUser.Background == Brushes.Red && password.Background != Brushes.Red)
-            {
                 loginMessages.Text = "Podaj Użytkownika do połączenia.";
-                loginMessages.Foreground = Brushes.Coral;
-            }
 
             else if (nameUser.Background != Brushes.Red && password.Background == Brushes.Red)
-            {
                 loginMessages.Text = "Podaj Hasło do połączenia.";
-                loginMessages.Foreground = Brushes.Coral;
-            }
-            
+          
             else if(nameUser.Background != Brushes.Red && password.Background != Brushes.Red)
-            {
                 loginMessages.Text = "";
-            }
                 
         }
 
+        private void BuildAndDisplayMessageErrorConnectToMySql()
+        {
+            loginMessages.Text = "Połączenie z MySql nie powiodło się, Nazwa Użytkownika lub Hasło jest nie prawidłowe.";
+            loginMessages.Foreground = Brushes.Coral;
+            nameUser.Background =Brushes.Red;
+            password.Background = Brushes.Red;
+        }
 
-
-
-
-
-
-
-
-
-
-
+        private void BuildAndDisplayMessageErrorConnectToDataBase()
+        {
+            loginMessages.Text = "Połączenie z Bazą Danych nie powiodło się.";
+            loginMessages.Foreground = Brushes.Coral;
+        }
 
         private void nameUser_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

@@ -102,7 +102,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="31,82,0,0" TextWrapping="Wrap" Text="Użytkownik" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
         <TextBlock HorizontalAlignment="Left" Margin="31,146,0,0" TextWrapping="Wrap" Text="Hasło" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" Text="Dane logowania do połączenia z bazą" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="389"/>
-        <TextBlock x:Name="loginMessages" HorizontalAlignment="Left" Margin="31,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="334" Height="25" FontSize="16" FontWeight="Bold" Foreground="#FFFF7B7B"/>
+        <TextBlock x:Name="loginMessages" HorizontalAlignment="Left" Margin="31,184,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="335" Height="48" FontSize="16" FontWeight="Bold" Foreground="#FFFF7B7B" MaxWidth="335"/>
 
     </Grid>
 </Window>

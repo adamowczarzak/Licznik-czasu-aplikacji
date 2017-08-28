@@ -23,23 +23,7 @@ namespace ApplicationTimeCounter
 
         static public bool ConnectToDataBase()
         {
-            bool connectToLocalhost = true;
-
-            if (isOpenConnection == false)
-            {
-                try
-                {
-                    Connection.Open();
-                    isOpenConnection = true;
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.ToString());
-                    connectToLocalhost = false;
-                    ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (Connection).", exception.ToString());
-                }
-            }
-            return connectToLocalhost;
+            return TryConnectToDataBase(Connection);
         }
 
         static public bool AdditionalConnectToDataBase()
@@ -54,7 +38,6 @@ namespace ApplicationTimeCounter
                 ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (AdditionalConnection).", exception.ToString());
                 connectToLocalhost = false;
             }
-
             return connectToLocalhost;
         }
 
@@ -106,9 +89,6 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         static public bool TryConnectToMySql(string userName, string password)
         {
-            // sprawdzenie czy istnieje
-            // jeśli nie podjecie próby utworznia
-            // jeśli nie tyświetlić że się nie da i zrzucić loga
             //s0 = "CREATE DATABASE IF NOT EXISTS `hello`;";
             DataBase.nameUser = userName;
             DataBase.password = password;
@@ -116,40 +96,33 @@ namespace ApplicationTimeCounter
             string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
             MySqlConnection testConnection = new MySqlConnection(myConnectionString);
             bool isConnection = TryConnectToDataBase(testConnection);
+
             if (isConnection)
-                GetMySqlConnection();
-
-
-          //  MySqlCommand command = connection.CreateCommand();
-           // command.CommandText = "SHOW DATABASES";
-          //  MySqlDataReader Reader;
-           
-            /*
-            Reader = command.ExecuteReader();
-            while (Reader.Read())
             {
-                string row = "";
-                for (int i = 0; i < Reader.FieldCount; i++)
-                    row += Reader.GetValue(i).ToString() + ", ";
-                ApplicationLog.LogService.AddRaportTest(row);
-            }*/
-         //   testConnection.Close();
-            //openConnection = false;
-
+                testConnection.Close();
+                isOpenConnection = false;
+                GetMySqlConnection();
+            }
+                
             return isConnection;
         }
 
         static private bool TryConnectToDataBase(MySqlConnection connection)
         {
             bool connectToLocalhost = true;
-            try
+
+            if (isOpenConnection == false)
             {
-                connection.Open();
-            }
-            catch (Exception _ex)
-            {
-                // tu dodaj błąd łączenia się z bazą
-                MessageBox.Show(_ex.ToString());
+                try
+                {
+                    connection.Open();
+                    isOpenConnection = true;
+                }
+                catch (Exception exception)
+                {
+                    connectToLocalhost = false;
+                    ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (Connection).", exception.ToString());
+                }
             }
             return connectToLocalhost;
         }

@@ -14,20 +14,20 @@ namespace ApplicationTimeCounter.Test
     [TestClass]
     public class DataBaseTest
     {
-        ApplicationTimeCounter.DataBase dataBase = new DataBase();
+
 
         [TestMethod]
         public void Test_GetMySqlConnection()
         {           
-            dataBase.GetMySqlConnection();
-            Assert.IsNotNull(dataBase.Connection);
+            //DataBase.GetMySqlConnection();
+            Assert.IsNotNull(DataBase.Connection);
         }
 
         [TestMethod]
         public void Test_ConnectToDataBase()
         {
-            dataBase.ConnectToDataBase();
-            string state = dataBase.Connection.State.ToString();
+            DataBase.ConnectToDataBase();
+            string state = DataBase.Connection.State.ToString();
 
             Assert.AreEqual("Open", state);
         }

@@ -33,30 +33,33 @@ namespace ApplicationTimeCounter
         public MainWindow()
         {
             runApplication = new RunApplication();
-            InitializeComponent();
-            SetDispatcherTimer();
 
-            
-            interfaceApplication = new InterfaceApplication();
-            counter = new Counter();
-            viewContent = new ViewContent();
-            homeForm = new HomeForm(contentPage, ref viewContent);
-            categoryForm = new CategoryForm(contentPage, ref viewContent);
-            notifyIcon = new IconInTaskbar(ref mainWindow, ref homeForm);
-            activity = new Activity();
-            
+            if (runApplication.CheckIfRunApplication())
+            {
+                InitializeComponent();
+                SetDispatcherTimer();
 
-            if (activity.CheckIfIsNextDay() == true)
-            {
-                counter.Reset();
-                homeForm.UpdateView();
+
+                interfaceApplication = new InterfaceApplication();
+                counter = new Counter();
+                viewContent = new ViewContent();
+                homeForm = new HomeForm(contentPage, ref viewContent);
+                categoryForm = new CategoryForm(contentPage, ref viewContent);
+                notifyIcon = new IconInTaskbar(ref mainWindow, ref homeForm);
+                activity = new Activity();
+
+
+                if (activity.CheckIfIsNextDay() == true)
+                {
+                    counter.Reset();
+                    homeForm.UpdateView();
+                }
+                else
+                {
+                    counter.UpdateTimeDisableCompurte();
+                }
+                activity.CheckIfIsActualDataInBaseAndUpdate();
             }
-            else
-            {
-                counter.UpdateTimeDisableCompurte();
-            }
-            activity.CheckIfIsActualDataInBaseAndUpdate();
-           
 
         }
 
