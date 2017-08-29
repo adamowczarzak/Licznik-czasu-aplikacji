@@ -36,6 +36,11 @@ namespace ApplicationTimeCounter
                     if (DataBase.ConnectToDataBase())
                     {
                         DataBase.CloseConnection();
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter("Config.file", true))
+                        {
+                            file.WriteLine(nameUser.Text);
+                            file.WriteLine(password.Password);
+                        }
                         CanRunApplication = true;
                         this.Close();
                     }

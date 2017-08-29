@@ -37,11 +37,17 @@ namespace ApplicationLog
             SaveRaportInFileLog(raport);
         }
 
+        /// <summary>
+        /// Metoda dodaje wpis błędu do pliku loga.
+        /// </summary>
+        /// /// <param name="statement">Komunikat błędu.</param>
+        /// <param name="nameMethod">Nazwa metody w której występuje błąd.</param>
+        /// <param name="path">Ścieżka do pliku w którym występił błąd</param>
         public static void AddRaportError(string statement, string nameMethod, string path)
         {
             CheckIfVariablesIsCorrect(ref statement, ref nameMethod, ref path);
             string raport = statement + Environment.NewLine + "Metoda : " +nameMethod + "   " + path +
-                Environment.NewLine + path + Environment.NewLine + DateTime.Now + Environment.NewLine;
+                Environment.NewLine +  DateTime.Now + Environment.NewLine;
             SaveRaportInFileLog(raport);
         }
 
