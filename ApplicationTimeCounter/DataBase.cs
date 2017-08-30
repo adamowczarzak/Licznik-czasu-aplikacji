@@ -35,7 +35,7 @@ namespace ApplicationTimeCounter
             }
             catch (Exception exception)
             {
-                ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (AdditionalConnection).", exception.ToString());
+                ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (AdditionalConnection).", exception);
                 connectToLocalhost = false;
             }
             return connectToLocalhost;
@@ -51,7 +51,7 @@ namespace ApplicationTimeCounter
             }
             catch (Exception exception)
             {
-                ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się wykonać zapytania (ExecuteNonQuery).", exception.ToString());
+                ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się wykonać zapytania (ExecuteNonQuery).", exception);
                 executeNonQuery = false;
             }
 
@@ -61,7 +61,7 @@ namespace ApplicationTimeCounter
         static private void GetMySqlConnection()
         {
             string myConnectionString =
-                "server=localhost;user=" + nameUser + ";database=applicationtimecounter;password="+ password;
+                "server=localhost;user=" + nameUser + ";database=applicationtimecounter2;password="+ password;
                 
             Connection = new MySqlConnection(myConnectionString);
             AdditionalConnection = new MySqlConnection(myConnectionString);
@@ -89,7 +89,6 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         static public bool TryConnectToMySql(string userName, string password)
         {
-            //s0 = "CREATE DATABASE IF NOT EXISTS `hello`;";
             DataBase.nameUser = userName;
             DataBase.password = password;
 
@@ -107,6 +106,18 @@ namespace ApplicationTimeCounter
             return isConnection;
         }
 
+        static public bool TryCreateDataBase()
+        {
+            bool createDataBase = false;
+            string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
+            MySqlConnection testConnection = new MySqlConnection(myConnectionString);
+            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter2`;";
+            MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
+            createDataBase = ExecuteNonQuery(command);
+            testConnection.Close();
+            return createDataBase;
+        }
+
         static private bool TryConnectToDataBase(MySqlConnection connection)
         {
             bool connectToLocalhost = true;
@@ -121,7 +132,7 @@ namespace ApplicationTimeCounter
                 catch (Exception exception)
                 {
                     connectToLocalhost = false;
-                    ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (Connection).", exception.ToString());
+                    ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się otworzyć połącznia (Connection).", exception);
                 }
             }
             return connectToLocalhost;

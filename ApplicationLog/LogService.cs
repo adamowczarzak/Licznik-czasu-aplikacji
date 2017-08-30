@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ApplicationLog
@@ -30,10 +31,13 @@ namespace ApplicationLog
         /// </summary>
         /// <param name="statement">Komunikat błędu.</param>
         /// <param name="catchException">Przechwycony komunikat.</param>
-        public static void AddRaportCatchException(string statement, string catchException)
+        public static void AddRaportCatchException(string statement, Exception catchException)
         {
-            CheckIfVariablesIsCorrect(ref statement, ref catchException);
-            string raport = statement + Environment.NewLine + catchException + Environment.NewLine + DateTime.Now + Environment.NewLine;
+            if (string.IsNullOrEmpty(statement)) statement = "Brak zawartości";
+            Regex rgx = new Regex(@"(ApplicationTimeCounter(.*))", RegexOptions.None);
+            string localization = rgx.Match(catchException.ToString()).Groups[0].Value;
+            string raport = statement + Environment.NewLine + catchException.Message + Environment.NewLine +
+                localization + Environment.NewLine + DateTime.Now + Environment.NewLine;
             SaveRaportInFileLog(raport);
         }
 

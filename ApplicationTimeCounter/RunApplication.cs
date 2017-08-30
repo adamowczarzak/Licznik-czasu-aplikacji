@@ -29,7 +29,7 @@ namespace ApplicationTimeCounter
                     }
                     else
                     {
-                        //próba stworzenie bazy danych
+                        DataBase.TryCreateDataBase();
                     }
                 }
                 else

@@ -146,7 +146,7 @@ namespace ApplicationTimeCounter
                     }
                     catch (MySqlException message)
                     {
-                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message.ToString());
+                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
                 }
 
