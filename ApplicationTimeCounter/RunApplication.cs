@@ -25,20 +25,22 @@ namespace ApplicationTimeCounter
                     if (DataBase.ConnectToDataBase())
                     {
                         DataBase.CloseConnection();
-                        runApllication = true;
+                        //runApllication = true;
+                        runApllication = false;
                     }
                     else
-                    {
-                        DataBase.TryCreateDataBase();
+                    {                        
+                        ErrorWindow errorWindow = new ErrorWindow();
+                        errorWindow.DisplayErrorConnectToDataBase();
+                        errorWindow.ShowDialog();                    
                     }
                 }
                 else
                 {
-                    // chyba trzeba będzie wywalić okno logowania.
+                    ErrorWindow errorWindow = new ErrorWindow();
+                    errorWindow.DisplayErrorConnectToMySql();
+                    errorWindow.ShowDialog();
                 }
-                // sprawdzenie czy łączy się za bazą
-                // tak -> włącz program
-                // nie -> komunikat i okono logowania
             }   
         }
 
@@ -51,7 +53,7 @@ namespace ApplicationTimeCounter
         {
             string nameUser = string.Empty;
             string password = string.Empty;
-            bool isLoadAndConnect = false;
+            bool isLoadAndConnect = true;
 
             try
             {
@@ -66,9 +68,10 @@ namespace ApplicationTimeCounter
                 ApplicationLog.LogService.AddRaportError("Error !!!\tNie udało się otworzyć pliku konfiguracyjnego.",
                     ApplicationLog.LogService.GetNameCurrentMethod() + "()",
                     System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\RunApplication.cs");
+                isLoadAndConnect = false;
             }
-
-            isLoadAndConnect = DataBase.TryConnectToMySql(nameUser, password);
+            if(isLoadAndConnect)
+                isLoadAndConnect = DataBase.TryConnectToMySql(nameUser, password);
             return isLoadAndConnect;
         }
     }

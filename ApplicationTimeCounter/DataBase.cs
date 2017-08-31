@@ -100,22 +100,10 @@ namespace ApplicationTimeCounter
             {
                 testConnection.Close();
                 isOpenConnection = false;
-                GetMySqlConnection();
+                GetMySqlConnectionAndTryCreateDataBaseAndTableIfNotExist();
             }
                 
             return isConnection;
-        }
-
-        static public bool TryCreateDataBase()
-        {
-            bool createDataBase = false;
-            string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
-            MySqlConnection testConnection = new MySqlConnection(myConnectionString);
-            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter2`;";
-            MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
-            createDataBase = ExecuteNonQuery(command);
-            testConnection.Close();
-            return createDataBase;
         }
 
         static private bool TryConnectToDataBase(MySqlConnection connection)
@@ -136,6 +124,32 @@ namespace ApplicationTimeCounter
                 }
             }
             return connectToLocalhost;
+        }
+
+
+
+        static private void GetMySqlConnectionAndTryCreateDataBaseAndTableIfNotExist()
+        {
+            string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
+            MySqlConnection testConnection = new MySqlConnection(myConnectionString);
+            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter2`";
+            MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
+            testConnection.Open();
+            ExecuteNonQuery(command);
+            testConnection.Close();
+
+            GetMySqlConnection();
+            ConnectToDataBase();
+            stringCommand = @"CREATE TABLE IF NOT EXISTS `alldate`(
+            `idAllDate` int(11) NOT NULL AUTO_INCREMENT,
+            `Date` date NULL,
+            PRIMARY KEY (`idAllDate`), DEFAULT CHARACTER SET=utf8)"; 
+            command = new MySqlCommand(stringCommand, Connection);         
+            ExecuteNonQuery(command);
+
+
+
+            CloseConnection();
         }
 
         
