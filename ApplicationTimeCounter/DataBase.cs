@@ -141,13 +141,34 @@ namespace ApplicationTimeCounter
             GetMySqlConnection();
             ConnectToDataBase();
             stringCommand = @"CREATE TABLE IF NOT EXISTS `alldate`(
-            `idAllDate` int(11) NOT NULL AUTO_INCREMENT,
+            `idAllDate` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             `Date` date NULL,
-            PRIMARY KEY (`idAllDate`), DEFAULT CHARACTER SET=utf8)"; 
+            `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
+            `ActivityTime` int(11) UNSIGNED) CHARACTER SET utf8 COLLATE utf8_polish_ci"; 
             command = new MySqlCommand(stringCommand, Connection);         
             ExecuteNonQuery(command);
 
+            stringCommand = @"CREATE TABLE IF NOT EXISTS `dailyuseofapplication`(
+            `idTitle` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
+            `ActivityTime` int(11) UNSIGNED,
+            `idNameDailyActivity` int(11) UNSIGNED) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            command = new MySqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
 
+            // sprawdź czy istnieje tablea
+
+            stringCommand = @"CREATE TABLE IF NOT EXISTS `namedailyactivity`(
+            `idNameDailyActivity` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `NameDailyActivity` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            command = new MySqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
+
+            // jeśli nie istnieje tabela to dodaj te 2 rekordy
+            stringCommand = "INSERT IGNORE INTO namedailyactivity (NameDailyActivity) VALUES ('Programowanie'),('Inne')";
+            command = new MySqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
 
             CloseConnection();
         }

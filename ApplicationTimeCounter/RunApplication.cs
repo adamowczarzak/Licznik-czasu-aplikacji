@@ -25,8 +25,7 @@ namespace ApplicationTimeCounter
                     if (DataBase.ConnectToDataBase())
                     {
                         DataBase.CloseConnection();
-                        //runApllication = true;
-                        runApllication = false;
+                        runApllication = true;
                     }
                     else
                     {                        
