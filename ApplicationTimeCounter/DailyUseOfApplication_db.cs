@@ -74,10 +74,16 @@ namespace ApplicationTimeCounter
             DataBase.CloseConnection();
             return time;
         }
-        
+
         public void TransferDataToAllDataAndClearTable()
         {
-            if (allData_db.GetDayWorkingApplication() != "0")
+            int dateDifferenceInt = 0;
+            string dateDifferenceString = allData_db.GetDayWorkingApplication();
+            ApplicationLog.LogService.AddRaportInformation(dateDifferenceString);
+            if (!string.IsNullOrEmpty(dateDifferenceString))
+                dateDifferenceInt = Convert.ToInt32(dateDifferenceString);
+
+            if (dateDifferenceInt > 0)
             {
                 string contentCommand = "SELECT Title, ActivityTime from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
                 MySqlDataReader reader = GetExecuteReader(contentCommand);
@@ -88,9 +94,10 @@ namespace ApplicationTimeCounter
                     allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection: true);
                 }
                 reader.Dispose();
-                RestartContentTable();
-                DataBase.CloseConnection();
             }
+            else DataBase.ConnectToDataBase();
+            RestartContentTable();
+            DataBase.CloseConnection();
         }
 
         public string[,] GetBiggestResults()

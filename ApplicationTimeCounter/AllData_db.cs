@@ -64,10 +64,10 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         public bool CheckIfIsNextDay()
         {
-            string contentCommand = "SELECT idAllDate from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
-            string dateDifference = GetStringFromExecuteReader(contentCommand, "idAllDate");
-            if (string.IsNullOrEmpty(dateDifference)) return true;
-            else return false;
+                string contentCommand = "SELECT idAllDate from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
+                string dateDifference = GetStringFromExecuteReader(contentCommand, "idAllDate");
+                if (string.IsNullOrEmpty(dateDifference)) return true;
+                else return false;
         }
 
         /// <summary>
