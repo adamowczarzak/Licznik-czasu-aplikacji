@@ -126,14 +126,16 @@ namespace ApplicationTimeCounter
             return connectToLocalhost;
         }
 
-
-
+        /// <summary>
+        /// Pobieranie połącznienia do bazy MySql oraz tworzenie tabel jeśli nie istnieją.
+        /// </summary>
         static private void GetMySqlConnectionAndTryCreateDataBaseAndTableIfNotExist()
         {
             string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
             MySqlConnection testConnection = new MySqlConnection(myConnectionString);
             string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter2`";
             MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
+            bool tableNameDailyActivityMustByCreate = true;
             testConnection.Open();
             ExecuteNonQuery(command);
             testConnection.Close();
@@ -156,19 +158,24 @@ namespace ApplicationTimeCounter
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
-            // sprawdź czy istnieje tablea
-
-            stringCommand = @"CREATE TABLE IF NOT EXISTS `namedailyactivity`(
-            `idNameDailyActivity` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            `NameDailyActivity` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            stringCommand = @"SHOW TABLES LIKE 'namedailyactivity'";
             command = new MySqlCommand(stringCommand, Connection);
-            ExecuteNonQuery(command);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())tableNameDailyActivityMustByCreate = false;
+            reader.Close();
 
+            if (tableNameDailyActivityMustByCreate)
+            {
+                stringCommand = @"CREATE TABLE IF NOT EXISTS `namedailyactivity`(
+                    `idNameDailyActivity` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `NameDailyActivity` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+                command = new MySqlCommand(stringCommand, Connection);
+                ExecuteNonQuery(command);
 
-            // jeśli nie istnieje tabela to dodaj te 2 rekordy
-            stringCommand = "INSERT IGNORE INTO namedailyactivity (NameDailyActivity) VALUES ('Programowanie'),('Inne')";
-            command = new MySqlCommand(stringCommand, Connection);
-            ExecuteNonQuery(command);
+                stringCommand = "INSERT IGNORE INTO namedailyactivity (NameDailyActivity) VALUES ('Programowanie'),('Inne')";
+                command = new MySqlCommand(stringCommand, Connection);
+                ExecuteNonQuery(command);
+            }
 
             CloseConnection();
         }

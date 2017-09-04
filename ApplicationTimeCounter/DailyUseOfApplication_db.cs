@@ -77,17 +77,20 @@ namespace ApplicationTimeCounter
         
         public void TransferDataToAllDataAndClearTable()
         {
-            string contentCommand = "SELECT Title, ActivityTime from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
-            MySqlDataReader reader = GetExecuteReader(contentCommand);
-            while (reader.Read())
+            if (allData_db.GetDayWorkingApplication() != "0")
             {
-                var Title = reader["Title"];
-                var ActivityTime = reader["ActivityTime"];
-                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection:true);
+                string contentCommand = "SELECT Title, ActivityTime from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
+                MySqlDataReader reader = GetExecuteReader(contentCommand);
+                while (reader.Read())
+                {
+                    var Title = reader["Title"];
+                    var ActivityTime = reader["ActivityTime"];
+                    allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection: true);
+                }
+                reader.Dispose();
+                RestartContentTable();
+                DataBase.CloseConnection();
             }
-            reader.Dispose();                       
-            RestartContentTable();
-            DataBase.CloseConnection();        
         }
 
         public string[,] GetBiggestResults()

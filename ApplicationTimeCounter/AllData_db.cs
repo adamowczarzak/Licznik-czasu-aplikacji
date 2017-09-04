@@ -106,7 +106,7 @@ namespace ApplicationTimeCounter
         /// Pobiera ilość dni pracy aplkacji.
         /// </summary>
         /// <returns>Zwraca ilość dni jako string.</returns>
-        private string GetDayWorkingApplication()
+        public string GetDayWorkingApplication()
         {
             string contentCommand = "SELECT DATEDIFF('" + GetDataRunApplication() + "', CURDATE()) as dateDifference";
             string dateDifference = GetStringFromExecuteReader(contentCommand, "dateDifference");
