@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ApplicationTimeCounter
 {
@@ -25,24 +26,43 @@ namespace ApplicationTimeCounter
 
         private void CreateCategoryForm()
         {
-            MainCanvasCategory = new Canvas();
-            MainCanvasCategory.Width = 620;
-            MainCanvasCategory.Height = 410;
-            MainCanvasCategory.Background = new SolidColorBrush(Color.FromArgb(255, 30, 39, 93));
-            contentPage.Children.Add(MainCanvasCategory);
+            MainCanvasCategory = CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0 ,0);
             MainCanvasCategory.Opacity = 0;
             Canvas.SetZIndex(MainCanvasCategory, 0);
 
-            Canvas MainCanvas2 = new Canvas();
-            MainCanvas2.Width = 200;
-            MainCanvas2.Height = 200;
-            MainCanvas2.Background = new SolidColorBrush(Color.FromArgb(255, 255, 9, 3));
-            MainCanvasCategory.Children.Add(MainCanvas2);
+            Canvas canvasMembership = CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 40, 30);
+            Canvas canvasActivity = CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 330, 30);
+            Image image_event = new Image();
+           // image_event.Width = 100;
+          //  image_event.Height = 100;
+            BitmapImage src = new BitmapImage();
+            src.BeginInit();
+            src.UriSource = new Uri("Pictures/MembershipImages.png", UriKind.Relative);
+            Canvas.SetTop(image_event, 10);
+            Canvas.SetLeft(image_event, 10);
+            canvasMembership.Children.Add(image_event);
+            src.EndInit();
+            image_event.Source = src;
+            
+
+            
         }
 
         public void ShowCategoryForm()
         {
             viewContent.ChangeContent(MainCanvasCategory);
+        }
+
+        private Canvas CreateCanvas(Canvas _canvas, int width, int height, Color color, int x, int y)
+        {
+            Canvas canvas = new Canvas();
+            canvas.Width = width;
+            canvas.Height = height;
+            canvas.Background = new SolidColorBrush(color);
+            Canvas.SetLeft(canvas, x);
+            Canvas.SetTop(canvas, y);
+            _canvas.Children.Add(canvas);
+            return canvas;
         }
     }
 }

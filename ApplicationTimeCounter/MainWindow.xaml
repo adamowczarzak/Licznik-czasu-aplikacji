@@ -129,6 +129,5 @@
             </Image.BindingGroup>
         </Image>
         <Canvas x:Name="contentPage" HorizontalAlignment="Left" Height="410" Margin="230,40,0,0" VerticalAlignment="Top" Width="620" Background="#FF1E275D"/>
-        <Label x:Name="test" Content="Label" HorizontalAlignment="Left" Margin="342,3,0,0" VerticalAlignment="Top" Width="91" FontSize="20"/>
     </Grid>
 </Window>
