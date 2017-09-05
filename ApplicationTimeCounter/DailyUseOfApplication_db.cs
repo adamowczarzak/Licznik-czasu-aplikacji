@@ -79,23 +79,24 @@ namespace ApplicationTimeCounter
         {
             int dateDifferenceInt = 0;
             string dateDifferenceString = allData_db.GetDayWorkingApplication();
-            ApplicationLog.LogService.AddRaportInformation(dateDifferenceString);
             if (!string.IsNullOrEmpty(dateDifferenceString))
                 dateDifferenceInt = Convert.ToInt32(dateDifferenceString);
-
-            if (dateDifferenceInt > 0)
+            if (dateDifferenceInt <= 0)
             {
-                string contentCommand = "SELECT Title, ActivityTime from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
-                MySqlDataReader reader = GetExecuteReader(contentCommand);
-                while (reader.Read())
-                {
-                    var Title = reader["Title"];
-                    var ActivityTime = reader["ActivityTime"];
-                    allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection: true);
-                }
-                reader.Dispose();
+                DataBase.ConnectToDataBase();
+                RestartContentTable();
+                DataBase.CloseConnection();
             }
-            else DataBase.ConnectToDataBase();
+
+            string contentCommand = "SELECT Title, ActivityTime from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
+            MySqlDataReader reader = GetExecuteReader(contentCommand);
+            while (reader.Read())
+            {
+                var Title = reader["Title"];
+                var ActivityTime = reader["ActivityTime"];
+                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection: true);
+            }
+            reader.Dispose();
             RestartContentTable();
             DataBase.CloseConnection();
         }
