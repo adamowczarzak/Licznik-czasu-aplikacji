@@ -23,7 +23,7 @@ namespace ApplicationTimeCounter
         private MyCircle[] progressBar;
         private double value;
 
-        public CircleBar(Canvas canvas, double increaseAngle, string nameColor, int widthBar,  int xCenter,
+        public CircleBar(Canvas canvas, double increaseAngle, Color color, int widthBar,  int xCenter,
             int yCenter, int radiusBar, bool drawCloseCircle = true)
         {
      
@@ -32,14 +32,15 @@ namespace ApplicationTimeCounter
             value = 1;
             if (drawCloseCircle == true)
             {
-                MyCircle circle = new MyCircle(canvas, radiusBar * 2, 2, "Gray", (canvas.Width / 2) - 48, (canvas.Height / 2) - 33, 0.5);
+                MyCircle circle = new MyCircle(canvas, radiusBar * 2, 2, Color.FromArgb(255, 128, 128, 128),
+                    (canvas.Width / 2) - 48, (canvas.Height / 2) - 33, 0.5);
             }
 
             for (int i = 0; i < progressBar.Length; i++)
             {
                 double x = Math.Cos(angle - 1.55) * radiusBar + canvas.Width / 2 + xCenter;
                 double y = Math.Sin(angle - 1.55) * radiusBar + canvas.Height / 2 + yCenter;
-                progressBar[i] = new MyCircle(canvas, widthBar, 2, nameColor, x, y, 1);
+                progressBar[i] = new MyCircle(canvas, widthBar, 2, color, x, y, 1);
                 angle = angle + increaseAngle;
             }         
         }
@@ -62,11 +63,11 @@ namespace ApplicationTimeCounter
             this.value = value;
         }
 
-        public void SetColorsOnParts(double startPosition, double value, String nameColor)
+        public void SetColorsOnParts(double startPosition, double value, Color color)
         {
             for (int i = (int)(startPosition * progressBar.Length); i < 
                 (int)((value + startPosition) * progressBar.Length)+1; i++)
-                if(i < progressBar.Length) progressBar[i].Color(nameColor);
+                if (i < progressBar.Length) progressBar[i].Color(color);
         }
 
         public int GetLenghtprogressBar()

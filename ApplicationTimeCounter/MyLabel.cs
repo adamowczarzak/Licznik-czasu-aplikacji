@@ -13,7 +13,7 @@ namespace ApplicationTimeCounter
     {
         Label myLabel = new Label();
         public MyLabel(Canvas canvas, string content, int widthLabel, int heightLabel, int labelFontSize,
-            double x, double y,  string colorFont = "DarkSlateGray",
+            double x, double y, Color color,
             HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center,
             FontWeight fontWeight = default(FontWeight))
         {
@@ -22,7 +22,7 @@ namespace ApplicationTimeCounter
             myLabel = new Label()
             {
                 Content = content,
-                Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(colorFont),
+                Foreground = new SolidColorBrush(color),
                 FontSize = labelFontSize,
                 Width = widthLabel,
                 FontWeight = fontWeight,
@@ -35,7 +35,7 @@ namespace ApplicationTimeCounter
             Canvas.SetTop(myLabel, y);
             canvas.Children.Add(myLabel);
 
-            //myLabel.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("Blue");
+           // myLabel.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("Blue");
         }
 
         public void SetContent(string contentLabel)
@@ -59,6 +59,16 @@ namespace ApplicationTimeCounter
         public void Opacity(double value)
         {
             myLabel.Opacity = value;
+        }
+
+        public void SetBackgroundColor(Color color)
+        {
+            myLabel.Background = new SolidColorBrush(color);
+        }
+
+        public void SetFont(string nameFont)
+        {
+            myLabel.FontFamily = new FontFamily(nameFont);
         }
     }
 }

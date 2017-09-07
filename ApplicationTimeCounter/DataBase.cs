@@ -154,7 +154,7 @@ namespace ApplicationTimeCounter
             `idTitle` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
             `ActivityTime` int(11) UNSIGNED,
-            `idNameDailyActivity` int(11) UNSIGNED) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            `idNameDailyActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci";
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 

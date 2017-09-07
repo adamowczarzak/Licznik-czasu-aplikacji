@@ -13,7 +13,7 @@ namespace ApplicationTimeCounter
     {
         Ellipse Mycircle;
 
-        public MyCircle(Canvas canvas ,int r, int strokeThickness, string nameColor, double setLeft, double setTop,
+        public MyCircle(Canvas canvas ,int r, int strokeThickness, Color color, double setLeft, double setTop,
             double opacity = 1, bool setFill = false)
         {
             Mycircle = new Ellipse()
@@ -21,10 +21,10 @@ namespace ApplicationTimeCounter
                 Width = r,
                 Height = r,
                 StrokeThickness = strokeThickness,
-                Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString(nameColor),
+                Stroke = new SolidColorBrush(color),
                 Opacity = opacity,              
             };
-            if (setFill == true) Mycircle.Fill = (SolidColorBrush)new BrushConverter().ConvertFromString(nameColor);
+            if (setFill == true) Mycircle.Fill = new SolidColorBrush(color);
             Canvas.SetLeft(Mycircle, setLeft);
             Canvas.SetTop(Mycircle, setTop);
             canvas.Children.Add(Mycircle);
@@ -35,9 +35,9 @@ namespace ApplicationTimeCounter
             Mycircle.Opacity = value;
         }
 
-        public void Color(string nameColor)
+        public void Color(Color color)
         {
-            Mycircle.Stroke = (SolidColorBrush)new BrushConverter().ConvertFromString(nameColor);
+            Mycircle.Stroke = new SolidColorBrush(color);
         }
 
     }

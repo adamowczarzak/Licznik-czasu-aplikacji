@@ -13,15 +13,16 @@ namespace ApplicationTimeCounter
     {
         Rectangle myRectangle;
 
-        public MyRectangle(Canvas canvas, int width, int height, string color, double x, double y,
+        public MyRectangle(Canvas canvas, int width, int height, Color color, double x, double y,
             int strokeThickness = 0, double opacity = 1)
         {
             myRectangle = new Rectangle()
             {
                 Width = width,
                 Height = height,
-                Fill = (SolidColorBrush)new BrushConverter().ConvertFromString(color),
+                Fill = new SolidColorBrush(color),
                 StrokeThickness = strokeThickness,
+                Stroke = new SolidColorBrush(Color.FromArgb(255,255,255,255)),
                 Opacity = opacity
             };
             Canvas.SetLeft(myRectangle, x);

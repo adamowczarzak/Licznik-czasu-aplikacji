@@ -89,6 +89,12 @@
       <DependentUpon>GetDataBaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MembershipInCategory.cs" />
+    <Compile Include="MyButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MyButton.Designer.cs">
+      <DependentUpon>MyButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="MyCircle.cs" />
     <Compile Include="MyLabel.cs" />
     <Compile Include="MyRectangle.cs" />

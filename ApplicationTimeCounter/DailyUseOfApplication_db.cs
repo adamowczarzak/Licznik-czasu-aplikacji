@@ -81,7 +81,8 @@ namespace ApplicationTimeCounter
             string dateDifferenceString = allData_db.GetDayWorkingApplication();
             if (!string.IsNullOrEmpty(dateDifferenceString))
                 dateDifferenceInt = Convert.ToInt32(dateDifferenceString);
-            if (dateDifferenceInt <= 0)
+            ApplicationLog.LogService.AddRaportInformation(dateDifferenceInt.ToString());
+            if (dateDifferenceInt == 0)
             {
                 DataBase.ConnectToDataBase();
                 RestartContentTable();
@@ -154,7 +155,7 @@ namespace ApplicationTimeCounter
         private void AddNameTitleToTableDailyUse()
         {
             command.CommandText = "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ("
-                + nameTitle + "," + 1 + "," + 2 + ")";
+                + nameTitle + "," + 1 + "," + 0 + ")";
             DataBase.ExecuteNonQuery(command);
         }
 
@@ -181,10 +182,10 @@ namespace ApplicationTimeCounter
             command.CommandText = "TRUNCATE TABLE dailyuseofapplication";
             DataBase.ExecuteNonQuery(command);
             command.CommandText =
-                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Wył. komputer', + 0 , 0)";
+                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Wył. komputer', 0 , -1)";
             DataBase.ExecuteNonQuery(command);
             command.CommandText =
-                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Brak Aktyw.', + 0 , 0)";
+                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Brak Aktyw.', 0 , -1)";
             DataBase.ExecuteNonQuery(command);
         }
 

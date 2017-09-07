@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ApplicationTimeCounter
 {
@@ -26,12 +27,12 @@ namespace ApplicationTimeCounter
             namesBarsGraph[2] = "Programowanie";
             namesBarsGraph[3] = "Inne";
 
-            MyLabel title = new MyLabel(canvas, "Dzienna aktywność", 140, 30, 14, 0, 0);
+            MyLabel title = new MyLabel(canvas, "Dzienna aktywność", 140, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79));
 
-            CreateSegmentSpendingTime(canvas, "Lavender", 0, 25, 70, 2, 131);
-            CreateSegmentSpendingTime(canvas, "DarkSlateBlue", 1, 65, 70, 102, 131);
-            CreateSegmentSpendingTime(canvas, "ForestGreen", 2, 105, 70, 2, 146);
-            CreateSegmentSpendingTime(canvas, "Goldenrod", 3, 145, 70, 102, 146);
+            CreateSegmentSpendingTime(canvas, Color.FromArgb(255, 230, 230, 250), 0, 25, 70, 2, 131);
+            CreateSegmentSpendingTime(canvas, Color.FromArgb(255, 72, 61, 139), 1, 65, 70, 102, 131);
+            CreateSegmentSpendingTime(canvas, Color.FromArgb(255, 34, 139, 34), 2, 105, 70, 2, 146);
+            CreateSegmentSpendingTime(canvas, Color.FromArgb(255, 218, 165, 32), 3, 145, 70, 102, 146);
 
             dailyUseOfApplication_db = new DailyUseOfApplication_db();
             Update();
@@ -56,14 +57,14 @@ namespace ApplicationTimeCounter
            
         }
 
-        private void CreateSegmentSpendingTime(Canvas canvas , string nameColor, int indexNameBarsGraph,
+        private void CreateSegmentSpendingTime(Canvas canvas , Color color, int indexNameBarsGraph,
             int xElement, int yElement, int xLabelLegend, int yLabelLegend)
         {
-            mylabels[indexNameBarsGraph] = new MyLabel(canvas, "0 %", 40, 25, 10, xElement - 8, yElement + 30);
-            MyRectangle colorLegend = new MyRectangle(canvas, 10, 10, nameColor, xLabelLegend, yLabelLegend);
+            mylabels[indexNameBarsGraph] = new MyLabel(canvas, "0 %", 40, 25, 10, xElement - 8, yElement + 30, Color.FromArgb(255, 47, 79, 79));
+            MyRectangle colorLegend = new MyRectangle(canvas, 10, 10, color, xLabelLegend, yLabelLegend);
             MyLabel labelLegend = new MyLabel(canvas, namesBarsGraph[indexNameBarsGraph], 80, 25, 10, xLabelLegend + 8, yLabelLegend - 7,
-                horizontalAlignment: HorizontalAlignment.Left);
-            barsGraph[indexNameBarsGraph] = new MyRectangle(canvas, 0, 20, nameColor, xElement, 170 - yElement);
+                Color.FromArgb(255, 47, 79, 79),horizontalAlignment: HorizontalAlignment.Left);
+            barsGraph[indexNameBarsGraph] = new MyRectangle(canvas, 0, 20, color, xElement, 170 - yElement);
         }
 
         private void UpdateSegment(int index, int value)
