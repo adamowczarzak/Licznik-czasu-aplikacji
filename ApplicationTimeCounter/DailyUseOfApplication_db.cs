@@ -57,7 +57,7 @@ namespace ApplicationTimeCounter
         public int GetTimeForNumberActivity(int number)
         {
             int time = 0;
-            string contentCommand = "SELECT ActivityTime from dailyuseofapplication WHERE idNameDailyActivity = " + number;
+            string contentCommand = "SELECT ActivityTime from dailyuseofapplication WHERE idNameActivity = " + number;
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
@@ -81,7 +81,7 @@ namespace ApplicationTimeCounter
             string dateDifferenceString = allData_db.GetDayWorkingApplication();
             if (!string.IsNullOrEmpty(dateDifferenceString))
                 dateDifferenceInt = Convert.ToInt32(dateDifferenceString);
-            ApplicationLog.LogService.AddRaportInformation(dateDifferenceInt.ToString());
+
             if (dateDifferenceInt == 0)
             {
                 DataBase.ConnectToDataBase();
@@ -89,13 +89,15 @@ namespace ApplicationTimeCounter
                 DataBase.CloseConnection();
             }
 
-            string contentCommand = "SELECT Title, ActivityTime from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
+            string contentCommand = "SELECT Title, ActivityTime, idNameActivity from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read())
             {
                 var Title = reader["Title"];
                 var ActivityTime = reader["ActivityTime"];
-                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), additionalConnection: true);
+                var idNameActivity = reader["idNameActivity"];
+                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), Convert.ToInt32(idNameActivity),
+                    additionalConnection: true);
             }
             reader.Dispose();
             RestartContentTable();
@@ -143,6 +145,21 @@ namespace ApplicationTimeCounter
             AddTimeToDisabledComputer(time);
         }
 
+        /// <summary>
+        /// Pobiera ilość aplikacji które nie mają przypisane żadnej altywności.
+        /// </summary>
+        /// <returns></returns>
+        public string GetAllNotAssignedApplication()
+        {
+            string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from dailyuseofapplication WHERE idNameActivity = 0";
+            MySqlDataReader reader = GetExecuteReader(contentCommand);
+            reader.Read();
+            string noAssigmentApplication = reader["noAssigmentApplication"].ToString();
+            reader.Dispose();
+            DataBase.CloseConnection();
+            return noAssigmentApplication;
+        }
+
         private MySqlDataReader GetExecuteReader(string contentCommand)
         {
             DataBase.ConnectToDataBase();
@@ -154,7 +171,7 @@ namespace ApplicationTimeCounter
 
         private void AddNameTitleToTableDailyUse()
         {
-            command.CommandText = "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ("
+            command.CommandText = "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameActivity) VALUES ("
                 + nameTitle + "," + 1 + "," + 0 + ")";
             DataBase.ExecuteNonQuery(command);
         }
@@ -182,10 +199,10 @@ namespace ApplicationTimeCounter
             command.CommandText = "TRUNCATE TABLE dailyuseofapplication";
             DataBase.ExecuteNonQuery(command);
             command.CommandText =
-                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Wył. komputer', 0 , -1)";
+                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameActivity) VALUES ('Wył. komputer', 0 , -2)";
             DataBase.ExecuteNonQuery(command);
             command.CommandText =
-                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameDailyActivity) VALUES ('Brak Aktyw.', 0 , -1)";
+                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameActivity) VALUES ('Brak Aktyw.', 0 , -1)";
             DataBase.ExecuteNonQuery(command);
         }
 

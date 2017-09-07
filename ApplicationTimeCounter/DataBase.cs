@@ -61,7 +61,7 @@ namespace ApplicationTimeCounter
         static private void GetMySqlConnection()
         {
             string myConnectionString =
-                "server=localhost;user=" + nameUser + ";database=applicationtimecounter2;password="+ password;
+                "server=localhost;user=" + nameUser + ";database=applicationtimecounter;password="+ password;
                 
             Connection = new MySqlConnection(myConnectionString);
             AdditionalConnection = new MySqlConnection(myConnectionString);
@@ -133,7 +133,7 @@ namespace ApplicationTimeCounter
         {
             string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
             MySqlConnection testConnection = new MySqlConnection(myConnectionString);
-            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter2`";
+            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter`";
             MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
             bool tableNameDailyActivityMustByCreate = true;
             testConnection.Open();
@@ -143,10 +143,11 @@ namespace ApplicationTimeCounter
             GetMySqlConnection();
             ConnectToDataBase();
             stringCommand = @"CREATE TABLE IF NOT EXISTS `alldate`(
-            `idAllDate` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             `Date` date NULL,
             `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
-            `ActivityTime` int(11) UNSIGNED) CHARACTER SET utf8 COLLATE utf8_polish_ci"; 
+            `ActivityTime` int(11) UNSIGNED,
+            `idNameActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci"; 
             command = new MySqlCommand(stringCommand, Connection);         
             ExecuteNonQuery(command);
 
@@ -154,7 +155,7 @@ namespace ApplicationTimeCounter
             `idTitle` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
             `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
             `ActivityTime` int(11) UNSIGNED,
-            `idNameDailyActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            `idNameActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci";
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 

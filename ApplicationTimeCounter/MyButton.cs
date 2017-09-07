@@ -17,11 +17,17 @@ namespace ApplicationTimeCounter
         MyLabel labelButton;
 
         public MyButton(Canvas _canvas, int width, int height, double x, double y,
-            Color backColor, Color borderColor, Color labelColor, string contentLabel, int borderThickness = 0,
+            Color backColor, Color borderColor, Color labelColor, string contentLabel, int fontSize, int borderThickness = 0,
             double opacity = 1) 
         {
             bodyButton = new MyRectangle(_canvas, width + borderThickness * 2, height + borderThickness * 2,
                 borderColor, (borderThickness * 2 > 0) ? x - borderThickness : x, (borderThickness * 2 > 0) ? y - borderThickness : y, 1);
+            labelButton = new MyLabel(_canvas, contentLabel, width, height, fontSize, x, y, labelColor);
+        }
+
+        public void SetText(string text)
+        {
+            labelButton.SetContent(text);
         }
     }
 }

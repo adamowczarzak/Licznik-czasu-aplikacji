@@ -23,11 +23,12 @@ namespace ApplicationTimeCounter
         /// </summary>
         /// <param name="title">Nazwa aktywności.</param>
         /// <param name="activityTime">Czas aktywności.</param>
+        /// <param name="idNameActivity">Id aktywności do którego jest przypisana aplikacja.</param>
         /// <param name="daysDifferenceFromToday">Dni różnicy od dzisiejszego dnia.</param>
         /// <param name="openningDataBase">Czy połącznie do bazy danych w metodzie ma być otwierane.</param>
         /// <param name="closingConnectionDataBase">Czy połącznie do bazy danych w metodzie ma być zamykane.</param>
         /// <param name="additionalConnection">Czy używać dodatkowego połącznia z bazy danych.</param>
-        public bool Add(string title, int activityTime, int daysDifferenceFromToday = 1,
+        public bool Add(string title, int activityTime, int idNameActivity,  int daysDifferenceFromToday = 1,
             bool openninConnectiongDataBase = false, bool closingConnectionDataBase = false, 
             bool additionalConnection = false)
         {
@@ -39,8 +40,8 @@ namespace ApplicationTimeCounter
                 if (DataBase.CheckIsOpenConnection())
                 {
                     command.Connection = DataBase.Connection;
-                    command.CommandText = "INSERT INTO alldate (Date, Title, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
-                    " , '" + title + "' , '" + activityTime + "')";
+                    command.CommandText = @"INSERT INTO alldate (Date, Title, ActivityTime, idNameActivity) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
+                    " , '" + title + "' , '" + activityTime + "' , '" + idNameActivity + "' )";
                     if (DataBase.ExecuteNonQuery(command)) addRecord = true;         
                 }
                 if (closingConnectionDataBase) DataBase.CloseConnection();
@@ -49,8 +50,8 @@ namespace ApplicationTimeCounter
             {
                 DataBase.AdditionalConnectToDataBase();              
                 command.Connection = DataBase.AdditionalConnection;
-                command.CommandText = "INSERT INTO alldate (Date, Title, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
-                " , '" + title + "' , '" + activityTime + "')";
+                command.CommandText = @"INSERT INTO alldate (Date, Title, ActivityTime, idNameActivity) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
+                " , '" + title + "' , '" + activityTime + "' , '" + idNameActivity + "' )";
                 if (DataBase.ExecuteNonQuery(command)) addRecord = true;
                 DataBase.AdditionalConnection.Close();
             }
@@ -64,8 +65,8 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         public bool CheckIfIsNextDay()
         {
-                string contentCommand = "SELECT idAllDate from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
-                string dateDifference = GetStringFromExecuteReader(contentCommand, "idAllDate");
+                string contentCommand = "SELECT id from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
+                string dateDifference = GetStringFromExecuteReader(contentCommand, "id");
                 if (string.IsNullOrEmpty(dateDifference)) return true;
                 else return false;
         }
@@ -83,7 +84,7 @@ namespace ApplicationTimeCounter
                 {
                     if (CheckIfDateExistInBase((-i).ToString()) == false)
                     {
-                        if (Add("Wył. komputer", 60 * 24, -i, true, true))
+                        if (Add("Wył. komputer", 60 * 24, -1, -i, true, true))
                             ApplicationLog.LogService.AddRaportInformation("Information\tTabela 'alldata' została uzupełniona o brakujące rekordy.");
                         else
                         {
@@ -100,6 +101,17 @@ namespace ApplicationTimeCounter
                     ApplicationLog.LogService.GetNameCurrentMethod() + "()", "int",
                     System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\AllData_db.cs");
             }
+        }
+
+        /// <summary>
+        /// Pobiera ilość aplikacji które nie mają przypisane żadnej altywności.
+        /// </summary>
+        /// <returns></returns>
+        public string GetAllNotAssignedApplication()
+        {
+            string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from alldate WHERE idNameActivity = 0";
+            string AllNotAssignedApplication = GetStringFromExecuteReader(contentCommand, "noAssigmentApplication");
+            return AllNotAssignedApplication;
         }
 
         /// <summary>

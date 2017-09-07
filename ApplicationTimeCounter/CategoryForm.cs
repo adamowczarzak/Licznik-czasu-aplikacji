@@ -13,6 +13,7 @@ namespace ApplicationTimeCounter
     {
         public Canvas MainCanvasCategory { get; set; }
         private Canvas contentPage;
+        private MyButton notAssignedApplications;
 
         private ViewContent viewContent;
 
@@ -33,23 +34,47 @@ namespace ApplicationTimeCounter
             Canvas canvasMembership = CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 40, 30);
             Canvas canvasActivity = CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 330, 30);
             CreateImage(canvasMembership, 100, 100, 10, 10, "Pictures/MembershipImages.png");
-           // MyLabel label = new MyLabel(canvasActivity, "Przypisz aktywności", 170, 40, 16, 60, 220, "White", fontWeight: System.Windows.FontWeights.Regular);
-            //label.SetFont("Verdana");
-           // MyLabel applicationsNotAssignedToActivity = new MyLabel(canvasActivity, " 0 ", 40, 40, 18, 10, 220, "Tomato", fontWeight: System.Windows.FontWeights.Bold);
-           // applicationsNotAssignedToActivity.SetBackgroundColor("Silver");
-            MyButton m = new MyButton(canvasActivity, 150, 40, 30, 30, Color.FromArgb(0, 130, 200, 255), Color.FromArgb(0, 255, 255, 255),
-                Color.FromArgb(200, 130, 200, 255), "cos ss s ", 2);
+            MyButton buttonAssignActivity = new MyButton(canvasActivity, 170, 38, 65, 200, Color.FromArgb(0, 130, 200, 255), Color.FromArgb(0, 255, 255, 255),
+                Color.FromArgb(255, 255, 255, 255), "Przypisz Aktywności", 16);
+            notAssignedApplications = new MyButton(canvasActivity, 50, 38, 10, 200, Color.FromArgb(0, 130, 200, 255), Color.FromArgb(0, 255, 255, 255),
+                Color.FromArgb(255, 125, 255, 135), "0", 18);
         }
 
         public void ShowCategoryForm()
         {
             viewContent.ChangeContent(MainCanvasCategory);
+            UpdateView();
         }
 
         public void UpdateView()
         {
-            //
+            GetNotAssignedApplicationsAndSetControl();
         }
+
+        /// <summary>
+        /// Pobiera ilość nie przypisanych aplikacji i ustawia kontrolkę 'notAssignedApplications'.
+        /// </summary>
+        private void GetNotAssignedApplicationsAndSetControl()
+        {
+            AllData_db allData_db = new AllData_db();
+            string allNotAssignedApplicationString = allData_db.GetAllNotAssignedApplication();
+            int allNotAssignedApplicationInt;
+            if (int.TryParse(allNotAssignedApplicationString, out allNotAssignedApplicationInt))
+            {
+                DailyUseOfApplication_db DailyUseOfApplication_db = new DailyUseOfApplication_db();
+                allNotAssignedApplicationString = DailyUseOfApplication_db.GetAllNotAssignedApplication();
+                int temp = allNotAssignedApplicationInt;
+                if (int.TryParse(allNotAssignedApplicationString, out allNotAssignedApplicationInt))
+                {
+                    allNotAssignedApplicationInt += temp;
+                    notAssignedApplications.SetText(allNotAssignedApplicationInt.ToString());
+                }
+                else notAssignedApplications.SetText("-1");
+            }
+            else notAssignedApplications.SetText("-1");           
+        }
+    
+    
 
         private Canvas CreateCanvas(Canvas _canvas, int width, int height, Color color, int x, int y)
         {
