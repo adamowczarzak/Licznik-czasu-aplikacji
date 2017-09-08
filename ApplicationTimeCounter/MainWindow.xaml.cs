@@ -14,7 +14,6 @@ namespace ApplicationTimeCounter
 
         private int frequencyCheckingUsingApplication = 60;
         
-        
 
         private IconInTaskbar notifyIcon;
         private InterfaceApplication interfaceApplication;

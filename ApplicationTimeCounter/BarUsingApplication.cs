@@ -18,9 +18,9 @@ namespace ApplicationTimeCounter
         {
             circleBar = new CircleBar(canvas, 0.09, Color.FromArgb(255, 0, 100, 0), 4, 0, 15, 50);
             valueBarUsingApplication = new MyLabel(canvas, "-", 74, 40, 22,
-                            canvas.Width / 2 - 33, canvas.Height / 2 - 5, Color.FromArgb(255, 0, 100, 0));
+                            canvas.Width / 2 - 33, canvas.Height / 2 - 5, Color.FromArgb(255, 0, 100, 0), Color.FromArgb(0, 0, 0, 0));
 
-            MyLabel title = new MyLabel(canvas, "Aktywna aplikacja", 140, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79));
+            MyLabel title = new MyLabel(canvas, "Aktywna aplikacja", 140, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79), Color.FromArgb(0, 0, 0, 0));
             dailyUseOfApplication_db = new DailyUseOfApplication_db();
         }
 

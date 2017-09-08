@@ -73,7 +73,7 @@ namespace ApplicationTimeCounter
             MainCanvasHome = CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
             Canvas upperBar = CreateCanvas(MainCanvasHome, 590, 40, Color.FromArgb(200, 255, 255, 255), 15, 15);
             titleAplication = new MyLabel(upperBar, "-",
-                590, 40, 18, 0, 2, Color.FromArgb(255, 47, 79, 79), horizontalAlignment: HorizontalAlignment.Left);
+                590, 40, 18, 0, 2, Color.FromArgb(255, 47, 79, 79) , Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
                 
 
             for(int i = 0; i < 6; i++)

@@ -78,6 +78,7 @@
     <Compile Include="Activity.cs" />
     <Compile Include="AllData_db.cs" />
     <Compile Include="AnimatedClock.cs" />
+    <Compile Include="AssignedActivity.cs" />
     <Compile Include="BarUsingApplication.cs" />
     <Compile Include="BiggestResultsOfDay.cs" />
     <Compile Include="CategoryForm.cs" />
@@ -89,12 +90,6 @@
       <DependentUpon>GetDataBaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MembershipInCategory.cs" />
-    <Compile Include="MyButton.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MyButton.Designer.cs">
-      <DependentUpon>MyButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="MyCircle.cs" />
     <Compile Include="MyLabel.cs" />
     <Compile Include="MyRectangle.cs" />

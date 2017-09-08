@@ -9,11 +9,11 @@ using System.Windows.Media;
 
 namespace ApplicationTimeCounter
 {
-    class MyLabel
+    class MyLabel : Label
     {
         Label myLabel = new Label();
         public MyLabel(Canvas canvas, string content, int widthLabel, int heightLabel, int labelFontSize,
-            double x, double y, Color color,
+            double x, double y, Color colorFont, Color colorBorder, int borderThickness = 0,
             HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center,
             FontWeight fontWeight = default(FontWeight))
         {
@@ -22,15 +22,18 @@ namespace ApplicationTimeCounter
             myLabel = new Label()
             {
                 Content = content,
-                Foreground = new SolidColorBrush(color),
+                Foreground = new SolidColorBrush(colorFont),
                 FontSize = labelFontSize,
                 Width = widthLabel,
                 FontWeight = fontWeight,
                 Height = heightLabel,
                 FontFamily = new FontFamily("Comic Sans MS"),
                 HorizontalContentAlignment = horizontalAlignment,
+                BorderThickness = new Thickness(borderThickness),
+                BorderBrush = new SolidColorBrush(colorBorder),
 
             };
+           
             Canvas.SetLeft(myLabel, x);
             Canvas.SetTop(myLabel, y);
             canvas.Children.Add(myLabel);
@@ -66,9 +69,15 @@ namespace ApplicationTimeCounter
             myLabel.Background = new SolidColorBrush(color);
         }
 
+        public void SetFontColor(Color color)
+        {
+            myLabel.Foreground = new SolidColorBrush(color);
+        }
+
         public void SetFont(string nameFont)
         {
             myLabel.FontFamily = new FontFamily(nameFont);
         }
+
     }
 }

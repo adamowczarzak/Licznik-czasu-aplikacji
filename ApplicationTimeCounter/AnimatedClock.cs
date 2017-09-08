@@ -35,9 +35,9 @@ namespace ApplicationTimeCounter
             timerAnimation.Tick += new EventHandler(AnimatedWatch);
             timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 40);
 
-            MyLabel title = new MyLabel(canvas, "Pozostały czas", 120, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79));
-            remainingTimePercent = new MyLabel(canvas, GetRemainingTimePercent(), 80, 45, 24, 55, 45, Color.FromArgb(255, 255, 0, 0));
-            remainingTime = new MyLabel(canvas, GetRemainingTime(), 90, 30, 14, 50, 100, Color.FromArgb(255, 255, 0, 0));
+            MyLabel title = new MyLabel(canvas, "Pozostały czas", 120, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79) , Color.FromArgb(0, 0, 0, 0));
+            remainingTimePercent = new MyLabel(canvas, GetRemainingTimePercent(), 80, 45, 24, 55, 45, Color.FromArgb(255, 255, 0, 0), Color.FromArgb(0, 0, 0, 0));
+            remainingTime = new MyLabel(canvas, GetRemainingTime(), 90, 30, 14, 50, 100, Color.FromArgb(255, 255, 0, 0), Color.FromArgb(0, 0, 0, 0));
 
             CreateAnimatedClock(canvas);
         }
