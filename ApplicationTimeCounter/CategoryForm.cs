@@ -142,6 +142,7 @@ namespace ApplicationTimeCounter
                 BorderBrush = new SolidColorBrush(colorBorder),
                 Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
                 Cursor = System.Windows.Input.Cursors.Hand,
+                HorizontalContentAlignment = horizontalAlignment,
                 
             };
             Canvas.SetLeft(button, x);
@@ -162,7 +163,8 @@ namespace ApplicationTimeCounter
 
         void buttonAssignActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            AssignedActivity assignedActivity = new AssignedActivity(MainCanvasCategory);
+            var tempRef = MainCanvasCategory;
+            AssignedActivity assignedActivity = new AssignedActivity(ref tempRef);
         }
 
     }

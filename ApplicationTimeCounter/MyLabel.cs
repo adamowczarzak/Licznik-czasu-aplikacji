@@ -59,7 +59,7 @@ namespace ApplicationTimeCounter
             Canvas.SetTop(myLabel, y);
         }
 
-        public void Opacity(double value)
+        public new void Opacity(double value)
         {
             myLabel.Opacity = value;
         }
