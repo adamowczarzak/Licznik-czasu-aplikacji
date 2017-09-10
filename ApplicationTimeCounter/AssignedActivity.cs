@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace ApplicationTimeCounter
 {
@@ -24,7 +25,7 @@ namespace ApplicationTimeCounter
             {
                 Width = 620,
                 Height = 410,
-                Background = new SolidColorBrush(Color.FromArgb(255, 226,240,255)),
+                Background = new SolidColorBrush(Color.FromArgb(255, 226, 240, 255)),
 
             };
             Canvas.SetLeft(mainCanvas, 0);
@@ -34,25 +35,25 @@ namespace ApplicationTimeCounter
             nonAssignedApplications = new Canvas()
             {
                 Width = 600,
-                Height = 300,                              
+                Height = 300,
             };
 
             ScrollViewer sv = new ScrollViewer();
             sv.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
             sv.Height = 300;
-            sv.Width = 450;
-          //  sv.Background = new SolidColorBrush(Color.FromArgb(255, 255, 34, 45));
+            sv.Width = 560;
+            //  sv.Background = new SolidColorBrush(Color.FromArgb(255, 255, 34, 45));
             Canvas.SetLeft(sv, 30);
-            Canvas.SetTop(sv, 70);
+            Canvas.SetTop(sv, 60);
             mainCanvas.Children.Add(sv);
             sv.Content = nonAssignedApplications;
 
             MyLabel labelNonAssignedApplication = new MyLabel(mainCanvas, "Aplikacje bez przypisanej aktywności",
-                370, 38, 18, 30, 15, Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255));
+                370, 38, 18, 30, 10, Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255));
             labelNonAssignedApplication.SetFont("Verdana");
-            MyRectangle r = new MyRectangle(mainCanvas, 500, 4, Color.FromArgb(255, 220, 220, 220), 30, 50);
+            MyRectangle r = new MyRectangle(mainCanvas, 560, 4, Color.FromArgb(255, 220, 220, 220), 30, 45);
 
-            buttonCloseCanvas = CreateButton(mainCanvas, "Zamknij", 100, 38, 18, 500, 350,
+            buttonCloseCanvas = CreateButton(mainCanvas, "Zamknij", 80, 30, 13, 510, 370,
                 Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255), 1);
             buttonCloseCanvas.MouseLeftButtonDown += buttonCloseCanvas_MouseLeftButtonDown;
 
@@ -64,7 +65,7 @@ namespace ApplicationTimeCounter
 
         void buttonCloseCanvas_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            mainCanvas.Children.Clear();
+            mainCanvas.Children.RemoveRange(0, mainCanvas.Children.Count);
             this.canvas.Children.Remove(mainCanvas);
 
         }
@@ -81,9 +82,8 @@ namespace ApplicationTimeCounter
             {
                 Canvas nonAssignedAppCanvas = new Canvas()
                 {
-                    Width = 450,
+                    Width = 560,
                     Height = 60,
-                    //Background = new SolidColorBrush(Color.FromArgb(250, 30, 40, 20)),
                 };
                 Canvas.SetLeft(nonAssignedAppCanvas, 0);
                 Canvas.SetTop(nonAssignedAppCanvas, (59 * i));
@@ -91,13 +91,38 @@ namespace ApplicationTimeCounter
 
 
                 MyCircle circle = new MyCircle(nonAssignedAppCanvas, 46, 2, Color.FromArgb(255, 150, 150, 150), 8, 8, 1, true);
-                MyLabel labelNonAssignedApplication2 = new MyLabel(nonAssignedAppCanvas, "\tAplikacje bez przypisanej aktywności",
-                450, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
+                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\tAplikacje bez przypisanej aktywności\t("+ (10 - i)+")",
+                560, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
                 HorizontalAlignment.Left, fontWeight: FontWeights.Bold);
 
                 MyLabel lab = new MyLabel(nonAssignedAppCanvas, "B",
                 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240), Color.FromArgb(0, 100, 100, 100), 0,
                 HorizontalAlignment.Center, fontWeight: FontWeights.ExtraBold);
+
+                MyLabel membership = new MyLabel(nonAssignedAppCanvas, "Brak przynależności",
+                300, 30, 12, 60, 30, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100),
+                horizontalAlignment: HorizontalAlignment.Left);
+
+                MyLabel dayAgo = new MyLabel(nonAssignedAppCanvas, "2 dni temu",
+                100, 30, 13, 466, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100),
+                horizontalAlignment: HorizontalAlignment.Left);
+
+
+                Ellipse Mycircle = new Ellipse()
+                {
+                    Width = 25,
+                    Height = 25,
+                    Fill = new SolidColorBrush(Color.FromArgb(255, 0, 123, 255)),
+                    StrokeThickness = 1,
+                    Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 30, 255)),
+                };
+                Canvas.SetLeft(Mycircle, 525);
+                Canvas.SetTop(Mycircle, 28);
+                nonAssignedAppCanvas.Children.Add(Mycircle);
+
+                Label buttonAddActivity = CreateButton(nonAssignedAppCanvas, "+", 25, 34, 20, 525, 28,
+                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
+                buttonAddActivity.Margin = new Thickness(0, -8, 0, 0);
 
                 nonAssignedApplications.Height += 60;
             }

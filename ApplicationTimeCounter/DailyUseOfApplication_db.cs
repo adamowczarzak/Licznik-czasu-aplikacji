@@ -89,7 +89,7 @@ namespace ApplicationTimeCounter
                 DataBase.CloseConnection();
             }
 
-            string contentCommand = "SELECT Title, ActivityTime, idNameActivity from dailyuseofapplication WHERE ActivityTime > 10 OR idTitle < 3";
+            string contentCommand = "SELECT Title, ActivityTime, idNameActivity from dailyuseofapplication";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read())
             {
