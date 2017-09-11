@@ -1,0 +1,6 @@
+﻿<Window x:Class="ApplicationTimeCounter.AddActivity"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AddActivity" Height="200" Width="150" WindowStyle="None" ShowInTaskbar="False" ResizeMode="NoResize" Topmost="True" Cursor="Hand" AllowsTransparency="True" Opacity="0.7" KeyDown="Window_KeyDown" Deactivated="Window_Deactivated" Loaded="Window_Loaded">
+    <Canvas x:Name="addActivityCanvas" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="150" Background="#FF007BFF"/>
+</Window>

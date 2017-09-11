@@ -91,7 +91,7 @@ namespace ApplicationTimeCounter
 
 
                 MyCircle circle = new MyCircle(nonAssignedAppCanvas, 46, 2, Color.FromArgb(255, 150, 150, 150), 8, 8, 1, true);
-                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\tAplikacje bez przypisanej aktywności\t("+ (10 - i)+")",
+                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\tAplikacje bez przypisanej aktywności\t(" + (10 - i) + ")",
                 560, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
                 HorizontalAlignment.Left, fontWeight: FontWeights.Bold);
 
@@ -123,9 +123,22 @@ namespace ApplicationTimeCounter
                 Label buttonAddActivity = CreateButton(nonAssignedAppCanvas, "+", 25, 34, 20, 525, 28,
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
                 buttonAddActivity.Margin = new Thickness(0, -8, 0, 0);
+                buttonAddActivity.MouseLeftButtonDown += buttonAddActivity_MouseLeftButtonDown;
+                buttonAddActivity.Name = "DV"; //to będzie id aplikacji.
+
 
                 nonAssignedApplications.Height += 60;
             }
+        }
+
+        void buttonAddActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Label btn = (Label)sender;
+            AddActivity addActivity = new AddActivity();
+            var location = btn.PointToScreen(new Point(0, 0));
+            addActivity.Left = location.X + 16;
+            addActivity.Top = location.Y + 20;
+            addActivity.ShowDialog();
         }
 
 

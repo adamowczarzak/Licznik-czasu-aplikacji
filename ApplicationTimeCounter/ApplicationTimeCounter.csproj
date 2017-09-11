@@ -76,6 +76,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Activity.cs" />
+    <Compile Include="AddActivity.xaml.cs">
+      <DependentUpon>AddActivity.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AllData_db.cs" />
     <Compile Include="AnimatedClock.cs" />
     <Compile Include="AssignedActivity.cs" />
@@ -98,6 +101,10 @@
     <Compile Include="SpendingTime.cs" />
     <Compile Include="TimeUsingApplication.cs" />
     <Compile Include="ViewContent.cs" />
+    <Page Include="AddActivity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ErrorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
