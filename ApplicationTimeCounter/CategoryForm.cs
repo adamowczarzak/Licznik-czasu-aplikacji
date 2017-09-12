@@ -29,15 +29,15 @@ namespace ApplicationTimeCounter
 
         private void CreateCategoryForm()
         {
-            MainCanvasCategory = CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
+            MainCanvasCategory = CanvasCreator.CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
             MainCanvasCategory.Opacity = 0;
             Canvas.SetZIndex(MainCanvasCategory, 0);
 
-            Canvas canvasMembership = CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 40, 30);
-            Canvas canvasActivity = CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 330, 30);
-            CreateImage(canvasMembership, 100, 100, 10, 10, "Pictures/MembershipImages.png");
+            Canvas canvasMembership = CanvasCreator.CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 40, 30);
+            Canvas canvasActivity = CanvasCreator.CreateCanvas(MainCanvasCategory, 250, 350, Color.FromArgb(200, 130, 200, 255), 330, 30);
+            ImageCreator.CreateImage(canvasMembership, 100, 100, 10, 10, "Pictures/MembershipImages.png");
             notAssignedApplications = new MyLabel(canvasActivity, "0", 50, 38, 18, 10, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 1);
-            buttonAssignActivity = CreateButton(canvasActivity, "Przypisz Aktywności", 170, 38, 16, 65, 200,
+            buttonAssignActivity = ButtonCreator.CreateButton(canvasActivity, "Przypisz Aktywności", 170, 38, 16, 65, 200,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 1);
 
             buttonAssignActivity.MouseMove += buttonAssignActivity_MouseMove;
@@ -76,7 +76,7 @@ namespace ApplicationTimeCounter
                 {
                     allNotAssignedApplicationInt += temp;
                     notAssignedApplications.SetContent(allNotAssignedApplicationInt.ToString());
-                    SetColorNotAssignedApplications(0);
+                    SetColorNotAssignedApplications(allNotAssignedApplicationInt);
                 }
                 else notAssignedApplications.SetContent("-1");
             }
@@ -92,65 +92,6 @@ namespace ApplicationTimeCounter
             green = (green < 0) ? 0 : green;
             notAssignedApplications.SetFontColor(Color.FromArgb(255, (byte)red, (byte)green, 0));
         }
-
-        private Canvas CreateCanvas(Canvas _canvas, int width, int height, Color color, int x, int y)
-        {
-            Canvas canvas = new Canvas();
-            canvas.Width = width;
-            canvas.Height = height;
-            canvas.Background = new SolidColorBrush(color);
-            Canvas.SetLeft(canvas, x);
-            Canvas.SetTop(canvas, y);
-            _canvas.Children.Add(canvas);
-            return canvas;
-        }
-
-        private Image CreateImage(Canvas _canvas, int width, int height, int x, int y, string nameImage)
-        {
-            Image image = new Image();
-            image.Width = width;
-            image.Height = height;
-            BitmapImage src = new BitmapImage();
-            src.BeginInit();
-            src.UriSource = new Uri(nameImage, UriKind.Relative);
-            Canvas.SetTop(image, x);
-            Canvas.SetLeft(image, y);
-            _canvas.Children.Add(image);
-            src.EndInit();
-            image.Source = src;
-
-            return image;
-        }
-
-        private Label CreateButton(Canvas canvas, string content, int widthLabel, int heightLabel, int labelFontSize,
-            double x, double y, Color colorFont, Color colorBorder, int borderThickness = 0,
-            HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center,
-            FontWeight fontWeight = default(FontWeight))
-        {
-            if (object.Equals(fontWeight, default(FontWeight))) fontWeight = FontWeights.Normal;
-
-            Label button = new Label()
-            {
-                Content = content,
-                Foreground = new SolidColorBrush(colorFont),
-                FontSize = labelFontSize,
-                Width = widthLabel,
-                FontWeight = fontWeight,
-                Height = heightLabel,
-                FontFamily = new FontFamily("Comic Sans MS"),
-                BorderThickness = new Thickness(borderThickness),
-                BorderBrush = new SolidColorBrush(colorBorder),
-                Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
-                Cursor = System.Windows.Input.Cursors.Hand,
-                HorizontalContentAlignment = horizontalAlignment,
-                
-            };
-            Canvas.SetLeft(button, x);
-            Canvas.SetTop(button, y);
-            canvas.Children.Add(button);
-            return button;
-        }
-
         void buttonAssignActivity_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             buttonAssignActivity.Background = new SolidColorBrush(Color.FromArgb(40, 0, 0, 150));

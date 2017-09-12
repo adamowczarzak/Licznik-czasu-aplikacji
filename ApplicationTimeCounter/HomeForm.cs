@@ -70,15 +70,15 @@ namespace ApplicationTimeCounter
             int startX = 15;
             int startY = 65;
 
-            MainCanvasHome = CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
-            Canvas upperBar = CreateCanvas(MainCanvasHome, 590, 40, Color.FromArgb(200, 255, 255, 255), 15, 15);
+            MainCanvasHome = CanvasCreator.CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
+            Canvas upperBar = CanvasCreator.CreateCanvas(MainCanvasHome, 590, 40, Color.FromArgb(200, 255, 255, 255), 15, 15);
             titleAplication = new MyLabel(upperBar, "-",
                 590, 40, 18, 0, 2, Color.FromArgb(255, 47, 79, 79) , Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
                 
 
             for(int i = 0; i < 6; i++)
             {
-                canvases[i] = CreateCanvas(MainCanvasHome, 190, 160, Color.FromArgb(200, 255, 255, 255), startX, startY);
+                canvases[i] = CanvasCreator.CreateCanvas(MainCanvasHome, 190, 160, Color.FromArgb(200, 255, 255, 255), startX, startY);
                 startX += Convert.ToInt32(canvases[i].Width) + 10;
                 if (i == 2)
                 {
@@ -86,18 +86,6 @@ namespace ApplicationTimeCounter
                     startX = 15;
                 }
             }
-        }
-  
-        private Canvas CreateCanvas( Canvas _canvas, int width, int height, Color color, int x, int y)
-        {
-            Canvas canvas = new Canvas();
-            canvas.Width = width;
-            canvas.Height = height;
-            canvas.Background = new SolidColorBrush(color);
-            Canvas.SetLeft(canvas, x);
-            Canvas.SetTop(canvas, y);
-            _canvas.Children.Add(canvas);
-            return canvas;
         }
     }
 }

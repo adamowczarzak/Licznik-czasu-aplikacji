@@ -84,6 +84,8 @@
     <Compile Include="AssignedActivity.cs" />
     <Compile Include="BarUsingApplication.cs" />
     <Compile Include="BiggestResultsOfDay.cs" />
+    <Compile Include="ButtonCreator.cs" />
+    <Compile Include="CanvasCreator.cs" />
     <Compile Include="CategoryForm.cs" />
     <Compile Include="DailyUseOfApplication_db.cs" />
     <Compile Include="ErrorWindow.xaml.cs">
@@ -92,12 +94,14 @@
     <Compile Include="GetDataBaseWindow.xaml.cs">
       <DependentUpon>GetDataBaseWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ImageCreator.cs" />
     <Compile Include="MembershipInCategory.cs" />
     <Compile Include="MyCircle.cs" />
     <Compile Include="MyLabel.cs" />
     <Compile Include="MyRectangle.cs" />
     <Compile Include="NameDailyActivity_db.cs" />
     <Compile Include="RunApplication.cs" />
+    <Compile Include="ScrollViewerCreator.cs" />
     <Compile Include="SpendingTime.cs" />
     <Compile Include="TimeUsingApplication.cs" />
     <Compile Include="ViewContent.cs" />

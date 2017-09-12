@@ -25,24 +25,41 @@ namespace ApplicationTimeCounter
         {
             InitializeComponent();
 
-            ScrollViewer sv = new ScrollViewer();
-            sv.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            sv.Height = 200;
-            sv.Width = 150;
-            Canvas.SetLeft(sv, 0);
-            Canvas.SetTop(sv, 0);
-            addActivityCanvas.Children.Add(sv);
 
-            Canvas activity = new Canvas()
+            Canvas activity = new Canvas(){Width = 150,Height = 200,};
+            ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(addActivityCanvas, 150, 200, 0, 0, activity);
+
+            for (int i = 0; i < 40; i++)
             {
-                Width = 150,
-                Height = 200,
-            };
-            sv.Content = activity;
+                Label buttonActivity = ButtonCreator.CreateButton(activity, "Nazwa atywności", 150, 30, 12, 0, 29*i,
+                        Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 255, 255), 1);
+                activity.Height += 29;
 
-            Label buttonActivity = CreateButton(activity, "Nazwa atywności", 150, 30, 12, 0, 0,
-                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 255, 255), 1);
+                buttonActivity.MouseMove += buttonActivity_MouseMove;
+                buttonActivity.MouseLeave += buttonActivity_MouseLeave;
+                buttonActivity.MouseLeftButtonDown += buttonActivity_MouseLeftButtonDown;
+            }
+            activity.Height = ((activity.Height - 200) < 200) ? 200 : activity.Height - 199;
 
+        }
+
+        private void buttonActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            IsClosed = true;
+            this.Close();    
+        }
+
+        private void buttonActivity_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Label button = (Label)sender;
+            button.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        }
+
+
+        private void buttonActivity_MouseMove(object sender, MouseEventArgs e)
+        {
+            Label button = (Label)sender;
+            button.Background = new SolidColorBrush(Color.FromArgb(100, 0, 0, 200));
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -57,35 +74,6 @@ namespace ApplicationTimeCounter
         private void Window_Deactivated(object sender, EventArgs e)
         {
             if (IsClosed == false)this.Close();          
-        }
-
-        private Label CreateButton(Canvas canvas, string content, int widthLabel, int heightLabel, int labelFontSize,
-            double x, double y, Color colorFont, Color colorBorder, int borderThickness = 0,
-            HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center,
-            FontWeight fontWeight = default(FontWeight))
-        {
-            if (object.Equals(fontWeight, default(FontWeight))) fontWeight = FontWeights.Normal;
-
-            Label button = new Label()
-            {
-                Content = content,
-                Foreground = new SolidColorBrush(colorFont),
-                FontSize = labelFontSize,
-                Width = widthLabel,
-                FontWeight = fontWeight,
-                Height = heightLabel,
-                FontFamily = new FontFamily("Comic Sans MS"),
-                BorderThickness = new Thickness(borderThickness),
-                BorderBrush = new SolidColorBrush(colorBorder),
-                Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
-                Cursor = System.Windows.Input.Cursors.Hand,
-                HorizontalContentAlignment = horizontalAlignment,
-
-            };
-            Canvas.SetLeft(button, x);
-            Canvas.SetTop(button, y);
-            canvas.Children.Add(button);
-            return button;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
