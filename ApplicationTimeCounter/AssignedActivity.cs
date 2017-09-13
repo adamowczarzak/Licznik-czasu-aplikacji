@@ -54,12 +54,14 @@ namespace ApplicationTimeCounter
 
         void LoadNonAssignedApplication()
         {
-            for (int i = 0; i < 20; i++)
+            AllData_db allData_db = new AllData_db();
+            List<string> titlesAllNotAssignedApplication = allData_db.GetTitlesAllNotAssignedApplication();
+            for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {
                 Canvas nonAssignedAppCanvas = CanvasCreator.CreateCanvas(nonAssignedApplications, 560, 60, Color.FromArgb(0, 0, 0, 0), 0, 59 * i);
 
                 MyCircle circle = new MyCircle(nonAssignedAppCanvas, 46, 2, Color.FromArgb(255, 150, 150, 150), 8, 8, 1, true);
-                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\tAplikacje bez przypisanej aktywności\t(" + (10 - i) + ")",
+                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\t" + titlesAllNotAssignedApplication[i] + "\t(" + (titlesAllNotAssignedApplication.Count - i) + ")",
                     560, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
                 HorizontalAlignment.Left, fontWeight: FontWeights.Bold);
 

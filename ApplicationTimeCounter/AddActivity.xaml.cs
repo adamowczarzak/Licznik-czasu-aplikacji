@@ -29,9 +29,10 @@ namespace ApplicationTimeCounter
             Canvas activity = new Canvas(){Width = 150,Height = 200,};
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(addActivityCanvas, 150, 200, 0, 0, activity);
 
-            for (int i = 0; i < 40; i++)
+            List<string> nameDailyActivity = NameDailyActivity_db.GetNameDailyActivityList();
+            for (int i = 0; i < nameDailyActivity.Count; i++)
             {
-                Label buttonActivity = ButtonCreator.CreateButton(activity, "Nazwa atywności", 150, 30, 12, 0, 29*i,
+                Label buttonActivity = ButtonCreator.CreateButton(activity, nameDailyActivity[i], 150, 30, 12, 0, 29 * i,
                         Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 255, 255), 1);
                 activity.Height += 29;
 

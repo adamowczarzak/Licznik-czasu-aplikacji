@@ -66,7 +66,7 @@ namespace ApplicationTimeCounter
         public bool CheckIfIsNextDay()
         {
                 string contentCommand = "SELECT id from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
-                string dateDifference = GetStringFromExecuteReader(contentCommand, "id");
+                string dateDifference = GetListStringFromExecuteReader(contentCommand, "id")[0];
                 if (string.IsNullOrEmpty(dateDifference)) return true;
                 else return false;
         }
@@ -107,10 +107,17 @@ namespace ApplicationTimeCounter
         /// Pobiera ilość aplikacji które nie mają przypisane żadnej altywności.
         /// </summary>
         /// <returns></returns>
+        public List<string> GetTitlesAllNotAssignedApplication()
+        {
+            string contentCommand = "SELECT Title from alldate WHERE idNameActivity = 0";
+            List<string> nameDailyActivity = GetListStringFromExecuteReader(contentCommand, "Title");         
+            return nameDailyActivity;
+        }
+
         public string GetAllNotAssignedApplication()
         {
             string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from alldate WHERE idNameActivity = 0";
-            string AllNotAssignedApplication = GetStringFromExecuteReader(contentCommand, "noAssigmentApplication");
+            string AllNotAssignedApplication = GetListStringFromExecuteReader(contentCommand, "noAssigmentApplication")[0];
             return AllNotAssignedApplication;
         }
 
@@ -121,7 +128,7 @@ namespace ApplicationTimeCounter
         public string GetDayWorkingApplication()
         {
             string contentCommand = "SELECT DATEDIFF('" + GetDataRunApplication() + "', CURDATE()) as dateDifference";
-            string dateDifference = GetStringFromExecuteReader(contentCommand, "dateDifference");
+            string dateDifference = GetListStringFromExecuteReader(contentCommand, "dateDifference")[0];
             return dateDifference;
         }
 
@@ -132,40 +139,38 @@ namespace ApplicationTimeCounter
         private string GetDataRunApplication()
         {
             string contentCommand = "SELECT Date FROM alldate ORDER BY Date ASC LIMIT 1";
-            string dataRunApplication = GetStringFromExecuteReader(contentCommand, "Date");
+            string dataRunApplication = GetListStringFromExecuteReader(contentCommand, "Date")[0];
             return dataRunApplication;
         }
 
-
         /// <summary> 
-        /// Metoda zwraca jeden wynik zapytania w postaci stringa. 
+        /// Metoda zwraca jeden wynik zapytania w postaci listy stringów. 
         /// </summary> 
         /// <param name="contentCommand">Cała zawartość zapytania.</param>
         /// <param name="nameReturnColumn">Nazwa kolumny z której ma być zwracana wartość.</param>
-        private string GetStringFromExecuteReader(string contentCommand, string nameReturnColumn)
+        private List<string> GetListStringFromExecuteReader(string contentCommand, string nameReturnColumn)
         {
-            string returnString = string.Empty;
+            List<string> returnList = new List<string>();
             if (DataBase.ConnectToDataBase())
             {
                 command.Connection = DataBase.Connection;
                 command.CommandText = contentCommand;
-                MySqlDataReader reader = command.ExecuteReader();             
-                if (reader.Read())
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
                     try
                     {
-                        returnString = reader[nameReturnColumn].ToString();
+                        returnList.Add(reader[nameReturnColumn].ToString());
                     }
                     catch (MySqlException message)
                     {
                         ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
                 }
-
                 DataBase.CloseConnection();
                 reader.Dispose();
             }
-            return returnString;
+            return returnList;
         }
 
         /// <summary>
@@ -176,7 +181,7 @@ namespace ApplicationTimeCounter
         private bool CheckIfDateExistInBase(string numberDayBack = "0")
         {
             string contentCommand = "SELECT Date FROM alldate WHERE Date = CURDATE() - INTERVAL " + numberDayBack + " DAY LIMIT 1";
-            string dateDifference = GetStringFromExecuteReader(contentCommand, "Date");
+            string dateDifference = GetListStringFromExecuteReader(contentCommand, "Date")[0];
             if (String.IsNullOrEmpty(dateDifference)) return false;
             else return true;
         }
