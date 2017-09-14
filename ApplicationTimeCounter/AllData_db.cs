@@ -28,8 +28,8 @@ namespace ApplicationTimeCounter
         /// <param name="openningDataBase">Czy połącznie do bazy danych w metodzie ma być otwierane.</param>
         /// <param name="closingConnectionDataBase">Czy połącznie do bazy danych w metodzie ma być zamykane.</param>
         /// <param name="additionalConnection">Czy używać dodatkowego połącznia z bazy danych.</param>
-        public bool Add(string title, int activityTime, int idNameActivity,  int daysDifferenceFromToday = 1,
-            bool openninConnectiongDataBase = false, bool closingConnectionDataBase = false, 
+        public bool Add(string title, int activityTime, int idNameActivity, int daysDifferenceFromToday = 1,
+            bool openninConnectiongDataBase = false, bool closingConnectionDataBase = false,
             bool additionalConnection = false)
         {
             bool addRecord = false;
@@ -42,13 +42,13 @@ namespace ApplicationTimeCounter
                     command.Connection = DataBase.Connection;
                     command.CommandText = @"INSERT INTO alldate (Date, Title, ActivityTime, idNameActivity) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
                     " , '" + title + "' , '" + activityTime + "' , '" + idNameActivity + "' )";
-                    if (DataBase.ExecuteNonQuery(command)) addRecord = true;         
+                    if (DataBase.ExecuteNonQuery(command)) addRecord = true;
                 }
                 if (closingConnectionDataBase) DataBase.CloseConnection();
             }
             else
             {
-                DataBase.AdditionalConnectToDataBase();              
+                DataBase.AdditionalConnectToDataBase();
                 command.Connection = DataBase.AdditionalConnection;
                 command.CommandText = @"INSERT INTO alldate (Date, Title, ActivityTime, idNameActivity) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
                 " , '" + title + "' , '" + activityTime + "' , '" + idNameActivity + "' )";
@@ -65,9 +65,9 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         public bool CheckIfIsNextDay()
         {
-                string contentCommand = "SELECT id from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
-                if (!GetListStringFromExecuteReader(contentCommand, "id").Any()) return true;
-                else return false;
+            string contentCommand = "SELECT id from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
+            if (!GetListStringFromExecuteReader(contentCommand, "id").Any()) return true;
+            else return false;
         }
 
         /// <summary>
@@ -91,8 +91,8 @@ namespace ApplicationTimeCounter
                                 ApplicationLog.LogService.GetNameCurrentMethod() + "()",
                                 System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\AllData_db.cs");
                         }
-                    }                      
-                }      
+                    }
+                }
             }
             else
             {
@@ -106,11 +106,42 @@ namespace ApplicationTimeCounter
         /// Pobiera ilość aplikacji które nie mają przypisane żadnej altywności.
         /// </summary>
         /// <returns></returns>
-        public List<string> GetTitlesAllNotAssignedApplication()
+        internal List<ActiveApplication> GetActiveApplication(ActiveApplication parameters)
         {
-            string contentCommand = "SELECT Title from alldate WHERE idNameActivity = 0";
-            List<string> nameDailyActivity = GetListStringFromExecuteReader(contentCommand, "Title");         
-            return nameDailyActivity;
+            List<ActiveApplication> activeApplication = new List<ActiveApplication>();
+            string query = "SELECT id, Date , Title, ActivityTime, idNameActivity from alldate WHERE 1 = 1";
+            if (parameters.ID > 0) query += " AND id = " + parameters.ID;
+            if (!string.IsNullOrEmpty(parameters.Date)) query += " AND Date = " + parameters.Date;
+            if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + parameters.Title;
+            if (parameters.ActivityTime > 0) query += " AND ActivityTime = " + parameters.ActivityTime;
+            if (parameters.IdNameActivity != -3) query += " AND idNameActivity = " + parameters.IdNameActivity;
+            //query += " ORDER BY id desc";
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = query;
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        ActiveApplication application = new ActiveApplication();
+                        application.ID = Int32.Parse((reader["id"]).ToString());
+                        application.Title = (reader["Title"]).ToString();
+                        application.ActivityTime = Int32.Parse((reader["ActivityTime"]).ToString());
+                        application.Date = (reader["Date"]).ToString();
+                        application.IdNameActivity = Int32.Parse((reader["idNameActivity"]).ToString());
+                        activeApplication.Add(application);
+                    }
+                    catch (MySqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return activeApplication;
         }
 
         public string GetAllNotAssignedApplication()

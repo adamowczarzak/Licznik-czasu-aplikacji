@@ -55,23 +55,36 @@ namespace ApplicationTimeCounter
         void LoadNonAssignedApplication()
         {
             AllData_db allData_db = new AllData_db();
-            List<string> titlesAllNotAssignedApplication = allData_db.GetTitlesAllNotAssignedApplication();
+            DailyUseOfApplication_db dailyApplication = new DailyUseOfApplication_db();
+            ActiveApplication parameters = new ActiveApplication();
+            parameters.IdNameActivity = 0;
+            List<ActiveApplication> titlesAllNotAssignedApplication = allData_db.GetActiveApplication(parameters);
+            titlesAllNotAssignedApplication.AddRange(dailyApplication.GetActiveApplication(parameters));
+            titlesAllNotAssignedApplication.Reverse();
+
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {
                 Canvas nonAssignedAppCanvas = CanvasCreator.CreateCanvas(nonAssignedApplications, 560, 60, Color.FromArgb(0, 0, 0, 0), 0, 59 * i);
 
+                string titleApplication = string.Empty;
+                titleApplication = (titlesAllNotAssignedApplication[i].Title.Length > 40) ?
+                    titlesAllNotAssignedApplication[i].Title.Remove(40, titlesAllNotAssignedApplication[i].Title.Length - 40) : titlesAllNotAssignedApplication[i].Title;
+
                 MyCircle circle = new MyCircle(nonAssignedAppCanvas, 46, 2, Color.FromArgb(255, 150, 150, 150), 8, 8, 1, true);
-                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\t" + titlesAllNotAssignedApplication[i] + "\t(" + (titlesAllNotAssignedApplication.Count - i) + ")",
+                MyLabel nonAssignedApplication = new MyLabel(nonAssignedAppCanvas, "\t" + titleApplication,
                     560, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
                 HorizontalAlignment.Left, fontWeight: FontWeights.Bold);
 
-                MyLabel lab = new MyLabel(nonAssignedAppCanvas, "B", 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240), 
+                MyLabel lab = new MyLabel(nonAssignedAppCanvas, "B", 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240),
                     Color.FromArgb(0, 100, 100, 100), 0, HorizontalAlignment.Center, fontWeight: FontWeights.ExtraBold);
 
-                MyLabel membership = new MyLabel(nonAssignedAppCanvas, "Brak przynależności", 300, 30, 12, 60, 30, 
+                MyLabel membership = new MyLabel(nonAssignedAppCanvas, "Brak przynależności", 300, 30, 12, 60, 30,
                     Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
 
-                MyLabel dayAgo = new MyLabel(nonAssignedAppCanvas, "2 dni temu", 100, 30, 13, 466, 0, Color.FromArgb(255, 120, 120, 120), 
+                MyLabel dayAgo = new MyLabel(nonAssignedAppCanvas, GetNumberDayAgo(titlesAllNotAssignedApplication[i].Date), 100, 30, 13, 466, 0, Color.FromArgb(255, 120, 120, 120),
+                    Color.FromArgb(30, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
+
+                MyLabel numberApplication = new MyLabel(nonAssignedAppCanvas, "(" + (titlesAllNotAssignedApplication.Count - i) + ")", 100, 30, 9, 420, 0, Color.FromArgb(255, 120, 120, 120),
                     Color.FromArgb(30, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
 
                 MyCircle Mycircle = new MyCircle(nonAssignedAppCanvas, 25, 1, (Color.FromArgb(255, 0, 123, 255)), 525, 28, setFill: true);
@@ -80,7 +93,7 @@ namespace ApplicationTimeCounter
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
                 buttonAddActivity.Margin = new Thickness(0, -8, 0, 0);
                 buttonAddActivity.MouseLeftButtonDown += buttonAddActivity_MouseLeftButtonDown;
-                buttonAddActivity.Name = "DV"; //to będzie id aplikacji.
+                buttonAddActivity.Name = "ID_" + titlesAllNotAssignedApplication[i].ID;
 
 
                 nonAssignedApplications.Height += 59;
@@ -96,6 +109,17 @@ namespace ApplicationTimeCounter
             addActivity.Left = location.X + 16;
             addActivity.Top = location.Y + 20;
             addActivity.ShowDialog();
+        }
+
+        private string GetNumberDayAgo(string dateAgo)
+        {
+            DateTime dateApplication = DateTime.Parse(dateAgo);
+            TimeSpan wynik = DateTime.Now - dateApplication;
+            string returnValue = string.Empty;
+            if (wynik.Days.ToString() == "0") returnValue = "Dziś";
+            else if (wynik.Days.ToString() == "1") returnValue = "1 dzień temu";
+            else returnValue = wynik.Days.ToString() + " dni temu";
+            return returnValue;
         }
     }
 }

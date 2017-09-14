@@ -75,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActiveApplication.cs" />
     <Compile Include="Activity.cs" />
     <Compile Include="AddActivity.xaml.cs">
       <DependentUpon>AddActivity.xaml</DependentUpon>

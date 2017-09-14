@@ -160,6 +160,43 @@ namespace ApplicationTimeCounter
             return noAssigmentApplication;
         }
 
+        internal List<ActiveApplication> GetActiveApplication(ActiveApplication parameters)
+        {
+            List<ActiveApplication> activeApplication = new List<ActiveApplication>();
+            string query = "SELECT idTitle, Title, ActivityTime, idNameActivity from dailyuseofapplication WHERE 1 = 1";
+            if (parameters.ID > 0) query += " AND idTitle = " + parameters.ID;
+            if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + parameters.Title;
+            if (parameters.ActivityTime > 0) query += " AND ActivityTime = " + parameters.ActivityTime;
+            if (parameters.IdNameActivity != -3) query += " AND idNameActivity = " + parameters.IdNameActivity;
+
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = query;
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        ActiveApplication application = new ActiveApplication();
+                        application.ID = Int32.Parse((reader["idTitle"]).ToString());
+                        application.Title = (reader["Title"]).ToString();
+                        application.ActivityTime = Int32.Parse((reader["ActivityTime"]).ToString());
+                        application.Date = DateTime.Now.ToString();
+                        application.IdNameActivity = Int32.Parse((reader["idNameActivity"]).ToString());
+                        activeApplication.Add(application);
+                    }
+                    catch (MySqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return activeApplication;
+        }
+
         private MySqlDataReader GetExecuteReader(string contentCommand)
         {
             DataBase.ConnectToDataBase();
