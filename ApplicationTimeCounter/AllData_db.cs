@@ -66,8 +66,7 @@ namespace ApplicationTimeCounter
         public bool CheckIfIsNextDay()
         {
                 string contentCommand = "SELECT id from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
-                string dateDifference = GetListStringFromExecuteReader(contentCommand, "id")[0];
-                if (string.IsNullOrEmpty(dateDifference)) return true;
+                if (!GetListStringFromExecuteReader(contentCommand, "id").Any()) return true;
                 else return false;
         }
 
@@ -181,8 +180,7 @@ namespace ApplicationTimeCounter
         private bool CheckIfDateExistInBase(string numberDayBack = "0")
         {
             string contentCommand = "SELECT Date FROM alldate WHERE Date = CURDATE() - INTERVAL " + numberDayBack + " DAY LIMIT 1";
-            string dateDifference = GetListStringFromExecuteReader(contentCommand, "Date")[0];
-            if (String.IsNullOrEmpty(dateDifference)) return false;
+            if (!GetListStringFromExecuteReader(contentCommand, "Date").Any()) return false;
             else return true;
         }
     }
