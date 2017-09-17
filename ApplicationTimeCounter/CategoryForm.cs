@@ -69,16 +69,8 @@ namespace ApplicationTimeCounter
             int allNotAssignedApplicationInt;
             if (int.TryParse(allNotAssignedApplicationString, out allNotAssignedApplicationInt))
             {
-                DailyUseOfApplication_db DailyUseOfApplication_db = new DailyUseOfApplication_db();
-                allNotAssignedApplicationString = DailyUseOfApplication_db.GetAllNotAssignedApplication();
-                int temp = allNotAssignedApplicationInt;
-                if (int.TryParse(allNotAssignedApplicationString, out allNotAssignedApplicationInt))
-                {
-                    allNotAssignedApplicationInt += temp;
                     notAssignedApplications.SetContent(allNotAssignedApplicationInt.ToString());
                     SetColorNotAssignedApplications(allNotAssignedApplicationInt);
-                }
-                else notAssignedApplications.SetContent("-1");
             }
             else notAssignedApplications.SetContent("-1");
         }

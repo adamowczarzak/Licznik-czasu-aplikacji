@@ -14,7 +14,7 @@ namespace ApplicationTimeCounter
 {
     static public class DataBase
     {
-        static public MySqlConnection Connection {get;set;}
+        static public MySqlConnection Connection { get; set; }
         static public MySqlConnection AdditionalConnection { get; set; }
         static private string nameUser;
         static private string password;
@@ -61,8 +61,8 @@ namespace ApplicationTimeCounter
         static private void GetMySqlConnection()
         {
             string myConnectionString =
-                "server=localhost;user=" + nameUser + ";database=applicationtimecounter;password="+ password;
-                
+                "server=localhost;user=" + nameUser + ";database=applicationtimecounter;password=" + password;
+
             Connection = new MySqlConnection(myConnectionString);
             AdditionalConnection = new MySqlConnection(myConnectionString);
         }
@@ -102,7 +102,7 @@ namespace ApplicationTimeCounter
                 isOpenConnection = false;
                 GetMySqlConnectionAndTryCreateDataBaseAndTableIfNotExist();
             }
-                
+
             return isConnection;
         }
 
@@ -135,45 +135,72 @@ namespace ApplicationTimeCounter
             MySqlConnection testConnection = new MySqlConnection(myConnectionString);
             string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter`";
             MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
-            bool tableNameDailyActivityMustByCreate = true;
+            bool addnameActivity = true;
+            bool addDefaultActivityApplication = true;
+            bool addDateFirstStartApplication = true;
             testConnection.Open();
             ExecuteNonQuery(command);
             testConnection.Close();
 
             GetMySqlConnection();
             ConnectToDataBase();
+
+            addDateFirstStartApplication = CheckIfExistTable("alldate", command);
+
             stringCommand = @"CREATE TABLE IF NOT EXISTS `alldate`(
-            `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            `Date` date NULL,
-            `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
-            `ActivityTime` int(11) UNSIGNED,
-            `idNameActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci"; 
-            command = new MySqlCommand(stringCommand, Connection);         
+                `Id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                `Date` date NULL,
+                `IdTitle` int(11) UNSIGNED NOT NULL,
+                `ActivityTime` int(11) UNSIGNED) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
             stringCommand = @"CREATE TABLE IF NOT EXISTS `dailyuseofapplication`(
-            `idTitle` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
-            `ActivityTime` int(11) UNSIGNED,
-            `idNameActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+                `Id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                `IdTitle` int(11) UNSIGNED NOT NULL,
+                `ActivityTime` int(11) UNSIGNED) CHARACTER SET utf8 COLLATE utf8_polish_ci";
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
-            stringCommand = @"SHOW TABLES LIKE 'namedailyactivity'";
-            command = new MySqlCommand(stringCommand, Connection);
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())tableNameDailyActivityMustByCreate = false;
-            reader.Close();
+            addDefaultActivityApplication = CheckIfExistTable("activeapplications", command);
 
-            if (tableNameDailyActivityMustByCreate)
+            stringCommand = @"CREATE TABLE IF NOT EXISTS `activeapplications`(
+                `Id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
+                `IdNameActivity` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            command = new MySqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
+            addnameActivity = CheckIfExistTable("nameactivity", command);
+
+            stringCommand = @"CREATE TABLE IF NOT EXISTS `nameactivity`(
+                `Id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                `NameActivity` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL)
+                CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            command = new MySqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
+            if (addnameActivity)
             {
-                stringCommand = @"CREATE TABLE IF NOT EXISTS `namedailyactivity`(
-                    `idNameDailyActivity` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                    `NameDailyActivity` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+                stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') , ('Inne')";
+                command = new MySqlCommand(stringCommand, Connection);
+                ExecuteNonQuery(command);
+            }
+
+            if (addDefaultActivityApplication)
+            {
+                stringCommand = "INSERT INTO activeapplications (Title , idNameActivity) VALUES ('Wył. komputer', -2),('Brak Aktyw.', -1)";
+                command = new MySqlCommand(stringCommand, Connection);
+                ExecuteNonQuery(command);
+            }
+
+            if (addDateFirstStartApplication)
+            {
+                stringCommand = "INSERT INTO alldate (Date , IdTitle , ActivityTime) VALUES (CURDATE()- INTERVAL 1 DAY , 0, 0)";
                 command = new MySqlCommand(stringCommand, Connection);
                 ExecuteNonQuery(command);
 
-                stringCommand = "INSERT IGNORE INTO namedailyactivity (NameDailyActivity) VALUES ('Programowanie'),('Inne')";
+                stringCommand = "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) VALUES (1, 0), (2, 0)";
                 command = new MySqlCommand(stringCommand, Connection);
                 ExecuteNonQuery(command);
             }
@@ -181,6 +208,18 @@ namespace ApplicationTimeCounter
             CloseConnection();
         }
 
-        
+
+        private static bool CheckIfExistTable(string nameTable, MySqlCommand command)
+        {
+            bool returnValue = true;
+            string stringCommand = @"SHOW TABLES LIKE '" + nameTable + "'";
+            command = new MySqlCommand(stringCommand, Connection);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read()) returnValue = false;
+            reader.Close();
+            return returnValue;
+        }
+
+
     }
 }

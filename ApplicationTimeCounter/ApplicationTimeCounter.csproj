@@ -76,6 +76,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActiveApplication.cs" />
+    <Compile Include="ActiveApplication_db.cs" />
     <Compile Include="Activity.cs" />
     <Compile Include="AddActivity.xaml.cs">
       <DependentUpon>AddActivity.xaml</DependentUpon>
@@ -100,7 +101,7 @@
     <Compile Include="MyCircle.cs" />
     <Compile Include="MyLabel.cs" />
     <Compile Include="MyRectangle.cs" />
-    <Compile Include="NameDailyActivity_db.cs" />
+    <Compile Include="NameActivity_db.cs" />
     <Compile Include="RunApplication.cs" />
     <Compile Include="ScrollViewerCreator.cs" />
     <Compile Include="SpendingTime.cs" />

@@ -54,12 +54,9 @@ namespace ApplicationTimeCounter
 
         void LoadNonAssignedApplication()
         {
-            AllData_db allData_db = new AllData_db();
-            DailyUseOfApplication_db dailyApplication = new DailyUseOfApplication_db();
             ActiveApplication parameters = new ActiveApplication();
-            parameters.IdNameActivity = 0;
-            List<ActiveApplication> titlesAllNotAssignedApplication = allData_db.GetActiveApplication(parameters);
-            titlesAllNotAssignedApplication.AddRange(dailyApplication.GetActiveApplication(parameters));
+            parameters.IdNameActivity = ActiveApplication.IdNameActivityEnum.Lack;
+            List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetActiveApplication(parameters);
             titlesAllNotAssignedApplication.Reverse();
 
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
@@ -75,7 +72,7 @@ namespace ApplicationTimeCounter
                     560, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
                 HorizontalAlignment.Left, fontWeight: FontWeights.Bold);
 
-                MyLabel lab = new MyLabel(nonAssignedAppCanvas, "B", 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240),
+                MyLabel lab = new MyLabel(nonAssignedAppCanvas, GetFirstLetterFromString(titleApplication), 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240),
                     Color.FromArgb(0, 100, 100, 100), 0, HorizontalAlignment.Center, fontWeight: FontWeights.ExtraBold);
 
                 MyLabel membership = new MyLabel(nonAssignedAppCanvas, "Brak przynależności", 300, 30, 12, 60, 30,
@@ -120,6 +117,16 @@ namespace ApplicationTimeCounter
             else if (wynik.Days.ToString() == "1") returnValue = "1 dzień temu";
             else returnValue = wynik.Days.ToString() + " dni temu";
             return returnValue;
+        }
+
+        private string GetFirstLetterFromString(string toSearch)
+        {
+            int z = 0;
+            string firstLetter = string.Empty;
+            while (!Char.IsLetter(toSearch[z])) z++;
+            firstLetter = toSearch[z].ToString();
+
+            return firstLetter;
         }
     }
 }

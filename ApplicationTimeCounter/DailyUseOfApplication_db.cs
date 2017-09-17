@@ -20,16 +20,16 @@ namespace ApplicationTimeCounter
         {
             activeWindow = new ActiveWindow();
             command = new MySqlCommand();
-            allData_db = new AllData_db();           
+            allData_db = new AllData_db();
         }
 
         public void Update()
-        {         
-            nameTitle = "'" + activeWindow.GetNameActiveWindow().Replace("'","") + "'";
+        {
+            nameTitle = "'" + activeWindow.GetNameActiveWindow().Replace("'", "") + "'";
             DataBase.ConnectToDataBase();
             command.Connection = DataBase.Connection;
-            
-            if (GetNumberElementFromTable() > 0)
+
+            if (GetTimeForTitle(nameTitle) > 0)
                 UpDateTimeThisTitle();
             else
                 AddNameTitleToTableDailyUse();
@@ -46,9 +46,11 @@ namespace ApplicationTimeCounter
         {
             int time = 0;
             nameTitle = "'" + title.Replace("'", "") + "'";
-            string contentCommand = "SELECT ActivityTime from dailyuseofapplication WHERE Title = " + nameTitle;
+            string contentCommand = "SELECT ActivityTime from dailyuseofapplication INNER JOIN " +
+                "activeapplications on dailyuseofapplication.IdTitle = activeapplications.Id " +
+                "WHERE activeapplications.Title = " + nameTitle;
             MySqlDataReader reader = GetExecuteReader(contentCommand);
-            while (reader.Read())time = Convert.ToInt32(reader["ActivityTime"]);
+            while (reader.Read()) time = Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
             DataBase.CloseConnection();
             return time;
@@ -57,7 +59,9 @@ namespace ApplicationTimeCounter
         public int GetTimeForNumberActivity(int number)
         {
             int time = 0;
-            string contentCommand = "SELECT ActivityTime from dailyuseofapplication WHERE idNameActivity = " + number;
+            string contentCommand = "SELECT ActivityTime FROM dailyuseofapplication INNER JOIN " +
+                "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id " +
+                "WHERE activeapplications.IdNameActivity = " + number;
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
@@ -68,7 +72,8 @@ namespace ApplicationTimeCounter
         public int GetTimeForAllTitle()
         {
             int time = 0;
-            string contentCommand = "SELECT ActivityTime from dailyuseofapplication WHERE idTitle > 2";
+            string contentCommand = "SELECT ActivityTime FROM dailyuseofapplication " +
+                "WHERE dailyuseofapplication.IdTitle > 2";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
             DataBase.CloseConnection();
@@ -77,31 +82,18 @@ namespace ApplicationTimeCounter
 
         public void TransferDataToAllDataAndClearTable()
         {
-            int dateDifferenceInt = 0;
-            string dateDifferenceString = allData_db.GetDayWorkingApplication();
-            if (!string.IsNullOrEmpty(dateDifferenceString))
-                dateDifferenceInt = Convert.ToInt32(dateDifferenceString);
-
-            if (dateDifferenceInt == 0)
-            {
-                DataBase.ConnectToDataBase();
-                RestartContentTable();
-                DataBase.CloseConnection();
-            }
-
-            string contentCommand = "SELECT Title, ActivityTime, idNameActivity from dailyuseofapplication";
+            string contentCommand = "SELECT IdTitle, ActivityTime from dailyuseofapplication";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read())
             {
-                var Title = reader["Title"];
+                var idTitle = reader["IdTitle"];
                 var ActivityTime = reader["ActivityTime"];
-                var idNameActivity = reader["idNameActivity"];
-                allData_db.Add(Title.ToString(), Convert.ToInt32(ActivityTime), Convert.ToInt32(idNameActivity),
-                    additionalConnection: true);
+                allData_db.Add(Convert.ToInt32(idTitle), Convert.ToInt32(ActivityTime), additionalConnection: true);
             }
             reader.Dispose();
             RestartContentTable();
             DataBase.CloseConnection();
+
         }
 
         public string[,] GetBiggestResults()
@@ -109,7 +101,9 @@ namespace ApplicationTimeCounter
             string[,] biggestResults = new string[4, 2];
             int i = 0;
             string contentCommand =
-                "SELECT Title, ActivityTime from dailyuseofapplication WHERE idTitle > 2 ORDER BY ActivityTime DESC LIMIT 4";
+                "SELECT activeapplications.Title as Title, ActivityTime from dailyuseofapplication INNER JOIN " +
+                "activeapplications on dailyuseofapplication.IdTitle = activeapplications.Id " +
+                "WHERE IdTitle > 2 ORDER BY ActivityTime DESC LIMIT 4";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read())
             {
@@ -128,8 +122,8 @@ namespace ApplicationTimeCounter
             DataBase.ConnectToDataBase();
             command.Connection = DataBase.Connection;
             command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
-                + 1 + " WHERE Title = 'Brak Aktyw.'";
-            command.ExecuteNonQuery();
+                + 1 + " WHERE IdTitle = 2";
+            DataBase.ExecuteNonQuery(command);
             DataBase.CloseConnection();
         }
 
@@ -145,101 +139,53 @@ namespace ApplicationTimeCounter
             AddTimeToDisabledComputer(time);
         }
 
-        /// <summary>
-        /// Pobiera ilość aplikacji które nie mają przypisane żadnej altywności.
-        /// </summary>
-        /// <returns></returns>
-        public string GetAllNotAssignedApplication()
-        {
-            string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from dailyuseofapplication WHERE idNameActivity = 0";
-            MySqlDataReader reader = GetExecuteReader(contentCommand);
-            reader.Read();
-            string noAssigmentApplication = reader["noAssigmentApplication"].ToString();
-            reader.Dispose();
-            DataBase.CloseConnection();
-            return noAssigmentApplication;
-        }
-
-        internal List<ActiveApplication> GetActiveApplication(ActiveApplication parameters)
-        {
-            List<ActiveApplication> activeApplication = new List<ActiveApplication>();
-            string query = "SELECT idTitle, Title, ActivityTime, idNameActivity from dailyuseofapplication WHERE 1 = 1";
-            if (parameters.ID > 0) query += " AND idTitle = " + parameters.ID;
-            if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + parameters.Title;
-            if (parameters.ActivityTime > 0) query += " AND ActivityTime = " + parameters.ActivityTime;
-            if (parameters.IdNameActivity != -3) query += " AND idNameActivity = " + parameters.IdNameActivity;
-
-            if (DataBase.ConnectToDataBase())
-            {
-                command.Connection = DataBase.Connection;
-                command.CommandText = query;
-                MySqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    try
-                    {
-                        ActiveApplication application = new ActiveApplication();
-                        application.ID = Int32.Parse((reader["idTitle"]).ToString());
-                        application.Title = (reader["Title"]).ToString();
-                        application.ActivityTime = Int32.Parse((reader["ActivityTime"]).ToString());
-                        application.Date = DateTime.Now.ToString();
-                        application.IdNameActivity = Int32.Parse((reader["idNameActivity"]).ToString());
-                        activeApplication.Add(application);
-                    }
-                    catch (MySqlException message)
-                    {
-                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
-                    }
-                }
-                DataBase.CloseConnection();
-                reader.Dispose();
-            }
-            return activeApplication;
-        }
-
         private MySqlDataReader GetExecuteReader(string contentCommand)
         {
             DataBase.ConnectToDataBase();
             command.Connection = DataBase.Connection;
             command.CommandText = contentCommand;
-            MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = null;
+            try
+            {
+                reader = command.ExecuteReader();
+            }
+            catch (Exception message)
+            {
+                ApplicationLog.LogService.AddRaportCatchException("Error\tNie udało się wykonać zapytania!!!", message);
+            }
             return reader;
         }
 
         private void AddNameTitleToTableDailyUse()
         {
-            command.CommandText = "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameActivity) VALUES ("
-                + nameTitle + "," + 1 + "," + 0 + ")";
+            DataBase.ConnectToDataBase();
+            command.CommandText = "INSERT INTO activeapplications (Title, IdNameActivity) VALUES ( "
+                + nameTitle + " , " + 1 + " )";
             DataBase.ExecuteNonQuery(command);
+
+            command.CommandText = "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) " +
+                "SELECT activeapplications.ID, 1 " +
+                "FROM activeapplications WHERE activeapplications.Title = " + nameTitle;
+            DataBase.ExecuteNonQuery(command);
+            DataBase.CloseConnection();
         }
 
         private void UpDateTimeThisTitle()
         {
-            command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
-                + 1 + " WHERE Title =" + nameTitle;
+            command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + " + 1 + " "+ 
+                "INNER JOIN activeapplications on dailyuseofapplication.IdTitle = activeapplications.Title " +
+                "WHERE activeapplications.Title = " + nameTitle;
             DataBase.ExecuteNonQuery(command);
         }
 
-        private int GetNumberElementFromTable()
-        {
-            int numberElement = 0;
-            command.CommandText = "SELECT idTitle from dailyuseofapplication WHERE Title = " + nameTitle;
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read()) numberElement++;
-            reader.Dispose();
-
-            return numberElement;
-        }
 
         private void RestartContentTable()
         {
             command.CommandText = "TRUNCATE TABLE dailyuseofapplication";
             DataBase.ExecuteNonQuery(command);
+
             command.CommandText =
-                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameActivity) VALUES ('Wył. komputer', 0 , -2)";
-            DataBase.ExecuteNonQuery(command);
-            command.CommandText =
-                "INSERT INTO dailyuseofapplication (Title, ActivityTime, idNameActivity) VALUES ('Brak Aktyw.', 0 , -1)";
+                "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) VALUES (1, 0), (2, 0)";
             DataBase.ExecuteNonQuery(command);
         }
 
@@ -253,7 +199,7 @@ namespace ApplicationTimeCounter
 
         private int GetTimeDisabledComputerToDay()
         {
-            return (24*60) - GetAllTimeActivity();
+            return (24 * 60) - GetAllTimeActivity();
         }
 
         private void AddTimeToDisabledComputer(int time)
@@ -261,7 +207,7 @@ namespace ApplicationTimeCounter
             DataBase.ConnectToDataBase();
             command.Connection = DataBase.Connection;
             command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
-                + time + " WHERE Title = 'Wyl. komputer'";
+                + time + " WHERE IdTitle = '1'";
             DataBase.ExecuteNonQuery(command);
             DataBase.CloseConnection();
         }
@@ -269,7 +215,6 @@ namespace ApplicationTimeCounter
         private int GetAllTimeActivity()
         {
             int timeActivity = 0;
-
             string contentCommand = "SELECT ActivityTime from dailyuseofapplication";
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) timeActivity += Convert.ToInt32(reader["ActivityTime"]);

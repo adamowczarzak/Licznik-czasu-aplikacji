@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace ApplicationTimeCounter
 {
-    static class NameDailyActivity_db
+    static class NameActivity_db
     {
         private static MySqlCommand command;
 
 
         public static List<string> GetNameDailyActivityList()
         {         
-            string contentCommand = "SELECT NameDailyActivity from namedailyactivity";
-            List<string> nameDailyActivity = GetListStringFromExecuteReader(contentCommand, "NameDailyActivity");
+            string contentCommand = "SELECT NameActivity FROM nameactivity WHERE ID > 1";
+            List<string> nameDailyActivity = GetListStringFromExecuteReader(contentCommand, "NameActivity");
             return nameDailyActivity;
         }
 
