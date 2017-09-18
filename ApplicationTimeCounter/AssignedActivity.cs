@@ -56,8 +56,7 @@ namespace ApplicationTimeCounter
         {
             ActiveApplication parameters = new ActiveApplication();
             parameters.IdNameActivity = ActiveApplication.IdNameActivityEnum.Lack;
-            List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetActiveApplication(parameters);
-            titlesAllNotAssignedApplication.Reverse();
+            List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetNonAssignedApplication();
 
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {

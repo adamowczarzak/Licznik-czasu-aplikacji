@@ -19,6 +19,8 @@ namespace ApplicationTimeCounter
             return nameDailyActivity;
         }
 
+        
+
 
         /// <summary> 
         /// Metoda zwraca jeden wynik zapytania w postaci listy stringów. 

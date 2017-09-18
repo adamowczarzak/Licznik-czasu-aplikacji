@@ -133,7 +133,7 @@ namespace ApplicationTimeCounter
         {
             string myConnectionString = "server=localhost;user=" + DataBase.nameUser + ";password=" + DataBase.password;
             MySqlConnection testConnection = new MySqlConnection(myConnectionString);
-            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter`";
+            string stringCommand = "CREATE DATABASE IF NOT EXISTS `applicationtimecounter` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_polish_ci";
             MySqlCommand command = new MySqlCommand(stringCommand, testConnection);
             bool addnameActivity = true;
             bool addDefaultActivityApplication = true;

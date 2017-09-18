@@ -158,11 +158,16 @@ namespace ApplicationTimeCounter
 
         private void AddNameTitleToTableDailyUse()
         {
-            DataBase.ConnectToDataBase();
-            command.CommandText = "INSERT INTO activeapplications (Title, IdNameActivity) VALUES ( "
-                + nameTitle + " , " + 1 + " )";
-            DataBase.ExecuteNonQuery(command);
+            
+            if (!ActiveApplication_db.CheckIfExistTitle(nameTitle))
+            { 
+                DataBase.ConnectToDataBase();
+                command.CommandText = "INSERT INTO activeapplications (Title, IdNameActivity) VALUES ( "
+                                + nameTitle + " , " + 1 + " )";
+                DataBase.ExecuteNonQuery(command);
+            }
 
+            DataBase.ConnectToDataBase();
             command.CommandText = "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) " +
                 "SELECT activeapplications.ID, 1 " +
                 "FROM activeapplications WHERE activeapplications.Title = " + nameTitle;
@@ -172,10 +177,12 @@ namespace ApplicationTimeCounter
 
         private void UpDateTimeThisTitle()
         {
-            command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + " + 1 + " "+ 
-                "INNER JOIN activeapplications on dailyuseofapplication.IdTitle = activeapplications.Title " +
-                "WHERE activeapplications.Title = " + nameTitle;
+            DataBase.ConnectToDataBase();
+            command.CommandText = "UPDATE dailyuseofapplication INNER JOIN " +
+                "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id SET "+
+                "ActivityTime = ActivityTime + 1 WHERE activeapplications.Title = " + nameTitle;
             DataBase.ExecuteNonQuery(command);
+            DataBase.CloseConnection();
         }
 
 

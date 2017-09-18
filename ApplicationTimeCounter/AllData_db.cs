@@ -40,8 +40,8 @@ namespace ApplicationTimeCounter
                 if (DataBase.CheckIsOpenConnection())
                 {
                     command.Connection = DataBase.Connection;
-                    command.CommandText = @"INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
-                    " , '" + idTitle + "' , '" + activityTime + ")";
+                    command.CommandText = "INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY " +
+                    " , " + idTitle + " , " + activityTime + ")";
                     if (DataBase.ExecuteNonQuery(command)) addRecord = true;
                 }
                 if (closingConnectionDataBase) DataBase.CloseConnection();
@@ -50,8 +50,8 @@ namespace ApplicationTimeCounter
             {
                 DataBase.AdditionalConnectToDataBase();
                 command.Connection = DataBase.AdditionalConnection;
-                command.CommandText = @"INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY" +
-                    " , '" + idTitle + "' , '" + activityTime + ")";
+                command.CommandText = "INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY " +
+                    " , " + idTitle + " , " + activityTime + ")";
                 if (DataBase.ExecuteNonQuery(command)) addRecord = true;
                 DataBase.AdditionalConnection.Close();
             }
