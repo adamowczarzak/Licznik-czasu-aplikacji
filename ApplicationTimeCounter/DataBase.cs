@@ -58,6 +58,32 @@ namespace ApplicationTimeCounter
             return executeNonQuery;
         }
 
+        public static List<string> GetListStringFromExecuteReader(string contentCommand, string nameReturnColumn)
+        {
+            List<string> returnList = new List<string>();
+            MySqlCommand command = new MySqlCommand();
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = contentCommand;
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        returnList.Add(reader[nameReturnColumn].ToString());
+                    }
+                    catch (MySqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return returnList;
+        }
+
         static private void GetMySqlConnection()
         {
             string myConnectionString =

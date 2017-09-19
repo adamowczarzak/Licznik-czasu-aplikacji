@@ -109,8 +109,18 @@ namespace ApplicationTimeCounter
 
         private string GetNumberDayAgo(string dateAgo)
         {
-            DateTime dateApplication = DateTime.Parse(dateAgo);
-            TimeSpan wynik = DateTime.Now - dateApplication;
+            DateTime dateApplication;
+            TimeSpan wynik = new TimeSpan(0);
+            try
+            {
+                dateApplication = DateTime.Parse(dateAgo);
+                wynik = DateTime.Now - dateApplication;
+            }
+            catch(Exception message)
+            {
+                ApplicationLog.LogService.AddRaportCatchException("Warrning!!! Nie udało się zparsować daty", message);
+            }
+            
             string returnValue = string.Empty;
             if (wynik.Days.ToString() == "0") returnValue = "Dziś";
             else if (wynik.Days.ToString() == "1") returnValue = "1 dzień temu";
@@ -123,7 +133,7 @@ namespace ApplicationTimeCounter
             int z = 0;
             string firstLetter = string.Empty;
             while (!Char.IsLetter(toSearch[z])) z++;
-            firstLetter = toSearch[z].ToString();
+            firstLetter = toSearch[z].ToString().ToUpper();
 
             return firstLetter;
         }
