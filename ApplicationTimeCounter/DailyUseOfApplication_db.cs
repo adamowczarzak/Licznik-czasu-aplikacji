@@ -119,12 +119,9 @@ namespace ApplicationTimeCounter
 
         public void UpdateTimeNonActiv()
         {
-            DataBase.ConnectToDataBase();
-            command.Connection = DataBase.Connection;
-            command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
+            string contentCommand = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
                 + 1 + " WHERE IdTitle = 2";
-            DataBase.ExecuteNonQuery(command);
-            DataBase.CloseConnection();
+            DataBase.ExecuteNonQuery(contentCommand);
         }
 
         public void AddTimeToNowDisableComputer()
@@ -158,42 +155,36 @@ namespace ApplicationTimeCounter
 
         private void AddNameTitleToTableDailyUse()
         {
-            
+            string contentCommand = string.Empty;
             if (!ActiveApplication_db.CheckIfExistTitle(nameTitle))
-            { 
-                DataBase.ConnectToDataBase();
-                command.CommandText = "INSERT INTO activeapplications (Title, IdNameActivity) VALUES ( "
+            {
+                contentCommand = "INSERT INTO activeapplications (Title, IdNameActivity) VALUES ( "
                                 + nameTitle + " , " + 1 + " )";
-                DataBase.ExecuteNonQuery(command);
+                DataBase.ExecuteNonQuery(contentCommand);
             }
 
-            DataBase.ConnectToDataBase();
-            command.CommandText = "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) " +
+            contentCommand = "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) " +
                 "SELECT activeapplications.ID, 1 " +
                 "FROM activeapplications WHERE activeapplications.Title = " + nameTitle;
-            DataBase.ExecuteNonQuery(command);
-            DataBase.CloseConnection();
+            DataBase.ExecuteNonQuery(contentCommand);
         }
 
         private void UpDateTimeThisTitle()
         {
-            DataBase.ConnectToDataBase();
-            command.CommandText = "UPDATE dailyuseofapplication INNER JOIN " +
+            string contentCommand = "UPDATE dailyuseofapplication INNER JOIN " +
                 "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id SET "+
                 "ActivityTime = ActivityTime + 1 WHERE activeapplications.Title = " + nameTitle;
-            DataBase.ExecuteNonQuery(command);
-            DataBase.CloseConnection();
+            DataBase.ExecuteNonQuery(contentCommand);
         }
 
 
         private void RestartContentTable()
         {
-            command.CommandText = "TRUNCATE TABLE dailyuseofapplication";
-            DataBase.ExecuteNonQuery(command);
+            string contentCommand = "TRUNCATE TABLE dailyuseofapplication";
+            DataBase.ExecuteNonQuery(contentCommand);
 
-            command.CommandText =
-                "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) VALUES (1, 0), (2, 0)";
-            DataBase.ExecuteNonQuery(command);
+            contentCommand = "INSERT INTO dailyuseofapplication (IdTitle, ActivityTime) VALUES (1, 0), (2, 0)";
+            DataBase.ExecuteNonQuery(contentCommand);
         }
 
         private int GetTimeDisabledComputerToNow()
@@ -211,12 +202,9 @@ namespace ApplicationTimeCounter
 
         private void AddTimeToDisabledComputer(int time)
         {
-            DataBase.ConnectToDataBase();
-            command.Connection = DataBase.Connection;
-            command.CommandText = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
+            string contentCommand = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
                 + time + " WHERE IdTitle = '1'";
-            DataBase.ExecuteNonQuery(command);
-            DataBase.CloseConnection();
+            DataBase.ExecuteNonQuery(contentCommand);
         }
 
         private int GetAllTimeActivity()
