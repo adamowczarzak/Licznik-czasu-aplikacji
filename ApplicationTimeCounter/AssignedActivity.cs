@@ -88,8 +88,9 @@ namespace ApplicationTimeCounter
                 Label buttonAddActivity = ButtonCreator.CreateButton(nonAssignedAppCanvas, "+", 25, 34, 20, 525, 28,
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
                 buttonAddActivity.Margin = new Thickness(0, -8, 0, 0);
-                buttonAddActivity.MouseLeftButtonDown += buttonAddActivity_MouseLeftButtonDown;
                 buttonAddActivity.Name = "ID_" + titlesAllNotAssignedApplication[i].ID;
+                buttonAddActivity.MouseLeftButtonDown += buttonAddActivity_MouseLeftButtonDown;
+                
 
 
                 nonAssignedApplications.Height += 59;
@@ -100,7 +101,7 @@ namespace ApplicationTimeCounter
         private void buttonAddActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Label btn = (Label)sender;
-            AddActivity addActivity = new AddActivity();
+            AddActivity addActivity = new AddActivity(btn.Name);
             var location = btn.PointToScreen(new Point(0, 0));
             addActivity.Left = location.X + 16;
             addActivity.Top = location.Y + 20;

@@ -20,6 +20,12 @@ namespace ApplicationTimeCounter
             return AllNotAssignedApplication;
         }
 
+        public static bool AddActivityToApplication(string idApplication, string idActivity)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = " + idActivity + " WHERE Id  = " + idApplication;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
         internal static List<ActiveApplication> GetNonAssignedApplication()
         {
             ActiveApplication parameters = new ActiveApplication();

@@ -9,11 +9,11 @@ namespace ApplicationTimeCounter
 {
     static class NameActivity_db
     {
-        public static List<string> GetNameDailyActivityList()
-        {         
-            string contentCommand = "SELECT NameActivity FROM nameactivity WHERE ID > 1";
-            List<string> nameDailyActivity = DataBase.GetListStringFromExecuteReader(contentCommand, "NameActivity");
-            return nameDailyActivity;
+        public static Dictionary<string, string> GetNameActivityList()
+        {
+            string contentCommand = "SELECT Id, NameActivity FROM nameactivity WHERE ID > 1";
+            Dictionary<string, string> nameActivity = DataBase.GetDictionaryFromExecuteReader(contentCommand, "NameActivity", "Id");
+            return nameActivity;
         }
     }
 }

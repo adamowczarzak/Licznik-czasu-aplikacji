@@ -58,6 +58,29 @@ namespace ApplicationTimeCounter
             return executeNonQuery;
         }
 
+
+        static public bool ExecuteNonQuery(string contentCommand)
+        {
+            bool executeNonQuery = true;
+            MySqlCommand command = new MySqlCommand();
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = contentCommand;
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception exception)
+                {
+                    ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się wykonać zapytania (ExecuteNonQuery).", exception);
+                    executeNonQuery = false;
+                }
+                DataBase.CloseConnection();
+            }
+            return executeNonQuery;
+        }
+
         public static List<string> GetListStringFromExecuteReader(string contentCommand, string nameReturnColumn)
         {
             List<string> returnList = new List<string>();
@@ -82,6 +105,32 @@ namespace ApplicationTimeCounter
                 reader.Dispose();
             }
             return returnList;
+        }
+
+        public static Dictionary<string, string> GetDictionaryFromExecuteReader(string contentCommand, string nameKey, string nameValue)
+        {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            MySqlCommand command = new MySqlCommand();
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = contentCommand;
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        dictionary.Add(reader[nameKey].ToString(), reader[nameValue].ToString());
+                    }
+                    catch (MySqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error\tPobranie słownika nie powiodło się.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return dictionary;
         }
 
         static private void GetMySqlConnection()
