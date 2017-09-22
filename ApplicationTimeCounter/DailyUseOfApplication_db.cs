@@ -56,12 +56,17 @@ namespace ApplicationTimeCounter
             return time;
         }
 
-        public int GetTimeForNumberActivity(int number)
+        public int GetTimeForNumberActivity(List<int> numbers, bool ifExcept = false)
         {
             int time = 0;
             string contentCommand = "SELECT ActivityTime FROM dailyuseofapplication INNER JOIN " +
                 "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id " +
-                "WHERE activeapplications.IdNameActivity = " + number;
+                "WHERE 1 = 1";
+            for(int i = 0; i < numbers.Count; i++)
+            {
+                contentCommand += " AND activeapplications.IdNameActivity " + (ifExcept? "!":"") + "= " + numbers[i];
+            }
+            
             MySqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
@@ -172,7 +177,7 @@ namespace ApplicationTimeCounter
         private void UpDateTimeThisTitle()
         {
             string contentCommand = "UPDATE dailyuseofapplication INNER JOIN " +
-                "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id SET "+
+                "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id SET " +
                 "ActivityTime = ActivityTime + 1 WHERE activeapplications.Title = " + nameTitle;
             DataBase.ExecuteNonQuery(contentCommand);
         }

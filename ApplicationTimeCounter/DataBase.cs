@@ -257,7 +257,7 @@ namespace ApplicationTimeCounter
 
             if (addnameActivity)
             {
-                stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') , ('Inne')";
+                stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') ";
                 command = new MySqlCommand(stringCommand, Connection);
                 ExecuteNonQuery(command);
             }

@@ -13,10 +13,10 @@ namespace ApplicationTimeCounter
 {
     class AssignedActivity
     {
-        Canvas mainCanvas;
-        Canvas nonAssignedApplications;
-        Label buttonCloseCanvas;
-        Canvas canvas;
+        private Canvas mainCanvas;
+        private Canvas nonAssignedApplications;
+        private Label buttonCloseCanvas;
+        private Canvas canvas;
 
         public AssignedActivity(ref Canvas canvas)
         {
@@ -60,7 +60,7 @@ namespace ApplicationTimeCounter
 
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {
-                Canvas nonAssignedAppCanvas = CanvasCreator.CreateCanvas(nonAssignedApplications, 560, 60, Color.FromArgb(0, 0, 0, 0), 0, 59 * i);
+                Canvas nonAssignedAppCanvas = CanvasCreator.CreateCanvas(nonAssignedApplications, 560, 60, Color.FromArgb(0, 110, 0, 0), 0, 59 * i);
 
                 string titleApplication = string.Empty;
                 titleApplication = (titlesAllNotAssignedApplication[i].Title.Length > 40) ?
@@ -88,9 +88,9 @@ namespace ApplicationTimeCounter
                 Label buttonAddActivity = ButtonCreator.CreateButton(nonAssignedAppCanvas, "+", 25, 34, 20, 525, 28,
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
                 buttonAddActivity.Margin = new Thickness(0, -8, 0, 0);
-                buttonAddActivity.Name = "ID_" + titlesAllNotAssignedApplication[i].ID;
+                nonAssignedAppCanvas.Name = "ID_" + titlesAllNotAssignedApplication[i].ID;
                 buttonAddActivity.MouseLeftButtonDown += buttonAddActivity_MouseLeftButtonDown;
-                
+
 
 
                 nonAssignedApplications.Height += 59;
@@ -101,11 +101,19 @@ namespace ApplicationTimeCounter
         private void buttonAddActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Label btn = (Label)sender;
-            AddActivity addActivity = new AddActivity(btn.Name);
-            var location = btn.PointToScreen(new Point(0, 0));
-            addActivity.Left = location.X + 16;
-            addActivity.Top = location.Y + 20;
-            addActivity.ShowDialog();
+            if (btn.Content == "+")
+            {
+                AddActivity addActivity = new AddActivity((Canvas)btn.Parent);
+                var location = btn.PointToScreen(new Point(0, 0));
+                addActivity.Left = location.X + 16;
+                addActivity.Top = location.Y + 20;
+                addActivity.ShowDialog();
+            }
+            else
+            {
+                AddActivity addActivity = new AddActivity((Canvas)btn.Parent, true);
+            }
+            
         }
 
         private string GetNumberDayAgo(string dateAgo)
@@ -117,11 +125,11 @@ namespace ApplicationTimeCounter
                 dateApplication = DateTime.Parse(dateAgo);
                 wynik = DateTime.Now - dateApplication;
             }
-            catch(Exception message)
+            catch (Exception message)
             {
                 ApplicationLog.LogService.AddRaportCatchException("Warrning!!! Nie udało się zparsować daty", message);
             }
-            
+
             string returnValue = string.Empty;
             if (wynik.Days.ToString() == "0") returnValue = "Dziś";
             else if (wynik.Days.ToString() == "1") returnValue = "1 dzień temu";

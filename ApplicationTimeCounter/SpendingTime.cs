@@ -25,7 +25,7 @@ namespace ApplicationTimeCounter
             namesBarsGraph[0] = "Wył. komputer";
             namesBarsGraph[1] = "Brak Aktyw.";
             namesBarsGraph[2] = "Programowanie";
-            namesBarsGraph[3] = "Inne";
+            namesBarsGraph[3] = "Pozostałe";
 
             MyLabel title = new MyLabel(canvas, "Dzienna aktywność", 140, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79), Color.FromArgb(0, 0, 0, 0));
 
@@ -41,11 +41,15 @@ namespace ApplicationTimeCounter
         public void Update()
         {
             int[] tableTime = new int[4];
+            List<int> numbers = new List<int>();
+            numbers.Add(2);
             for (int i = 0; i < 4; i++) tableTime[i] = 0;
             tableTime[0] = dailyUseOfApplication_db.GetTimeForTitle("'Wyl. komputer'");
             tableTime[1] = dailyUseOfApplication_db.GetTimeForTitle("'Brak Aktyw.'");
-            tableTime[2] = dailyUseOfApplication_db.GetTimeForNumberActivity(2);
-            tableTime[3] = dailyUseOfApplication_db.GetTimeForNumberActivity(1);
+            tableTime[2] = dailyUseOfApplication_db.GetTimeForNumberActivity(numbers);
+            numbers.Clear();
+            numbers.Add(-2); numbers.Add(-1); numbers.Add(1);
+            tableTime[3] = dailyUseOfApplication_db.GetTimeForNumberActivity(numbers, true);
 
             int sum = 0;
             for (int i = 0; i < 4; i++) sum += tableTime[i];
