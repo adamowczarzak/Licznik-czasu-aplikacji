@@ -40,5 +40,10 @@ namespace ApplicationTimeCounter
             Mycircle.Stroke = new SolidColorBrush(color);
         }
 
+        public void RenderTransform(TranslateTransform newPosition)
+        {
+            Mycircle.RenderTransform = newPosition;
+        }
+
     }
 }

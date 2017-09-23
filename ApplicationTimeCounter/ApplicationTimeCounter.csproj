@@ -97,6 +97,7 @@
       <DependentUpon>GetDataBaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImageCreator.cs" />
+    <Compile Include="LoadingWindow.cs" />
     <Compile Include="MembershipInCategory.cs" />
     <Compile Include="MyCircle.cs" />
     <Compile Include="MyLabel.cs" />
@@ -221,6 +222,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Pictures\MembershipImages.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\ActivityImages.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

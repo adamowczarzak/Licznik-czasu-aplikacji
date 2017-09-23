@@ -101,15 +101,6 @@ namespace ApplicationTimeCounter
                     System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\AllData_db.cs");
             }
         }
-
-        public string GetAllNotAssignedApplication()
-        {
-            string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from activeapplications " +
-                "WHERE idNameActivity = 1";
-            string AllNotAssignedApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "noAssigmentApplication")[0];
-            return AllNotAssignedApplication;
-        }
-
         /// <summary>
         /// Pobiera ilość dni pracy aplkacji.
         /// </summary>
