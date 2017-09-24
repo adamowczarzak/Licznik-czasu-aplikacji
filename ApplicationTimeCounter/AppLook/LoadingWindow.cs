@@ -59,7 +59,7 @@ namespace ApplicationTimeCounter
                 }
                 else
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                 }
             }                   
         }

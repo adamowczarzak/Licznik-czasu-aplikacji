@@ -11,12 +11,12 @@ using System.Windows.Input;
 
 namespace ApplicationTimeCounter
 {
-    class Activity
+    class ActivityUser
     {
         Point prewCoordinates;
         AllData_db allData_db;
 
-        public Activity()
+        public ActivityUser()
         {
             prewCoordinates = new Point(0, 0);
             allData_db = new AllData_db();

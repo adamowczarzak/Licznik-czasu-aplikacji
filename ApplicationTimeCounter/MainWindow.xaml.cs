@@ -21,7 +21,7 @@ namespace ApplicationTimeCounter
         private ViewContent viewContent;
         private HomeForm homeForm;
         private CategoryForm categoryForm;
-        private Activity activity;
+        private ActivityUser activity;
         private RunApplication runApplication;
 
         
@@ -45,7 +45,7 @@ namespace ApplicationTimeCounter
                 homeForm = new HomeForm(contentPage, ref viewContent);
                 categoryForm = new CategoryForm(contentPage, ref viewContent);
                 notifyIcon = new IconInTaskbar(ref mainWindow, ref homeForm);
-                activity = new Activity();
+                activity = new ActivityUser();
 
 
                 if (activity.CheckIfIsNextDay() == true)

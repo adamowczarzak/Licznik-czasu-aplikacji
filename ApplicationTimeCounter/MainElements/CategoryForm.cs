@@ -23,8 +23,6 @@ namespace ApplicationTimeCounter
         private MyLabel empty1;
         private Label empty2;
         private DispatcherTimer timerAnimation;
-        private int repeatIntervals;
-        LoadingWindow loadingWindow;
 
         private ViewContent viewContent;
 
@@ -35,7 +33,6 @@ namespace ApplicationTimeCounter
 
             timerAnimation = new DispatcherTimer();
             timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 10);
-            repeatIntervals = 0;
 
             CreateCategoryForm();
         }
@@ -155,32 +152,6 @@ namespace ApplicationTimeCounter
         {
             var tempRef = MainCanvasCategory;
             AssignedActivity assignedActivity = new AssignedActivity(ref tempRef);
-
-            //timerAnimation.Tick += new EventHandler(LoadingWindowWait);
-            
-           // loadingWindow = new LoadingWindow(ref tempRef);
-           // Thread thread = new Thread(new ThreadStart(loadingWindow.test));
-           // thread.Start();
-
-            
-
-        }
-
-       
-
-        private void LoadingWindowWait(object sender, EventArgs e)
-        {
-            repeatIntervals++;
-            if (repeatIntervals == 1)
-            {
-              //  loadingWindow = new LoadingWindow(MainCanvasCategory);
-            }
-            if(repeatIntervals == 100)
-            {
-               // MainCanvasCategory.Children.Remove(loadingWindow.LoadCanvas);
-                repeatIntervals = 0;
-                timerAnimation.Stop();
-            }
         }
 
         private void buttonShowActivity_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
@@ -195,7 +166,8 @@ namespace ApplicationTimeCounter
 
         private void buttonShowActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-           // var tempRef = MainCanvasCategory;
+            var tempRef = MainCanvasCategory;
+            ShowActivity showActivity = new ShowActivity(ref tempRef);
             //AssignedActivity assignedActivity = new AssignedActivity(ref tempRef);
             //LoadingWindow loadingWindows = new LoadingWindow(MainCanvasCategory);
         }

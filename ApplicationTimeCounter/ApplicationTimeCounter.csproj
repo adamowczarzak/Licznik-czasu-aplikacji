@@ -71,52 +71,53 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="App\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ActiveApplication.cs" />
-    <Compile Include="ActiveApplication_db.cs" />
-    <Compile Include="Activity.cs" />
-    <Compile Include="AddActivity.xaml.cs">
+    <Compile Include="ApplicationObjectsType\ActiveApplication.cs" />
+    <Compile Include="DataBase\ActiveApplication_db.cs" />
+    <Compile Include="Counter\ActivityUser.cs" />
+    <Compile Include="ActivityForm\AddActivity.xaml.cs">
       <DependentUpon>AddActivity.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AllData_db.cs" />
-    <Compile Include="AnimatedClock.cs" />
-    <Compile Include="AssignedActivity.cs" />
-    <Compile Include="BarUsingApplication.cs" />
-    <Compile Include="BiggestResultsOfDay.cs" />
-    <Compile Include="ButtonCreator.cs" />
-    <Compile Include="CanvasCreator.cs" />
-    <Compile Include="CategoryForm.cs" />
-    <Compile Include="DailyUseOfApplication_db.cs" />
-    <Compile Include="ErrorWindow.xaml.cs">
+    <Compile Include="DataBase\AllData_db.cs" />
+    <Compile Include="HomeForm\AnimatedClock.cs" />
+    <Compile Include="ActivityForm\AssignedActivity.cs" />
+    <Compile Include="HomeForm\BarUsingApplication.cs" />
+    <Compile Include="HomeForm\BiggestResultsOfDay.cs" />
+    <Compile Include="MyCreateControls\ButtonCreator.cs" />
+    <Compile Include="MyCreateControls\CanvasCreator.cs" />
+    <Compile Include="MainElements\CategoryForm.cs" />
+    <Compile Include="DataBase\DailyUseOfApplication_db.cs" />
+    <Compile Include="AdditionalWindows\ErrorWindow.xaml.cs">
       <DependentUpon>ErrorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GetDataBaseWindow.xaml.cs">
+    <Compile Include="AdditionalWindows\GetDataBaseWindow.xaml.cs">
       <DependentUpon>GetDataBaseWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImageCreator.cs" />
-    <Compile Include="LoadingWindow.cs" />
-    <Compile Include="MembershipInCategory.cs" />
-    <Compile Include="MyCircle.cs" />
-    <Compile Include="MyLabel.cs" />
-    <Compile Include="MyRectangle.cs" />
-    <Compile Include="NameActivity_db.cs" />
-    <Compile Include="RunApplication.cs" />
-    <Compile Include="ScrollViewerCreator.cs" />
-    <Compile Include="SpendingTime.cs" />
-    <Compile Include="TimeUsingApplication.cs" />
-    <Compile Include="ViewContent.cs" />
-    <Page Include="AddActivity.xaml">
+    <Compile Include="MyCreateControls\ImageCreator.cs" />
+    <Compile Include="AppLook\LoadingWindow.cs" />
+    <Compile Include="HomeForm\MembershipInCategory.cs" />
+    <Compile Include="MyCreateControls\MyCircle.cs" />
+    <Compile Include="MyCreateControls\MyLabel.cs" />
+    <Compile Include="MyCreateControls\MyRectangle.cs" />
+    <Compile Include="DataBase\NameActivity_db.cs" />
+    <Compile Include="MainElements\RunApplication.cs" />
+    <Compile Include="MyCreateControls\ScrollViewerCreator.cs" />
+    <Compile Include="ActivityForm\ShowActivity.cs" />
+    <Compile Include="HomeForm\SpendingTime.cs" />
+    <Compile Include="HomeForm\TimeUsingApplication.cs" />
+    <Compile Include="AppLook\ViewContent.cs" />
+    <Page Include="ActivityForm\AddActivity.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ErrorWindow.xaml">
+    <Page Include="AdditionalWindows\ErrorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GetDataBaseWindow.xaml">
+    <Page Include="AdditionalWindows\GetDataBaseWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -124,24 +125,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="ActiveWindow.cs" />
-    <Compile Include="App.xaml.cs" />
-    <Page Include="CircleBar.xaml">
+    <Compile Include="Counter\ActiveWindow.cs" />
+    <Compile Include="App\App.xaml.cs" />
+    <Page Include="MyCreateControls\CircleBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="CircleBar.cs" />
-    <Compile Include="Counter.cs" />
-    <Compile Include="DataBase.cs" />
-    <Compile Include="HomeForm.cs" />
-    <Compile Include="InterfaceApplication.cs" />
+    <Compile Include="MyCreateControls\CircleBar.cs" />
+    <Compile Include="Counter\Counter.cs" />
+    <Compile Include="DataBase\DataBase.cs" />
+    <Compile Include="MainElements\HomeForm.cs" />
+    <Compile Include="AppLook\InterfaceApplication.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IconInTaskbar.cs" />
+    <Compile Include="AppLook\IconInTaskbar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -159,7 +160,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="App\App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -226,6 +227,7 @@
   <ItemGroup>
     <Resource Include="Pictures\ActivityImages.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
