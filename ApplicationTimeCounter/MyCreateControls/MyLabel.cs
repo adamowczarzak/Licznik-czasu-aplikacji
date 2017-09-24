@@ -79,5 +79,12 @@ namespace ApplicationTimeCounter
             myLabel.FontFamily = new FontFamily(nameFont);
         }
 
+        public void ToolTip(string content)
+        {
+            myLabel.ToolTip = content;
+            ToolTipService.SetShowDuration(myLabel, 5000);
+            ToolTipService.SetInitialShowDelay(myLabel, 1000);
+        }
+
     }
 }

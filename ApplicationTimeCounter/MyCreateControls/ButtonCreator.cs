@@ -32,13 +32,22 @@ namespace ApplicationTimeCounter
                 BorderBrush = new SolidColorBrush(colorBorder),
                 Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
                 Cursor = System.Windows.Input.Cursors.Hand,
-                HorizontalContentAlignment = horizontalAlignment,
-                
+                HorizontalContentAlignment = horizontalAlignment,                                          
             };
+            
             Canvas.SetLeft(button, x);
             Canvas.SetTop(button, y);
             canvas.Children.Add(button);
             return button;
         }
+
+        public static void SetToolTip(Label button, string content)
+        {
+            button.ToolTip = content;
+            ToolTipService.SetShowDuration(button, 5000);
+            ToolTipService.SetInitialShowDelay(button, 1000);
+        }
+
+
     }
 }

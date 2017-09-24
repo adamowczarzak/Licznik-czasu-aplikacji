@@ -17,11 +17,7 @@ namespace ApplicationTimeCounter
         public Canvas MainCanvasCategory { get; set; }
         private Canvas contentPage;
         private MyLabel notAssignedApplications;
-        private Label buttonAssignActivity;
         private MyLabel numberActivity;
-        private Label buttonShowActivity;
-        private MyLabel empty1;
-        private Label empty2;
         private DispatcherTimer timerAnimation;
 
         private ViewContent viewContent;
@@ -48,9 +44,7 @@ namespace ApplicationTimeCounter
             MyLabel label = new MyLabel(canvasMembership, "Przynależność", 250, 40, 20, 60, 60, Color.FromArgb(255, 255, 255, 255),
                 Color.FromArgb(0, 255, 255, 255));
 
-            CreateCanvasActivityWithElements();
-            
-            
+            CreateCanvasActivityWithElements();                       
         }
 
         public void ShowCategoryForm()
@@ -76,7 +70,7 @@ namespace ApplicationTimeCounter
 
             // przypisz aktywności----------------------------------------------------------------------------------------------
             notAssignedApplications = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 0);
-            buttonAssignActivity = ButtonCreator.CreateButton(canvasActivity, "     Przypisz Aktywności", 225, 38, 16, 30, 200,
+            Label buttonAssignActivity = ButtonCreator.CreateButton(canvasActivity, "     Przypisz Aktywności", 225, 38, 16, 30, 200,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
             buttonAssignActivity.MouseMove += buttonAssignActivity_MouseMove;
@@ -87,7 +81,7 @@ namespace ApplicationTimeCounter
 
             // przegląd aktywności
             numberActivity = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 237, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
-            buttonShowActivity = ButtonCreator.CreateButton(canvasActivity, "     Przegląd Aktywności", 225, 38, 16, 30, 237,
+            Label buttonShowActivity = ButtonCreator.CreateButton(canvasActivity, "     Przegląd Aktywności", 225, 38, 16, 30, 237,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
             buttonShowActivity.MouseMove += buttonShowActivity_MouseMove;
@@ -97,8 +91,8 @@ namespace ApplicationTimeCounter
             //------------------------------------------------------------------------------------------------------------------
 
             // puste pole
-            empty1 = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 275, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
-            empty2 = ButtonCreator.CreateButton(canvasActivity, "     Puste Pole    ", 225, 38, 16, 30, 275,
+            MyLabel empty1 = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 275, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
+            Label empty2 = ButtonCreator.CreateButton(canvasActivity, "     Puste Pole    ", 225, 38, 16, 30, 275,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
             empty2.MouseMove += empty2_MouseMove;
@@ -140,12 +134,12 @@ namespace ApplicationTimeCounter
 
         private void buttonAssignActivity_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            buttonAssignActivity.Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
         }
 
         private void buttonAssignActivity_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            buttonAssignActivity.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
 
         private void buttonAssignActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -156,12 +150,12 @@ namespace ApplicationTimeCounter
 
         private void buttonShowActivity_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            buttonShowActivity.Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
         }
 
         private void buttonShowActivity_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            buttonShowActivity.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
 
         private void buttonShowActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -174,12 +168,12 @@ namespace ApplicationTimeCounter
 
         private void empty2_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            empty2.Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
         }
 
         private void empty2_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            empty2.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
 
         private void empty2_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

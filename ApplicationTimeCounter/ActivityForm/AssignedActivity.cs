@@ -84,9 +84,10 @@ namespace ApplicationTimeCounter
                 {
                     new MyCircle(nonAssignedAppCanvas, 46, 2, Color.FromArgb(255, 150, 150, 150), 8, 8, 1, true);
 
-                    new MyLabel(nonAssignedAppCanvas, "\t" + titleApplication,
+                    MyLabel l = new MyLabel(nonAssignedAppCanvas, "\t" + titleApplication,
                         560, 60, 14, 0, 0, Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), 1,
                         HorizontalAlignment.Left, fontWeight: FontWeights.Bold);
+                    l.ToolTip(titlesAllNotAssignedApplication[i].Title);
 
                     new MyLabel(nonAssignedAppCanvas, GetFirstLetterFromString(titleApplication), 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240),
                         Color.FromArgb(0, 100, 100, 100), 0, HorizontalAlignment.Center, fontWeight: FontWeights.ExtraBold);
