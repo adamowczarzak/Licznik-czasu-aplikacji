@@ -56,5 +56,10 @@ namespace ApplicationTimeCounter
             myRectangle.Opacity = value;
         }
 
+        public void SetFillColor(Color color)
+        {
+            myRectangle.Fill = new SolidColorBrush(color);
+        }
+
     }
 }

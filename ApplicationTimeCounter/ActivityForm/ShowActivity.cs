@@ -17,6 +17,9 @@ namespace ApplicationTimeCounter
         private Canvas mainCanvas;
         private Canvas contentCanvas;
         private MyLabel nameActivity;
+        private MyRectangle[] charts;
+        private MyLabel[] scale;
+        private string[] nameDay;
 
         public ShowActivity(ref Canvas canvas)
         {
@@ -32,6 +35,9 @@ namespace ApplicationTimeCounter
                 Color.FromArgb(0, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
             nameActivity.SetFont("Verdana");
 
+            charts = new MyRectangle[7];
+            scale = new MyLabel[4];
+            nameDay = new string[]{"Niedz","Pon","Wt","Śr","Czw","Pt","Sob"};
             CreateControlUser();
             CreateChart();
             this.canvas.Focusable = true;
@@ -112,10 +118,44 @@ namespace ApplicationTimeCounter
 
         private void CreateChart()
         {
+            for (int i = 0; i < 58; i++)
+            {
+                new MyRectangle(contentCanvas, 3, 1, Color.FromArgb(150, 150, 150, 150), 30 + (i * 6), 50);
+            }
+
+            int maxValue = 10;
+            for (int i = 0; i < 4; i++)
+            {
+                scale[i] = new MyLabel(contentCanvas, (((maxValue/3) * 3) - ((maxValue/3) * i)).ToString(), 30, 26, 12, 20, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
+            }
+
+            int numberDayOfWeek = (int)DateTime.Now.DayOfWeek;
             for(int i = 0; i < 7; i++)
             {
-                MyRectangle colorLegend = new MyRectangle(contentCanvas, 16, 120, Color.FromArgb(150, 150, 150, 150), 100 + (i * 40), 80);
+                for (int j = 0; j < 25; j++)
+                {
+                    new MyRectangle(contentCanvas, 1, 3, Color.FromArgb(100, 150, 150, 150), 88 + (i * 40), 50 + (j * 6));
+                }
+                charts[i] = new MyRectangle(contentCanvas, 16, 120, Color.FromArgb(255, 190, 190, 190), 80 + (i * 40), 80);
+                if (i == 6) charts[i].SetFillColor(Color.FromArgb(255, 117, 203, 255));
+                new MyCircle(contentCanvas, 4, 0, Color.FromArgb(255, 180, 180, 180), 86 + (i * 40), 48, 1, true);
+                new MyLabel(contentCanvas, nameDay[GetNumberDayOfWeek(i)], 50, 26, 12, 64 + (i * 40), 24, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+
+                Random rnd = new Random();               
+                int value = rnd.Next(0, 120);
+                Thread.Sleep(10);
+                charts[i].Resize(value, 16);
+                charts[i].Position(y: 200 - value);
             }
+            new MyRectangle(contentCanvas, 350, 1, Color.FromArgb(150, 150, 150, 150), 30, 200);
+
+        }
+
+        private int GetNumberDayOfWeek(int nextDay)
+        {
+            int numberDayOfWeek = (int)DateTime.Now.DayOfWeek + 1 + nextDay;
+            return ((numberDayOfWeek) < 7) ? (numberDayOfWeek) : numberDayOfWeek % 7;
         }
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

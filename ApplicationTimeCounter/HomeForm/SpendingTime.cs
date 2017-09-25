@@ -56,8 +56,7 @@ namespace ApplicationTimeCounter
             {
                 if(sum > 0)tableTime[i] = Convert.ToInt32((Convert.ToDouble(tableTime[i]) / Convert.ToDouble(sum)) * 100);
                 UpdateSegment(i, tableTime[i]);
-            }
-           
+            }         
         }
 
         private void CreateSegmentSpendingTime(Canvas canvas , Color color, int indexNameBarsGraph,
