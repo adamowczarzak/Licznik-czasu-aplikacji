@@ -37,18 +37,19 @@ namespace ApplicationTimeCounter
 
             charts = new MyRectangle[7];
             scale = new MyLabel[4];
-            nameDay = new string[]{"Niedz","Pon","Wt","Śr","Czw","Pt","Sob"};
+            nameDay = new string[] { "Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob" };
             CreateControlUser();
             CreateChart();
+            CreateListOfAddedApps();
             this.canvas.Focusable = true;
             this.canvas.Focus();
-            
+
         }
 
         private void mainCanvas_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Right)
-            {                
+            {
                 // zmiana danych ++
             }
             if (e.Key == Key.Left)
@@ -95,18 +96,22 @@ namespace ApplicationTimeCounter
             buttonAdd.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
             buttonAdd.MouseMove += buttonAdd_MouseMove;
             buttonAdd.MouseLeave += buttonAdd_MouseLeave;
+            ButtonCreator.SetToolTip(buttonAdd, "Dodaj nową aktywność");
 
             new MyLabel(mainCanvas, "-", 30, 50, 30, 560, 6, Color.FromArgb(255, 70, 70, 70),
                Color.FromArgb(255, 70, 70, 70), 0);
+           
 
             Label buttonDelete = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 560, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
             buttonDelete.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
             buttonDelete.MouseMove += buttonDelete_MouseMove;
-            buttonDelete.MouseLeave += buttonDelete_MouseLeave;
+            buttonDelete.MouseLeave += buttonDelete_MouseLeave; 
+            ButtonCreator.SetToolTip(buttonDelete, "Usuń aktywność");
 
             new MyLabel(mainCanvas, "x", 30, 50, 24, 590, 10, Color.FromArgb(255, 70, 70, 70),
                 Color.FromArgb(255, 70, 70, 70), 0);
+            
 
             Label buttonExit = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 590, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
@@ -114,6 +119,7 @@ namespace ApplicationTimeCounter
             buttonExit.MouseMove += buttonExit_MouseMove;
             buttonExit.MouseLeave += buttonExit_MouseLeave;
             buttonExit.MouseLeftButtonDown += buttonExit_MouseLeftButtonDown;
+            ButtonCreator.SetToolTip(buttonExit, "Zamknij okno aktywności");
         }
 
         private void CreateChart()
@@ -126,12 +132,12 @@ namespace ApplicationTimeCounter
             int maxValue = 10;
             for (int i = 0; i < 4; i++)
             {
-                scale[i] = new MyLabel(contentCanvas, (((maxValue/3) * 3) - ((maxValue/3) * i)).ToString(), 30, 26, 12, 20, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                scale[i] = new MyLabel(contentCanvas, (((maxValue / 3) * 3) - ((maxValue / 3) * i)).ToString() + " h", 30, 26, 12, 20, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
                 new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
             }
 
             int numberDayOfWeek = (int)DateTime.Now.DayOfWeek;
-            for(int i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
             {
                 for (int j = 0; j < 25; j++)
                 {
@@ -142,7 +148,7 @@ namespace ApplicationTimeCounter
                 new MyCircle(contentCanvas, 4, 0, Color.FromArgb(255, 180, 180, 180), 86 + (i * 40), 48, 1, true);
                 new MyLabel(contentCanvas, nameDay[GetNumberDayOfWeek(i)], 50, 26, 12, 64 + (i * 40), 24, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
 
-                Random rnd = new Random();               
+                Random rnd = new Random();
                 int value = rnd.Next(0, 120);
                 Thread.Sleep(10);
                 charts[i].Resize(value, 16);
@@ -151,6 +157,45 @@ namespace ApplicationTimeCounter
             new MyRectangle(contentCanvas, 350, 1, Color.FromArgb(150, 150, 150, 150), 30, 200);
 
         }
+
+        private void CreateListOfAddedApps()
+        {
+            Canvas applicationInActivity = new Canvas() { Width = 140, Height = 146, Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236)) };
+            ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 140, 146, 440, 60, applicationInActivity);
+
+            new MyLabel(contentCanvas, "Dodane aplikacje", 140, 30, 14, 450, 20,
+                Color.FromArgb(205, 125, 125, 125), Color.FromArgb(200, 255, 255, 255), 0);
+
+            for (int i = 0; i < 20; i++)
+            {
+                new MyLabel(applicationInActivity, "test", 140, 30, 12, 0, 29 * i,
+                        Color.FromArgb(255, 155, 155, 155), Color.FromArgb(200, 255, 255, 255), 0);
+                new MyRectangle(applicationInActivity, 140, 1, Color.FromArgb(30, 150, 150, 150), 0, 30 + (29 * i));
+
+                MyCircle circle = new MyCircle(applicationInActivity, 15, 1, (Color.FromArgb(155, 255, 93, 93)), 115, 8 + (29 * i), 1, true);
+                Label buttonDeleteApplication = ButtonCreator.CreateButton(applicationInActivity, "x", 25, 25, 8, 110, 3 + (29 * i),
+                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
+                buttonDeleteApplication.Background = new SolidColorBrush(Color.FromArgb(155, 236, 236, 236));
+                buttonDeleteApplication.MouseMove += buttonDeleteApplication_MouseMove;
+                buttonDeleteApplication.MouseLeave += buttonDeleteApplication_MouseLeave;
+                buttonDeleteApplication.Name = "ID_" + i;
+                ButtonCreator.SetToolTip(buttonDeleteApplication, "Usuń aplikacje z aktywności");
+                applicationInActivity.Height += 29;
+            }
+
+            Label buttonDeleteAllApplication = ButtonCreator.CreateButton(contentCanvas, "Usuń wszystkie", 100, 28, 12, 470, 220,
+                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 1);
+            ButtonCreator.SetToolTip(buttonDeleteAllApplication, "Usuń wszystkie aplikacje z aktywności");
+            buttonDeleteAllApplication.Background = new SolidColorBrush(Color.FromArgb(155, 255, 93, 93));
+
+            applicationInActivity.Height = ((applicationInActivity.Height - 146) < 146) ? 146 : applicationInActivity.Height - 145;
+
+        }
+
+
+
+
+
 
         private int GetNumberDayOfWeek(int nextDay)
         {
@@ -192,6 +237,16 @@ namespace ApplicationTimeCounter
         private void buttonAdd_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(120, 132, 255, 140));
+        }
+
+        private void buttonDeleteApplication_MouseMove(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 236, 236, 236));
+        }
+
+        private void buttonDeleteApplication_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(155, 236, 236, 236));
         }
     }
 }
