@@ -20,6 +20,9 @@ namespace ApplicationTimeCounter
         private MyRectangle[] charts;
         private MyLabel[] scale;
         private string[] nameDay;
+        private MyLabel[] percentageOfActivity;
+        private MyLabel[] growth;
+        private MyLabel[] average;
 
         public ShowActivity(ref Canvas canvas)
         {
@@ -38,9 +41,13 @@ namespace ApplicationTimeCounter
             charts = new MyRectangle[7];
             scale = new MyLabel[4];
             nameDay = new string[] { "Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob" };
+            percentageOfActivity = new MyLabel[2];
+            growth = new MyLabel[2];
+            average = new MyLabel[2];
             CreateControlUser();
             CreateChart();
             CreateListOfAddedApps();
+            CreateTableWithInformation();
             this.canvas.Focusable = true;
             this.canvas.Focus();
 
@@ -132,7 +139,7 @@ namespace ApplicationTimeCounter
             int maxValue = 10;
             for (int i = 0; i < 4; i++)
             {
-                scale[i] = new MyLabel(contentCanvas, (((maxValue / 3) * 3) - ((maxValue / 3) * i)).ToString() + " h", 30, 26, 12, 20, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                scale[i] = new MyLabel(contentCanvas, (((maxValue / 3) * 3) - ((maxValue / 3) * i)).ToString() + " h", 30, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
                 new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
             }
 
@@ -160,10 +167,12 @@ namespace ApplicationTimeCounter
 
         private void CreateListOfAddedApps()
         {
+            MyRectangle mr = new MyRectangle(contentCanvas, 185, 294, Color.FromArgb(0, 10, 10, 10), 420, 15, 2);
+            MyRectangle mr2 = new MyRectangle(contentCanvas, 390, 294, Color.FromArgb(0, 10, 10, 10), 15, 15, 2);
             Canvas applicationInActivity = new Canvas() { Width = 140, Height = 146, Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236)) };
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 140, 146, 440, 60, applicationInActivity);
 
-            new MyLabel(contentCanvas, "Dodane aplikacje", 140, 30, 14, 450, 20,
+            new MyLabel(contentCanvas, "Dodane aplikacje", 140, 30, 14, 440, 20,
                 Color.FromArgb(205, 125, 125, 125), Color.FromArgb(200, 255, 255, 255), 0);
 
             for (int i = 0; i < 20; i++)
@@ -183,18 +192,58 @@ namespace ApplicationTimeCounter
                 applicationInActivity.Height += 29;
             }
 
-            Label buttonDeleteAllApplication = ButtonCreator.CreateButton(contentCanvas, "Usuń wszystkie", 100, 28, 12, 470, 220,
+            Label buttonDeleteAllApplication = ButtonCreator.CreateButton(contentCanvas, "Usuń wszystkie", 120, 28, 12, 450, 220,
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 1);
             ButtonCreator.SetToolTip(buttonDeleteAllApplication, "Usuń wszystkie aplikacje z aktywności");
-            buttonDeleteAllApplication.Background = new SolidColorBrush(Color.FromArgb(155, 255, 93, 93));
+            buttonDeleteAllApplication.Background = new SolidColorBrush(Color.FromArgb(120, 255, 93, 93));
+            buttonDeleteAllApplication.MouseMove += buttonDeleteAllApplication_MouseMove;
+            buttonDeleteAllApplication.MouseLeave += buttonDeleteAllApplication_MouseLeave;
+
+            Label buttonEditActivity = ButtonCreator.CreateButton(contentCanvas, "Edytuj aktywność", 120, 28, 12, 450, 260,
+                   Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 0, 255, 0), 1);
+            buttonEditActivity.Background = new SolidColorBrush(Color.FromArgb(60, 0, 200, 0));
+            buttonEditActivity.MouseMove += buttonEditActivity_MouseMove;
+            buttonEditActivity.MouseLeave += buttonEditActivity_MouseLeave;
 
             applicationInActivity.Height = ((applicationInActivity.Height - 146) < 146) ? 146 : applicationInActivity.Height - 145;
 
         }
 
+        private void CreateTableWithInformation()
+        {
+            new MyLabel(contentCanvas, "Dane tygodniowe", 120, 27, 11, 149, 220,
+                       Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), 1);
+            new MyLabel(contentCanvas, "Dane miesięczne", 120, 27, 11, 268, 220,
+                       Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), 1);
+            new MyLabel(contentCanvas, "Średnie użycie", 120, 23, 9, 30, 246,
+                    Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), 0);
+            new MyLabel(contentCanvas, "Wzrost do porzedniego", 120, 23, 9, 30, 266,
+                    Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), 0);
+            new MyLabel(contentCanvas, "Średnia wszystkich", 120, 23, 9, 30, 286,
+                    Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), 0);
 
+            for (int i = 0; i < 3; i++ )
+            {
+                new MyRectangle(contentCanvas, 1, 86, Color.FromArgb(255, 117, 203, 255), 149 + (119 * i), 220);
+                
+                if(i < 2)
+                {
+                    percentageOfActivity[i] = new MyLabel(contentCanvas, "0 %", 50, 27, 11, 185 + (120 * i), 242,
+                       Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 117, 203, 255));
 
+                    growth[i] = new MyLabel(contentCanvas, "0 %", 50, 27, 11, 185 + (120 * i), 262,
+                       Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 117, 203, 255));
 
+                    average[i] = new MyLabel(contentCanvas, "0 %", 50, 27, 11, 185 + (120 * i), 282,
+                       Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 117, 203, 255));
+
+                }
+            }
+                
+        }
+           
+
+     
 
 
         private int GetNumberDayOfWeek(int nextDay)
@@ -247,6 +296,26 @@ namespace ApplicationTimeCounter
         private void buttonDeleteApplication_MouseLeave(object sender, MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(155, 236, 236, 236));
+        }
+
+        private void buttonDeleteAllApplication_MouseMove(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(180, 255, 93, 93));
+        }
+
+        private void buttonDeleteAllApplication_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(120, 255, 93, 93));
+        }
+
+        private void buttonEditActivity_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(60, 0, 200, 0));
+        }
+
+        private void buttonEditActivity_MouseMove(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(160, 0, 250, 0));
         }
     }
 }
