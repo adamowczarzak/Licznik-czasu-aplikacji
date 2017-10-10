@@ -112,6 +112,28 @@ namespace ApplicationTimeCounter
             return dateDifference;
         }
 
+        public int GetTimeForNumberActivity(List<int> numbers, string startDate = "", string endDate = "", bool ifExcept = false)
+        {
+            string contentCommand = "SELECT SUM(ActivityTime) as sumTimeActivity FROM alldate INNER JOIN " +
+                "activeapplications ON alldate.IdTitle = activeapplications.Id " +
+                "WHERE 1 = 1";
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                contentCommand += " AND activeapplications.IdNameActivity " + (ifExcept ? "!" : "") + "= " + numbers[i];
+            }
+            if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
+            {
+                contentCommand += " AND '" + startDate + "' < alldate.Date  AND alldate.Date < '" + endDate + "'";
+            }
+            else if (!string.IsNullOrEmpty(startDate))
+            {
+                contentCommand += " AND alldate.Date = '" + startDate + "'";
+            }
+            int returnValue = 0;
+            Int32.TryParse(DataBase.GetListStringFromExecuteReader(contentCommand, "sumTimeActivity")[0], out returnValue);
+            return returnValue;
+        }
+
         /// <summary>
         /// Pobiera date uruchomienia aplikacji.
         /// </summary>

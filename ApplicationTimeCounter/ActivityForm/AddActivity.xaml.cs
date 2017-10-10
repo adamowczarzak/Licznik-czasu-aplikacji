@@ -62,7 +62,7 @@ namespace ApplicationTimeCounter
             Canvas activity = new Canvas() { Width = 150, Height = 200, };
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(addActivityCanvas, 150, 200, 0, 0, activity);
 
-            Dictionary<string, string> nameDailyActivity = NameActivity_db.GetNameActivityList();
+            Dictionary<string, string> nameDailyActivity = NameActivity_db.GetNameActivityDictionary();
 
             int nextIndex = 0;
             foreach (KeyValuePair<string, string> dictioanry in nameDailyActivity)
