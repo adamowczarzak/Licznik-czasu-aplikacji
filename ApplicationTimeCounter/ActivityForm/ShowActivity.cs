@@ -315,23 +315,14 @@ namespace ApplicationTimeCounter
             valueQuery[1, 1, 1] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-61).ToShortDateString(), DateTime.Now.AddDays(-31).ToShortDateString(), true);
 
 
-            if (valueQuery[0, 0, 0] > 0)
-                percentageOfActivity[0].SetContent(((valueQuery[0, 0, 0] / valueQuery[0, 0, 1]) / 7.0 * 100).ToString("0.00") + " %");
-            else
-                percentageOfActivity[0].SetContent("0.00 %");
+            percentageOfActivity[0].SetContent((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]), 7.0 * 100)).ToString("0.00")+ " %");
+            percentageOfActivity[1].SetContent(ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]), 30.0 * 100).ToString("0.00") + " %");
+            growth[0].SetContent(((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 1, 0], valueQuery[0, 1, 1]) , 7.0 * 100)
+                - ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]), 7.0 * 100)) * -1).ToString("0.00") + " %");
+            growth[1].SetContent(((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 1, 0], valueQuery[1, 1, 1]) , 30.0 * 100)
+                - ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]), 30.0 * 100)) * -1).ToString("0.00") + " %");
 
-            if(valueQuery[1, 0, 0] > 0)
-                percentageOfActivity[1].SetContent(((valueQuery[1, 0, 0] / valueQuery[1, 0, 1]) / 30.0 * 100).ToString("0.00") + " %");
-            else 
-                percentageOfActivity[1].SetContent("0.00 %");
-            if(valueQuery[0, 1, 0] > 0)
-                growth[0].SetContent(((((valueQuery[0, 1, 0] / valueQuery[0, 1, 1]) / 7.0 * 100) - ((valueQuery[0, 0, 0] / valueQuery[0, 0, 1]) / 7.0 * 100))*-1).ToString("0.00") + " %");
-            else
-                growth[0].SetContent("0.00 %");
-            if (valueQuery[1, 1, 0] > 0)
-                growth[1].SetContent(((((valueQuery[1, 1, 0] / valueQuery[1, 1, 1]) / 30.0 * 100) - ((valueQuery[1, 0, 0] / valueQuery[1, 0, 1]) / 30.0 * 100))*-1).ToString("0.00") + " %");
-            else
-                growth[1].SetContent("0.00 %");
+            percentageOfActivity[0].SetContent(((valueQuery[0, 0, 0] / valueQuery[0, 0, 1]) / 7.0 * 100).ToString("0.00") + " %");
             
 
             //value = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-31).ToShortDateString(), DateTime.Now.AddDays(-1).ToShortDateString());
