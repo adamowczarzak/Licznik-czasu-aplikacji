@@ -75,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Other\ActionOnNumbers.cs" />
     <Compile Include="ApplicationObjectsType\ActiveApplication.cs" />
     <Compile Include="DataBase\ActiveApplication_db.cs" />
     <Compile Include="Counter\ActivityUser.cs" />

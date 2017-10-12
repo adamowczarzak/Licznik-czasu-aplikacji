@@ -340,8 +340,8 @@ namespace ApplicationTimeCounter
             //percentageOfActivity[1].SetContent(((value / value2) / 30.0 * 100).ToString("0.00") + " %");
             
             average[0].SetContent("10 %");
-            //  }
         }
+
 
         private int GetNumberDayOfWeek(int nextDay)
         {
