@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -12,6 +13,7 @@ namespace ApplicationTimeCounter
     class MyRectangle
     {
         Rectangle myRectangle;
+        MyLabel toolTip;
 
         public MyRectangle(Canvas canvas, int width, int height, Color color, double x, double y,
             int strokeThickness = 0, double opacity = 1)
@@ -29,6 +31,7 @@ namespace ApplicationTimeCounter
             Canvas.SetTop(myRectangle, y);
             canvas.Children.Add(myRectangle);
 
+            toolTip = new MyLabel(canvas, "", width, height, 10, x, y, Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
         }
 
         public void Resize(int height, int width)
@@ -59,6 +62,11 @@ namespace ApplicationTimeCounter
         public void SetFillColor(Color color)
         {
             myRectangle.Fill = new SolidColorBrush(color);
+        }
+
+        public void ToolTip(string content)
+        {
+            toolTip.ToolTip(content);
         }
 
     }

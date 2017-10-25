@@ -19,7 +19,7 @@ namespace ApplicationTimeCounter
         private Canvas applicationInActivity;
         private MyLabel nameActivity;
         private MyRectangle[] charts;
-        private MyLabel[] scale;
+        private MyLabel[] scaleLabel;
         private string[] nameDay;
         private MyLabel[] average;
         private MyLabel[] growth;
@@ -31,19 +31,22 @@ namespace ApplicationTimeCounter
         public ShowActivity(ref Canvas canvas)
         {
             this.canvas = canvas;
+            
             mainCanvas = CanvasCreator.CreateCanvas(canvas, 620, 410, Color.FromArgb(255, 226, 240, 255), 0, 0);
             this.canvas.KeyDown += mainCanvas_KeyDown;
             contentCanvas = CanvasCreator.CreateCanvas(mainCanvas, 620, 320, Color.FromArgb(255, 236, 236, 236), 0, 50);
-
+           
             new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(30, 110, 110, 110), 0, 50);
-            new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(50, 110, 110, 110), 0, 370);
+            new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(50, 110, 110, 110), 0, 370); 
+            new MyRectangle(contentCanvas, 185, 294, Color.FromArgb(0, 10, 10, 10), 420, 15, 2);
+            new MyRectangle(contentCanvas, 390, 294, Color.FromArgb(0, 10, 10, 10), 15, 15, 2);
 
             nameActivity = new MyLabel(mainCanvas, "Nazwa aktywnosci", 300, 36, 16, 15, 15, Color.FromArgb(255, 160, 160, 160),
                 Color.FromArgb(0, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
             nameActivity.SetFont("Verdana");
 
             charts = new MyRectangle[7];
-            scale = new MyLabel[4];
+            scaleLabel = new MyLabel[4];
             nameDay = new string[] { "Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob" };
             percentageOfActivity = new MyLabel[2];
             growth = new MyLabel[2];
@@ -191,7 +194,7 @@ namespace ApplicationTimeCounter
             for (int i = 0; i < 7; i++)
             {
                 if (i < 6)
-                    timeAvtivity[i] = allData_db.GetTimeForNumberActivity(activityID, dateTime.AddDays(-(i + 1)).ToShortDateString());
+                    timeAvtivity[i] = allData_db.GetTimeForNumberActivity(activityID, dateTime.AddDays(-(7 - (i + 1))).ToShortDateString());
                 else
                     timeAvtivity[i] = dailyUseOfApplication_db.GetTimeForNumberActivity(activityID);
             }
@@ -199,25 +202,25 @@ namespace ApplicationTimeCounter
             double maxValue = ActionOnNumbers.DivisionD(timeAvtivity.Max(), 60);
             for (int i = 0; i < 4; i++)
             {
-                scale[i] = new MyLabel(contentCanvas, (((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h", 50, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                scaleLabel[i] = new MyLabel(contentCanvas, (((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h", 50, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
                 new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
             }
-            SetVisibleScale();
-
+            
             if (timeAvtivity.Max() > 0)
             {
                 for (int i = 0; i < 7; i++)
                 {
-                    charts[i].Resize((int)(timeAvtivity[i] * (120 * ActionOnNumbers.DivisionD((((maxValue / 3.0) * 3)), maxValue) / timeAvtivity.Max())), 16);
-                    charts[i].Position(y: 200 - timeAvtivity[i] * (120 / timeAvtivity.Max()));
+                    double scale = maxValue / Convert.ToDouble(scaleLabel[0].GetContent().Replace(" h", ""));
+                    charts[i].Resize((int)(timeAvtivity[i] * (120 * scale) / timeAvtivity.Max()), 16);
+                    charts[i].Position(y: 200 - timeAvtivity[i] * (120 * scale / timeAvtivity.Max()));                
+                    charts[i].ToolTip(GetTime(timeAvtivity[i]));
                 }
             }
+            SetVisibleScale();
         }
 
         private void CreateListOfAddedApps()
         {
-            MyRectangle mr = new MyRectangle(contentCanvas, 185, 294, Color.FromArgb(0, 10, 10, 10), 420, 15, 2);
-            MyRectangle mr2 = new MyRectangle(contentCanvas, 390, 294, Color.FromArgb(0, 10, 10, 10), 15, 15, 2);
             applicationInActivity = new Canvas() { Width = 140, Height = 146, Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236)) };
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 140, 146, 440, 60, applicationInActivity);
 
@@ -337,16 +340,23 @@ namespace ApplicationTimeCounter
 
         private void SetVisibleScale()
         {
-            if (scale[3].GetContent().Contains("0 h") || scale[3].GetContent().Contains("1 h") || scale[3].GetContent().Contains("2 h"))
+            if (scaleLabel[3].GetContent().Contains("0 h") || scaleLabel[3].GetContent().Contains("1 h") || scaleLabel[3].GetContent().Contains("2 h"))
             {
-                scale[1].Opacity(0);
-                scale[2].Opacity(0);
+                scaleLabel[1].Opacity(0);
+                scaleLabel[2].Opacity(0);
             }
             else
             {
-                scale[1].Opacity(1);
-                scale[2].Opacity(1);
+                scaleLabel[1].Opacity(1);
+                scaleLabel[2].Opacity(1);
             }
+        }
+
+        private string GetTime(int timeInMinutes)
+        {
+            TimeSpan result = TimeSpan.FromMinutes(timeInMinutes);
+            string fromTimeString = result.ToString("h':'m");
+            return fromTimeString = fromTimeString.Replace(":", " h ") + " min"; 
         }
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
