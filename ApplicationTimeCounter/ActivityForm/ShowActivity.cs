@@ -25,6 +25,7 @@ namespace ApplicationTimeCounter
         private MyLabel[] growth;
         private MyLabel[] percentageOfActivity;
         private string[] namesActivity;
+        private List<Label> footerActivity;
         private int index;
         private List<ActiveApplication> activeApplication;
 
@@ -45,17 +46,12 @@ namespace ApplicationTimeCounter
                 Color.FromArgb(0, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
             nameActivity.SetFont("Verdana");
 
-            charts = new MyRectangle[7];
-            scaleLabel = new MyLabel[4];
-            nameDay = new string[] { "Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob" };
-            percentageOfActivity = new MyLabel[2];
-            growth = new MyLabel[2];
-            average = new MyLabel[2];
+            namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
             CreateControlUser();
             CreateChart();
             CreateListOfAddedApps();
             CreateTableWithInformation();
-            namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
+            CreateActivityFooter();
             index = 0;
             this.canvas.Focusable = true;
             this.canvas.Focus();
@@ -68,15 +64,24 @@ namespace ApplicationTimeCounter
             ActiveApplication parameters = new ActiveApplication();
             parameters.NameActivity = namesActivity[index];
             activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
+            if (activeApplication.Count > 100)
+                activeApplication.RemoveRange(0, activeApplication.Count - 100);
 
             nameActivity.SetContent(namesActivity[index]);
             UpdateListOfAddedApps();
             UpdateChart();
             UpdateTableWithInformation();
+            UpdateActivityFooter();
         }
 
         private void mainCanvas_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Left || e.Key == Key.Right)
+            {
+                BackgroundWorker backgroundWorkerLoadingWindow = new BackgroundWorker();
+                backgroundWorkerLoadingWindow.DoWork += backgroundWorkerLoadingWindow_DoWork;
+                backgroundWorkerLoadingWindow.RunWorkerAsync();
+            }
             if (e.Key == Key.Right)
             {
                 if (index < namesActivity.Length - 1)
@@ -93,12 +98,6 @@ namespace ApplicationTimeCounter
                     index--;
                     Update();
                 }
-            }
-            if (e.Key == Key.Left || e.Key == Key.Right)
-            {
-                BackgroundWorker backgroundWorkerLoadingWindow = new BackgroundWorker();
-                backgroundWorkerLoadingWindow.DoWork += backgroundWorkerLoadingWindow_DoWork;
-                backgroundWorkerLoadingWindow.RunWorkerAsync();
             }
         }
 
@@ -162,6 +161,10 @@ namespace ApplicationTimeCounter
 
         private void CreateChart()
         {
+            charts = new MyRectangle[7];
+            scaleLabel = new MyLabel[4];
+            nameDay = new string[] { "Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob" };
+
             for (int i = 0; i < 59; i++)
             {
                 new MyRectangle(contentCanvas, 3, 1, Color.FromArgb(150, 150, 150, 150), 30 + (i * 6), 50);
@@ -189,7 +192,7 @@ namespace ApplicationTimeCounter
             List<int> activityID = new List<int>();
             int[] timeAvtivity = new int[7];
             DateTime dateTime = DateTime.Now;
-            activityID.Add(2);
+            activityID.Add(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
 
             for (int i = 0; i < 7; i++)
             {
@@ -269,6 +272,10 @@ namespace ApplicationTimeCounter
 
         private void CreateTableWithInformation()
         {
+            percentageOfActivity = new MyLabel[2];
+            growth = new MyLabel[2];
+            average = new MyLabel[2];
+
             new MyLabel(contentCanvas, "Dane tygodniowe", 120, 27, 11, 149, 210,
                        Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), 1);
             new MyLabel(contentCanvas, "Dane miesięczne", 120, 27, 11, 268, 210,
@@ -304,7 +311,7 @@ namespace ApplicationTimeCounter
             AllData_db allData_db = new AllData_db();
             List<int> activityID = new List<int>();
 
-            activityID.Add(2);
+            activityID.Add(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             double[, ,] valueQuery = new double[2, 3, 2];
             valueQuery[0, 0, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-7).ToShortDateString(), DateTime.Now.ToShortDateString());
             valueQuery[1, 0, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-30).ToShortDateString(), DateTime.Now.ToShortDateString());
@@ -329,6 +336,25 @@ namespace ApplicationTimeCounter
 
             percentageOfActivity[0].SetContent((ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]) * 100).ToString("0.00") + " %");
             percentageOfActivity[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]) * 100).ToString("0.00") + " %");
+        }
+
+        private void CreateActivityFooter()
+        {
+            footerActivity = new List<Label>();
+            for(int i = 0; i < namesActivity.Length; i++)
+            {
+                footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, namesActivity[i], 120, 28, 12, 0 + (i * 120), 320,
+                   Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
+                footerActivity[i].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
+            }
+        }
+        private void UpdateActivityFooter()
+        {
+            for (int i = 0; i < namesActivity.Length; i++)
+            {
+                footerActivity[i].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
+            }
+            footerActivity[index].Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236));
         }
 
 

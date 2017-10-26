@@ -22,5 +22,11 @@ namespace ApplicationTimeCounter
             return DataBase.GetListStringFromExecuteReader(contentCommand, "numberNameActivity")[0];
         }
 
+        public static int GetIDForNameActivity(string nameActivity)
+        {
+            string contentCommand = "SELECT Id FROM nameactivity WHERE NameActivity = '" + nameActivity + "'";
+            return Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "Id")[0]);
+        }
+
     }
 }
