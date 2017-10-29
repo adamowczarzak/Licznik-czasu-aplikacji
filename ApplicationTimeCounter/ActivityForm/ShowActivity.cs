@@ -34,7 +34,7 @@ namespace ApplicationTimeCounter
             this.canvas = canvas;
             
             mainCanvas = CanvasCreator.CreateCanvas(canvas, 620, 410, Color.FromArgb(255, 226, 240, 255), 0, 0);
-            this.canvas.KeyDown += mainCanvas_KeyDown;
+            this.canvas.KeyDown += canvas_KeyDown;
             contentCanvas = CanvasCreator.CreateCanvas(mainCanvas, 620, 320, Color.FromArgb(255, 236, 236, 236), 0, 50);
            
             new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(30, 110, 110, 110), 0, 50);
@@ -74,7 +74,7 @@ namespace ApplicationTimeCounter
             UpdateActivityFooter();
         }
 
-        private void mainCanvas_KeyDown(object sender, KeyEventArgs e)
+        private void canvas_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Left || e.Key == Key.Right)
             {
@@ -170,6 +170,12 @@ namespace ApplicationTimeCounter
                 new MyRectangle(contentCanvas, 3, 1, Color.FromArgb(150, 150, 150, 150), 30 + (i * 6), 50);
             }
 
+            for (int i = 0; i < 4; i++)
+            {
+                scaleLabel[i] = new MyLabel(contentCanvas, "", 50, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
+            }
+
             int numberDayOfWeek = (int)DateTime.Now.DayOfWeek;
             for (int i = 0; i < 7; i++)
             {
@@ -205,8 +211,7 @@ namespace ApplicationTimeCounter
             double maxValue = ActionOnNumbers.DivisionD(timeAvtivity.Max(), 60);
             for (int i = 0; i < 4; i++)
             {
-                scaleLabel[i] = new MyLabel(contentCanvas, (((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h", 50, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
-                new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
+                scaleLabel[i].SetContent((((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h");
             }
             
             if (timeAvtivity.Max() > 0)
@@ -226,6 +231,7 @@ namespace ApplicationTimeCounter
         {
             applicationInActivity = new Canvas() { Width = 140, Height = 146, Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236)) };
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 140, 146, 440, 60, applicationInActivity);
+            sv.Focusable = false;
 
             new MyLabel(contentCanvas, "Dodane aplikacje", 140, 30, 14, 440, 20,
                 Color.FromArgb(205, 125, 125, 125), Color.FromArgb(200, 255, 255, 255), 0);
@@ -326,13 +332,13 @@ namespace ApplicationTimeCounter
             valueQuery[1, 1, 1] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-60).ToShortDateString(), DateTime.Now.AddDays(-30).ToShortDateString(), true);
 
 
-            average[0].SetContent((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]), 7.0) * 100).ToString("0.00") + " %");
-            average[1].SetContent((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]), 30.0) * 100).ToString("0.00") + " %");
+            average[0].SetContent((ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]) * 100).ToString("0.00") + " %");
+            average[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]) * 100).ToString("0.00") + " %");
             
-            growth[0].SetContent(((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 1, 0], valueQuery[0, 1, 1]), 7.0)
-                - ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]), 7.0)) * 100 * -1).ToString("0.00") + " %");     
-            growth[1].SetContent(((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 1, 0], valueQuery[1, 1, 1]), 30.0)
-                - ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]), 30.0)) * 100 * -1).ToString("0.00") + " %");
+            growth[0].SetContent(((ActionOnNumbers.DivisionD(valueQuery[0, 1, 0], valueQuery[0, 1, 1])
+                - ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1])) * 100 * -1).ToString("0.00") + " %");     
+            growth[1].SetContent(((ActionOnNumbers.DivisionD(valueQuery[1, 1, 0], valueQuery[1, 1, 1])
+                - ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1])) * 100 * -1).ToString("0.00") + " %");
 
             percentageOfActivity[0].SetContent((ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]) * 100).ToString("0.00") + " %");
             percentageOfActivity[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]) * 100).ToString("0.00") + " %");
