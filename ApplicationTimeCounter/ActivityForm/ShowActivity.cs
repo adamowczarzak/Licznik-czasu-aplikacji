@@ -169,7 +169,11 @@ namespace ApplicationTimeCounter
             {
                 new MyRectangle(contentCanvas, 3, 1, Color.FromArgb(150, 150, 150, 150), 30 + (i * 6), 50);
             }
-
+            for (int i = 0; i < 4; i++)
+            {
+                scaleLabel[i] = new MyLabel(contentCanvas, "", 50, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
+            }
             int numberDayOfWeek = (int)DateTime.Now.DayOfWeek;
             for (int i = 0; i < 7; i++)
             {
@@ -205,8 +209,7 @@ namespace ApplicationTimeCounter
             double maxValue = ActionOnNumbers.DivisionD(timeAvtivity.Max(), 60);
             for (int i = 0; i < 4; i++)
             {
-                scaleLabel[i] = new MyLabel(contentCanvas, (((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h", 50, 26, 12, 24, 56 + (i * 40), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
-                new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 30, 80 + (i * 40));
+                scaleLabel[i].SetContent((((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h");
             }
             
             if (timeAvtivity.Max() > 0)
@@ -226,6 +229,7 @@ namespace ApplicationTimeCounter
         {
             applicationInActivity = new Canvas() { Width = 140, Height = 146, Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236)) };
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 140, 146, 440, 60, applicationInActivity);
+            sv.Focusable = false;
 
             new MyLabel(contentCanvas, "Dodane aplikacje", 140, 30, 14, 440, 20,
                 Color.FromArgb(205, 125, 125, 125), Color.FromArgb(200, 255, 255, 255), 0);
@@ -248,6 +252,7 @@ namespace ApplicationTimeCounter
         {
             applicationInActivity.Children.Clear();
             string titleApplication = string.Empty;
+            applicationInActivity.Height = 0;
             for (int i = 0; i < activeApplication.Count; i++)
             {
                 titleApplication = (activeApplication[i].Title.Length > 16) ?
