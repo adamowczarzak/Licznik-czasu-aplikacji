@@ -11,7 +11,7 @@ namespace ApplicationTimeCounter
     {
         public static Dictionary<string, string> GetNameActivityDictionary()
         {
-            string contentCommand = "SELECT Id, NameActivity FROM nameactivity WHERE ID > 0";
+            string contentCommand = "SELECT Id, NameActivity FROM nameactivity WHERE ID > 1";
             Dictionary<string, string> nameActivity = DataBase.GetDictionaryFromExecuteReader(contentCommand, "NameActivity", "Id");
             return nameActivity;
         }
