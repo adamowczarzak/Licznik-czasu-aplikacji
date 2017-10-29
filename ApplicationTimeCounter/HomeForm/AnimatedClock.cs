@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using ApplicationTimeCounter.Controls;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -36,16 +32,16 @@ namespace ApplicationTimeCounter
             timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 40);
 
             MyLabel title = new MyLabel(canvas, "Pozostały czas", 120, 30, 14, 0, 0, Color.FromArgb(255, 47, 79, 79) , Color.FromArgb(0, 0, 0, 0));
-            remainingTimePercent = new MyLabel(canvas, GetRemainingTimePercent(), 80, 45, 24, 55, 45, Color.FromArgb(255, 255, 0, 0), Color.FromArgb(0, 0, 0, 0));
-            remainingTime = new MyLabel(canvas, GetRemainingTime(), 90, 30, 14, 50, 100, Color.FromArgb(255, 255, 0, 0), Color.FromArgb(0, 0, 0, 0));
+            remainingTimePercent = new MyLabel(canvas, ActionOnTime.GetRemainingTimePercent(), 80, 45, 24, 55, 45, Color.FromArgb(255, 255, 0, 0), Color.FromArgb(0, 0, 0, 0));
+            remainingTime = new MyLabel(canvas, ActionOnTime.GetRemainingTime(), 90, 30, 14, 50, 100, Color.FromArgb(255, 255, 0, 0), Color.FromArgb(0, 0, 0, 0));
 
             CreateAnimatedClock(canvas);
         }
 
         public void Update()
         {
-            remainingTime.SetContent(GetRemainingTime());
-            remainingTimePercent.SetContent(GetRemainingTimePercent());
+            remainingTime.SetContent(ActionOnTime.GetRemainingTime());
+            remainingTimePercent.SetContent(ActionOnTime.GetRemainingTimePercent());
             UpdateLookAnimatedClock();
         }
 
@@ -64,17 +60,11 @@ namespace ApplicationTimeCounter
 
         public void UpdateLookAnimatedClock()
         {
-            double percent = ((24 * 60) - GetRemainingTimeInMinuts()) / (24 * 60);
-            if (GetRemainingTimeInMinuts() != 1) DeleteElementsAnimatedClock(percent);
+            double percent = ((24 * 60) - ActionOnTime.GetNowTimeInMinuts()) / (24 * 60);
+            if (ActionOnTime.GetNowTimeInMinuts() != 1) DeleteElementsAnimatedClock(percent);
             else RestartAnimatedClock();
         }
 
-        private double GetRemainingTimeInMinuts()
-        {
-            string m = DateTime.Now.ToString("mm");
-            string h = DateTime.Now.ToString("HH");
-            return (60 * Convert.ToInt32(h) + Convert.ToInt32(m)) + 1;
-        }
         private void AnimatedWatch(object sender, EventArgs e)
         {
             handOfClock.Rotate(angleRotation, 1.5, 54);
@@ -110,18 +100,6 @@ namespace ApplicationTimeCounter
                 clockFace[i].Opacity(0);
             }
             lastElementClockFace = newLastElementClockFace;
-        }
-
-        public string GetRemainingTimePercent()
-        {
-            int percent = Convert.ToInt32(((24 * 60) - GetRemainingTimeInMinuts()) / (24 * 60) * 100);
-            return percent + " %";
-        }
-
-        public string GetRemainingTime()
-        {
-            int time = (24 * 60) - (Convert.ToInt32(GetRemainingTimeInMinuts()));
-            return (time / 60) + " h " + ((time) - ((time / 60) * 60)) + " min";
         }
 
         private void RestartAnimatedClock()

@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Data;
-using MySql.Data;
 using MySql.Data.MySqlClient;
-using System.Windows;
+using System.Collections.Generic;
 
 namespace ApplicationTimeCounter
 {

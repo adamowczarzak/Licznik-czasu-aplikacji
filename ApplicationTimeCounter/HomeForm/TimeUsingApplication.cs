@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
+using ApplicationTimeCounter.Controls;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -32,17 +28,8 @@ namespace ApplicationTimeCounter
             int timeApp = dailyUseOfApplication_db.GetTimeForTitle(title);
             int timeAllApp = dailyUseOfApplication_db.GetTimeForAllTitle();
 
-            if (timeApp > 0) timeOfAplication.SetContent(GetTimeInString(timeApp));
-            if(timeAllApp > 0)totalTime.SetContent(GetTimeInString(timeAllApp));
-        }
-
-        private string GetTimeInString(int time)
-        {
-            int minutes = 0, hours = 0;
-            hours = time / 60;
-            minutes = time - (hours*60);
-
-            return hours + " h " + minutes + " min ";
+            if (timeApp > 0) timeOfAplication.SetContent(ActionOnTime.GetTime(timeApp));
+            if (timeAllApp > 0) totalTime.SetContent(ActionOnTime.GetTime(timeApp));
         }
     }
 }

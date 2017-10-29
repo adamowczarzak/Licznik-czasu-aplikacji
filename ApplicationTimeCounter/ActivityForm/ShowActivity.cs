@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
+using ApplicationTimeCounter.Controls;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -219,7 +220,7 @@ namespace ApplicationTimeCounter
                     double scale = maxValue / Convert.ToDouble(scaleLabel[0].GetContent().Replace(" h", ""));
                     charts[i].Resize((int)(timeAvtivity[i] * (120 * scale) / timeAvtivity.Max()), 16);
                     charts[i].Position(y: 200 - timeAvtivity[i] * (120 * scale / timeAvtivity.Max()));                
-                    charts[i].ToolTip(GetTime(timeAvtivity[i]));
+                    charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
                 }
             }
             SetVisibleScale();
@@ -339,8 +340,8 @@ namespace ApplicationTimeCounter
             growth[1].SetContent(((ActionOnNumbers.DivisionD(valueQuery[1, 1, 0], valueQuery[1, 1, 1])
                 - ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1])) * 100 * -1).ToString("0.00") + " %");
 
-            time[0].SetContent(GetTimeAndDays((int)valueQuery[0, 0, 0]));
-            time[1].SetContent(GetTimeAndDays((int)valueQuery[1, 0, 0]));
+            time[0].SetContent(ActionOnTime.GetTimeAndDays((int)valueQuery[0, 0, 0]));
+            time[1].SetContent(ActionOnTime.GetTimeAndDays((int)valueQuery[1, 0, 0]));
         }
 
         private void CreateActivityFooter()
@@ -381,23 +382,7 @@ namespace ApplicationTimeCounter
                 scaleLabel[1].Opacity(1);
                 scaleLabel[2].Opacity(1);
             }
-        }
-
-        private string GetTime(int timeInMinutes)
-        {
-            TimeSpan result = TimeSpan.FromMinutes(timeInMinutes);
-            return result.ToString("h':'m").Replace(":", " h ") + " min"; 
-        }
-
-        private string GetTimeAndDays(int timeInMinutes)
-        {
-            TimeSpan result = TimeSpan.FromMinutes(timeInMinutes);
-            TimeSpan day = TimeSpan.FromDays(1);
-            if (result > day)
-                return result.ToString("d'?:'h':'m").Replace("?:", " d ").Replace(":", " h ") + " min";
-            else
-                return result.ToString("h':'m").Replace(":", " h ") + " min"; 
-        }
+        }     
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
