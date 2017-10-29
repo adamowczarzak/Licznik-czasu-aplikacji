@@ -23,7 +23,7 @@ namespace ApplicationTimeCounter
         private string[] nameDay;
         private MyLabel[] average;
         private MyLabel[] growth;
-        private MyLabel[] percentageOfActivity;
+        private MyLabel[] time;
         private string[] namesActivity;
         private List<Label> footerActivity;
         private int index;
@@ -277,7 +277,7 @@ namespace ApplicationTimeCounter
 
         private void CreateTableWithInformation()
         {
-            percentageOfActivity = new MyLabel[2];
+            time = new MyLabel[2];
             growth = new MyLabel[2];
             average = new MyLabel[2];
 
@@ -289,7 +289,7 @@ namespace ApplicationTimeCounter
                     Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), horizontalAlignment: HorizontalAlignment.Left);
             new MyLabel(contentCanvas, "Wzrost do porzedniego", 120, 23, 10, 25, 256,
                     Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), horizontalAlignment: HorizontalAlignment.Left);
-            new MyLabel(contentCanvas, "Średnia wszystkich", 120, 23, 10, 25, 276,
+            new MyLabel(contentCanvas, "Czas użycia", 120, 23, 10, 25, 276,
                     Color.FromArgb(255, 115, 115, 115), Color.FromArgb(255, 117, 203, 255), horizontalAlignment: HorizontalAlignment.Left);
 
             for (int i = 0; i < 3; i++)
@@ -304,7 +304,7 @@ namespace ApplicationTimeCounter
                     growth[i] = new MyLabel(contentCanvas, "0 %", 120, 27, 11, 149 + (119 * i), 256,
                        Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 117, 3, 255));
 
-                    percentageOfActivity[i] = new MyLabel(contentCanvas, "0 %", 120, 27, 11, 149 + (119 * i), 276,
+                    time[i] = new MyLabel(contentCanvas, "0 %", 120, 27, 11, 149 + (119 * i), 276,
                        Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 117, 3, 255));
                 }
             }
@@ -317,7 +317,7 @@ namespace ApplicationTimeCounter
             List<int> activityID = new List<int>();
 
             activityID.Add(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
-            double[, ,] valueQuery = new double[2, 3, 2];
+            double[, ,] valueQuery = new double[2, 2, 2];
             valueQuery[0, 0, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-7).ToShortDateString(), DateTime.Now.ToShortDateString());
             valueQuery[1, 0, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-30).ToShortDateString(), DateTime.Now.ToShortDateString());
             valueQuery[0, 1, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-14).ToShortDateString(), DateTime.Now.AddDays(-7).ToShortDateString());
@@ -331,16 +331,16 @@ namespace ApplicationTimeCounter
             valueQuery[1, 1, 1] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-60).ToShortDateString(), DateTime.Now.AddDays(-30).ToShortDateString(), true);
 
 
-            average[0].SetContent((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]), 7.0) * 100).ToString("0.00") + " %");
-            average[1].SetContent((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]), 30.0) * 100).ToString("0.00") + " %");
-            
-            growth[0].SetContent(((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 1, 0], valueQuery[0, 1, 1]), 7.0)
-                - ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]), 7.0)) * 100 * -1).ToString("0.00") + " %");     
-            growth[1].SetContent(((ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 1, 0], valueQuery[1, 1, 1]), 30.0)
-                - ActionOnNumbers.DivisionD(ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]), 30.0)) * 100 * -1).ToString("0.00") + " %");
+            average[0].SetContent((ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]) * 100).ToString("0.00") + " %");
+            average[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1])* 100).ToString("0.00") + " %");
 
-            percentageOfActivity[0].SetContent((ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]) * 100).ToString("0.00") + " %");
-            percentageOfActivity[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]) * 100).ToString("0.00") + " %");
+            growth[0].SetContent(((ActionOnNumbers.DivisionD(valueQuery[0, 1, 0], valueQuery[0, 1, 1])
+                - ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1])) * 100 * -1).ToString("0.00") + " %");
+            growth[1].SetContent(((ActionOnNumbers.DivisionD(valueQuery[1, 1, 0], valueQuery[1, 1, 1])
+                - ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1])) * 100 * -1).ToString("0.00") + " %");
+
+            time[0].SetContent(GetTimeAndDays((int)valueQuery[0, 0, 0]));
+            time[1].SetContent(GetTimeAndDays((int)valueQuery[1, 0, 0]));
         }
 
         private void CreateActivityFooter()
@@ -386,8 +386,17 @@ namespace ApplicationTimeCounter
         private string GetTime(int timeInMinutes)
         {
             TimeSpan result = TimeSpan.FromMinutes(timeInMinutes);
-            string fromTimeString = result.ToString("h':'m");
-            return fromTimeString = fromTimeString.Replace(":", " h ") + " min"; 
+            return result.ToString("h':'m").Replace(":", " h ") + " min"; 
+        }
+
+        private string GetTimeAndDays(int timeInMinutes)
+        {
+            TimeSpan result = TimeSpan.FromMinutes(timeInMinutes);
+            TimeSpan day = TimeSpan.FromDays(1);
+            if (result > day)
+                return result.ToString("d'?:'h':'m").Replace("?:", " d ").Replace(":", " h ") + " min";
+            else
+                return result.ToString("h':'m").Replace(":", " h ") + " min"; 
         }
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
