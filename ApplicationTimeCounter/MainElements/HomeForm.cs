@@ -18,13 +18,14 @@ namespace ApplicationTimeCounter
         private BiggestResultsOfDay biggestResultsOfDay;
         private SpendingTime spendingTime;
         private AnimatedClock animatedClock;
-        private MyLabel titleAplication;
+        private MyLabel titleAplication;      
 
 
         public HomeForm(Canvas contentPage, ref ViewContent viewContent)
         {            
             this.viewContent = viewContent;
             this.contentPage = contentPage;
+            viewContent.ContentDelegateLoad +=viewContent_Delegate;
             canvases = new Canvas[6];
 
             CreatePanelCanvas();
@@ -37,11 +38,11 @@ namespace ApplicationTimeCounter
 
             ShowHomeForm();
 
-        }
-
+        }     
+   
         public void ShowHomeForm()
-        {
-            viewContent.ChangeContent(MainCanvasHome);
+        {                       
+            viewContent.ChangeContent(MainCanvasHome);          
         }
 
         public void UpdateView()
@@ -60,6 +61,11 @@ namespace ApplicationTimeCounter
             string title = activeWindow.GetNameActiveWindow();
             if (title != "Brak aktywnego okna") titleAplication.SetContent(title);
         }
+
+        private void viewContent_Delegate(Visibility visibility)
+        {
+            HiddenOrVisiibleElements(visibility);
+        } 
 
         private void CreatePanelCanvas()
         {
@@ -81,6 +87,18 @@ namespace ApplicationTimeCounter
                     startY += Convert.ToInt32(canvases[i].Height) + 10;
                     startX = 15;
                 }
+            }
+        }
+
+        private void HiddenOrVisiibleElements(Visibility visibility)
+        {
+            for (int i = 0; i < canvases[5].Children.Count; i++)
+            {
+                canvases[5].Children[i].Visibility = visibility;
+            }
+            for (int i = 0; i < canvases[3].Children.Count; i++)
+            {
+                canvases[3].Children[i].Visibility = visibility;
             }
         }
     }

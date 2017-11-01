@@ -2,7 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Windows;
 using ApplicationTimeCounter.Controls;
+
 
 namespace ApplicationTimeCounter
 {
@@ -12,7 +14,6 @@ namespace ApplicationTimeCounter
         private Canvas contentPage;
         private MyLabel notAssignedApplications;
         private MyLabel numberActivity;
-       // private DispatcherTimer timerAnimation;
 
         private ViewContent viewContent;
 
@@ -20,11 +21,14 @@ namespace ApplicationTimeCounter
         {
             this.contentPage = contentPage;
             this.viewContent = viewContent;
-
-           // timerAnimation = new DispatcherTimer();
-           // timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            viewContent.ContentDelegateLoad += viewContent_Delegate;
 
             CreateCategoryForm();
+        }
+
+        private void viewContent_Delegate(System.Windows.Visibility visibility)
+        {
+            HiddenOrVisiibleElements(visibility);
         }
 
         private void CreateCategoryForm()
@@ -126,6 +130,20 @@ namespace ApplicationTimeCounter
             notAssignedApplications.SetFontColor(Color.FromArgb(255, (byte)red, (byte)green, 0));
         }
 
+        private void HiddenOrVisiibleElements(Visibility visibility)
+        {
+            if (MainCanvasCategory.Children.Count > 2)
+            {
+                foreach(Canvas s in MainCanvasCategory.Children)
+                {
+                    for(int i = 0; i < s.Children.Count; i++)
+                    {
+                        s.Children[i].Visibility = visibility;
+                    }
+                }
+            }
+        }
+
         private void buttonAssignActivity_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
@@ -156,8 +174,6 @@ namespace ApplicationTimeCounter
         {
             var tempRef = MainCanvasCategory;
             ShowActivity showActivity = new ShowActivity(ref tempRef);
-            //AssignedActivity assignedActivity = new AssignedActivity(ref tempRef);
-            //LoadingWindow loadingWindows = new LoadingWindow(MainCanvasCategory);
         }
 
         private void empty2_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)

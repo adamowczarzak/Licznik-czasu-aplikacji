@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -11,6 +12,10 @@ namespace ApplicationTimeCounter
         private DispatcherTimer timerAnimation;
         private Canvas lastContentPage;
         private Canvas newContentPage;
+
+    
+        public delegate void ContentDelegate(Visibility visibility);
+        public event ContentDelegate ContentDelegateLoad;
 
         public ViewContent()
         {
@@ -29,6 +34,7 @@ namespace ApplicationTimeCounter
                 this.newContentPage = newContentPage;
                 if (this.newContentPage != lastContentPage)
                 {
+                    ContentDelegateLoad(Visibility.Hidden);
                     TranslateTransform moveStartPosition = new TranslateTransform(this.newContentPage.Width, 0);
                     this.newContentPage.RenderTransform = moveStartPosition;
                     timerAnimation.Start();
@@ -71,6 +77,8 @@ namespace ApplicationTimeCounter
                 TranslateTransform startPosition = new TranslateTransform(newContentPage.Width + 400, 0);
                 lastContentPage.RenderTransform = startPosition;
             }
+            ContentDelegateLoad(Visibility.Visible);
         }
+
     }
 }
