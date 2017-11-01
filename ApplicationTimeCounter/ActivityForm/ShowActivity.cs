@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Linq;
 using ApplicationTimeCounter.Controls;
 using ApplicationTimeCounter.Other;
+using ApplicationTimeCounter.AdditionalWindows;
 
 namespace ApplicationTimeCounter
 {
@@ -182,7 +183,7 @@ namespace ApplicationTimeCounter
                 {
                     new MyRectangle(contentCanvas, 1, 3, Color.FromArgb(100, 150, 150, 150), 88 + (i * 40), 50 + (j * 6));
                 }
-                charts[i] = new MyRectangle(contentCanvas, 16, 120, Color.FromArgb(255, 190, 190, 190), 80 + (i * 40), 80);
+                charts[i] = new MyRectangle(contentCanvas, 16, 0, Color.FromArgb(255, 190, 190, 190), 80 + (i * 40), 80);
                 if (i == 6) charts[i].SetFillColor(Color.FromArgb(255, 117, 203, 255));
                 new MyCircle(contentCanvas, 4, 0, Color.FromArgb(255, 180, 180, 180), 86 + (i * 40), 48, 1, true);
                 new MyLabel(contentCanvas, nameDay[GetNumberDayOfWeek(i)], 50, 26, 12, 64 + (i * 40), 24, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
@@ -241,6 +242,7 @@ namespace ApplicationTimeCounter
             buttonDeleteAllApplication.Background = new SolidColorBrush(Color.FromArgb(120, 255, 93, 93));
             buttonDeleteAllApplication.MouseMove += buttonDeleteAllApplication_MouseMove;
             buttonDeleteAllApplication.MouseLeave += buttonDeleteAllApplication_MouseLeave;
+            buttonDeleteAllApplication.MouseLeftButtonDown += buttonDeleteAllApplication_MouseLeftButtonDown;
 
             Label buttonEditActivity = ButtonCreator.CreateButton(contentCanvas, "Edytuj aktywność", 120, 28, 12, 450, 260,
                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 0, 255, 0), 1);
@@ -248,6 +250,8 @@ namespace ApplicationTimeCounter
             buttonEditActivity.MouseMove += buttonEditActivity_MouseMove;
             buttonEditActivity.MouseLeave += buttonEditActivity_MouseLeave;
         }
+
+        
 
         private void UpdateListOfAddedApps()
         {
@@ -382,7 +386,15 @@ namespace ApplicationTimeCounter
                 scaleLabel[1].Opacity(1);
                 scaleLabel[2].Opacity(1);
             }
-        }     
+        }
+
+
+        private void buttonDeleteAllApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteApplicationWithAcitivty);
+            dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
+            dialogWindow.ShowDialog();   
+        }
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

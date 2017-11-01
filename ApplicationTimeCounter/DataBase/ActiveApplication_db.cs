@@ -24,6 +24,17 @@ namespace ApplicationTimeCounter
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
+        public static bool DeleteAllApplicationWithActivity(int idActivity)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = 1 WHERE IdNameActivity  = " + idActivity;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
+        public static bool DeleteApplicationWithActivity(string idApplication)
+        {
+            return AddActivityToApplication(idApplication, ApplicationTimeCounter.ActiveApplication.IdNameActivityEnum.Lack.ToString());
+        }
+
         internal static List<ActiveApplication> GetNonAssignedApplication()
         {
             ActiveApplication parameters = new ActiveApplication();

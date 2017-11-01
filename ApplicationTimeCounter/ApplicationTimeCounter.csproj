@@ -75,6 +75,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AdditionalWindows\DialogWindow.xaml.cs">
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationObjectsType\Enums.cs" />
     <Compile Include="Other\ActionOnNumbers.cs" />
     <Compile Include="ApplicationObjectsType\ActiveApplication.cs" />
     <Compile Include="DataBase\ActiveApplication_db.cs" />
@@ -111,6 +115,10 @@
     <Compile Include="HomeForm\TimeUsingApplication.cs" />
     <Compile Include="AppLook\ViewContent.cs" />
     <Page Include="ActivityForm\AddActivity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AdditionalWindows\DialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

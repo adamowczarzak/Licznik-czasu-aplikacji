@@ -12,7 +12,7 @@ namespace ApplicationTimeCounter
         private Canvas contentPage;
         private MyLabel notAssignedApplications;
         private MyLabel numberActivity;
-        private DispatcherTimer timerAnimation;
+       // private DispatcherTimer timerAnimation;
 
         private ViewContent viewContent;
 
@@ -21,8 +21,8 @@ namespace ApplicationTimeCounter
             this.contentPage = contentPage;
             this.viewContent = viewContent;
 
-            timerAnimation = new DispatcherTimer();
-            timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 10);
+           // timerAnimation = new DispatcherTimer();
+           // timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 10);
 
             CreateCategoryForm();
         }
