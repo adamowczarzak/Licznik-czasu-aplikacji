@@ -81,5 +81,11 @@ namespace ApplicationTimeCounter.Controls
             ToolTipService.SetInitialShowDelay(myLabel, 1000);
         }
 
+        public void Resize(int height, int width)
+        {
+            myLabel.Height = height;
+            myLabel.Width = width;
+        }
+
     }
 }

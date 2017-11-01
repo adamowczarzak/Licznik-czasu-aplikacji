@@ -11,6 +11,10 @@ namespace ApplicationTimeCounter.AdditionalWindows
         private DialogWindowsMessage dialogWindowsMessage;
         private int activityID;
 
+        public delegate void CloseWindowDelegate();
+        public event CloseWindowDelegate CloseWindowAcceptButtonDelegate;
+        public event CloseWindowDelegate CloseWindowCancelButtonDelegate;
+
         public DialogWindow(DialogWindowsState dialogWindowsState, DialogWindowsMessage dialogWindowsMessage)
         {
             InitializeComponent();
@@ -54,9 +58,11 @@ namespace ApplicationTimeCounter.AdditionalWindows
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
+            CloseWindowCancelButtonDelegate();
             this.Close();
         }
-
+            
+           
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
             switch (dialogWindowsMessage)
@@ -69,6 +75,7 @@ namespace ApplicationTimeCounter.AdditionalWindows
                     break;
             }
             this.Close();
+            CloseWindowAcceptButtonDelegate();
         }
 
         private void DeleteApplicationWithActivity()

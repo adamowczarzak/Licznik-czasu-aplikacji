@@ -8,6 +8,7 @@ namespace ApplicationTimeCounter.Controls
     {
         Rectangle myRectangle;
         MyLabel toolTip;
+        bool enableResizeToolTip;
 
         public MyRectangle(Canvas canvas, int width, int height, Color color, double x, double y,
             int strokeThickness = 0, double opacity = 1)
@@ -25,6 +26,7 @@ namespace ApplicationTimeCounter.Controls
             Canvas.SetTop(myRectangle, y);
             canvas.Children.Add(myRectangle);
 
+            enableResizeToolTip = true;
             toolTip = new MyLabel(canvas, "", width, height, 10, x, y, Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
         }
 
@@ -32,6 +34,9 @@ namespace ApplicationTimeCounter.Controls
         {
             myRectangle.Height = height;
             myRectangle.Width = width;
+
+            if (enableResizeToolTip)
+                toolTip.Resize(height, width);
         }
 
         public void Position(double x = default(double), double y = default(double))
@@ -40,6 +45,9 @@ namespace ApplicationTimeCounter.Controls
             if (object.Equals(y, default(double))) y = Canvas.GetTop(myRectangle);
             Canvas.SetLeft(myRectangle, x);
             Canvas.SetTop(myRectangle, y);
+
+            if (enableResizeToolTip)
+                toolTip.Position(x, y);
         }
 
         public void Rotate(double angle, double centerX, double centerY)
@@ -61,6 +69,11 @@ namespace ApplicationTimeCounter.Controls
         public void ToolTip(string content)
         {
             toolTip.ToolTip(content);
+        }
+
+        public void EnableResizeToolTip(bool ifResize)
+        {
+            enableResizeToolTip = ifResize;
         }
 
     }

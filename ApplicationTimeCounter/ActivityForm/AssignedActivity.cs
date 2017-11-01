@@ -19,6 +19,9 @@ namespace ApplicationTimeCounter
         private BackgroundWorker backgroundWorkerLoadingWindow;
         private LoadingWindow loadingWindow;
 
+        public delegate void CloseWindowDelegate();
+        public event CloseWindowDelegate CloseWindowAssignedActivityDelegate;
+
         public AssignedActivity(ref Canvas canvas)
         {
             this.canvas = canvas;
@@ -51,7 +54,7 @@ namespace ApplicationTimeCounter
         {
             mainCanvas.Children.RemoveRange(0, mainCanvas.Children.Count);
             this.canvas.Children.Remove(mainCanvas);
-
+            CloseWindowAssignedActivityDelegate();
         }
 
         private void UpdateContent(object sender, DoWorkEventArgs e)

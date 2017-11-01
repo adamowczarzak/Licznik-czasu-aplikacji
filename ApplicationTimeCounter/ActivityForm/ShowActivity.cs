@@ -31,6 +31,9 @@ namespace ApplicationTimeCounter
         private int index;
         private List<ActiveApplication> activeApplication;
 
+        public delegate void CloseWindowDelegate();
+        public event CloseWindowDelegate CloseWindowShowActivityDelegate;
+
         public ShowActivity(ref Canvas canvas)
         {
             this.canvas = canvas;
@@ -183,7 +186,8 @@ namespace ApplicationTimeCounter
                 {
                     new MyRectangle(contentCanvas, 1, 3, Color.FromArgb(100, 150, 150, 150), 88 + (i * 40), 50 + (j * 6));
                 }
-                charts[i] = new MyRectangle(contentCanvas, 16, 0, Color.FromArgb(255, 190, 190, 190), 80 + (i * 40), 80);
+                charts[i] = new MyRectangle(contentCanvas, 16, 150, Color.FromArgb(255, 190, 190, 190), 80 + (i * 40), 50);
+                charts[i].EnableResizeToolTip(false);
                 if (i == 6) charts[i].SetFillColor(Color.FromArgb(255, 117, 203, 255));
                 new MyCircle(contentCanvas, 4, 0, Color.FromArgb(255, 180, 180, 180), 86 + (i * 40), 48, 1, true);
                 new MyLabel(contentCanvas, nameDay[GetNumberDayOfWeek(i)], 50, 26, 12, 64 + (i * 40), 24, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
@@ -208,7 +212,7 @@ namespace ApplicationTimeCounter
                     timeAvtivity[i] = dailyUseOfApplication_db.GetTimeForNumberActivity(activityID);
             }
 
-            double maxValue = ActionOnNumbers.DivisionD(timeAvtivity.Max(), 60);
+            double maxValue = ActionOnNumbers.DivisionD((timeAvtivity.Max() > 2)? timeAvtivity.Max() : 3, 60);
             for (int i = 0; i < 4; i++)
             {
                 scaleLabel[i].SetContent((((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h");
@@ -221,6 +225,15 @@ namespace ApplicationTimeCounter
                     double scale = maxValue / Convert.ToDouble(scaleLabel[0].GetContent().Replace(" h", ""));
                     charts[i].Resize((int)(timeAvtivity[i] * (120 * scale) / timeAvtivity.Max()), 16);
                     charts[i].Position(y: 200 - timeAvtivity[i] * (120 * scale / timeAvtivity.Max()));                
+                    charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    charts[i].Resize(0, 16);
+                    charts[i].Position(80);
                     charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
                 }
             }
@@ -393,13 +406,23 @@ namespace ApplicationTimeCounter
         {
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteApplicationWithAcitivty);
             dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
+            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
             dialogWindow.ShowDialog();   
         }
+
+        private void dialogWindow_CloseWindowAcceptButtonDelegate()
+        {
+            Update();
+        }
+
+        private void dialogWindow_CloseWindowCancelButtonDelegate(){}
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             mainCanvas.Children.RemoveRange(0, mainCanvas.Children.Count);
             this.canvas.Children.Remove(mainCanvas);
+            CloseWindowShowActivityDelegate();
         }
 
         private void buttonExit_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

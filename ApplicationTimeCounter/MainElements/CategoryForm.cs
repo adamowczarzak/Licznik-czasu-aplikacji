@@ -26,6 +26,18 @@ namespace ApplicationTimeCounter
             CreateCategoryForm();
         }
 
+        public void ShowCategoryForm()
+        {
+            viewContent.ChangeContent(MainCanvasCategory);
+            UpdateView();
+        }
+
+        public void UpdateView()
+        {
+            GetNotAssignedApplicationsAndSetLabel();
+            GetAllActivityAndSetLabel();
+        }
+
         private void viewContent_Delegate(System.Windows.Visibility visibility)
         {
             HiddenOrVisiibleElements(visibility);
@@ -42,19 +54,7 @@ namespace ApplicationTimeCounter
             MyLabel label = new MyLabel(canvasMembership, "Przynależność", 250, 40, 20, 60, 60, Color.FromArgb(255, 255, 255, 255),
                 Color.FromArgb(0, 255, 255, 255));
 
-            CreateCanvasActivityWithElements();                       
-        }
-
-        public void ShowCategoryForm()
-        {
-            viewContent.ChangeContent(MainCanvasCategory);
-            UpdateView();
-        }
-
-        public void UpdateView()
-        {
-            GetNotAssignedApplicationsAndSetLabel();
-            GetAllActivityAndSetLabel();
+            CreateCanvasActivityWithElements();
         }
 
         private void CreateCanvasActivityWithElements()
@@ -158,6 +158,7 @@ namespace ApplicationTimeCounter
         {
             var tempRef = MainCanvasCategory;
             AssignedActivity assignedActivity = new AssignedActivity(ref tempRef);
+            assignedActivity.CloseWindowAssignedActivityDelegate += showActivity_Update;
         }
 
         private void buttonShowActivity_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
@@ -174,6 +175,12 @@ namespace ApplicationTimeCounter
         {
             var tempRef = MainCanvasCategory;
             ShowActivity showActivity = new ShowActivity(ref tempRef);
+            showActivity.CloseWindowShowActivityDelegate += showActivity_Update; 
+        }
+
+        private void showActivity_Update()
+        {
+            UpdateView();
         }
 
         private void empty2_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
