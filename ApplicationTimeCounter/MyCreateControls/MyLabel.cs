@@ -6,7 +6,8 @@ namespace ApplicationTimeCounter.Controls
 {
     class MyLabel : Label
     {
-        Label myLabel = new Label();
+        private Label myLabel = new Label();
+
         public MyLabel(Canvas canvas, string content, int widthLabel, int heightLabel, int labelFontSize,
             double x, double y, Color colorFont, Color colorBorder, int borderThickness = 0,
             HorizontalAlignment horizontalAlignment = HorizontalAlignment.Center,
@@ -85,6 +86,18 @@ namespace ApplicationTimeCounter.Controls
         {
             myLabel.Height = height;
             myLabel.Width = width;
+        }
+
+        new public Visibility Visibility
+        {
+            get
+            {
+                return myLabel.Visibility;
+            }
+            set
+            {
+                myLabel.Visibility = value;
+            }
         }
 
     }

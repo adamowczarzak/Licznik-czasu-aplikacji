@@ -136,8 +136,9 @@ namespace ApplicationTimeCounter
             Label buttonAdd = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 530, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
             buttonAdd.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
-            buttonAdd.MouseMove += buttonAdd_MouseMove;
+            buttonAdd.MouseEnter += buttonAdd_MouseEnter;
             buttonAdd.MouseLeave += buttonAdd_MouseLeave;
+            buttonAdd.MouseLeftButtonDown += buttonAdd_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonAdd, "Dodaj nową aktywność");
 
             new MyLabel(mainCanvas, "-", 30, 50, 30, 560, 6, Color.FromArgb(255, 70, 70, 70),
@@ -147,7 +148,7 @@ namespace ApplicationTimeCounter
             Label buttonDelete = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 560, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
             buttonDelete.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
-            buttonDelete.MouseMove += buttonDelete_MouseMove;
+            buttonDelete.MouseEnter += buttonDelete_MouseEnter;
             buttonDelete.MouseLeave += buttonDelete_MouseLeave;
             ButtonCreator.SetToolTip(buttonDelete, "Usuń aktywność");
 
@@ -158,11 +159,13 @@ namespace ApplicationTimeCounter
             Label buttonExit = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 590, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
             buttonExit.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
-            buttonExit.MouseMove += buttonExit_MouseMove;
+            buttonExit.MouseEnter += buttonExit_MouseEnter;
             buttonExit.MouseLeave += buttonExit_MouseLeave;
             buttonExit.MouseLeftButtonDown += buttonExit_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonExit, "Zamknij okno aktywności");
         }
+
+        
 
         private void CreateChart()
         {
@@ -253,18 +256,17 @@ namespace ApplicationTimeCounter
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 1);
             ButtonCreator.SetToolTip(buttonDeleteAllApplication, "Usuń wszystkie aplikacje z aktywności");
             buttonDeleteAllApplication.Background = new SolidColorBrush(Color.FromArgb(120, 255, 93, 93));
-            buttonDeleteAllApplication.MouseMove += buttonDeleteAllApplication_MouseMove;
+            buttonDeleteAllApplication.MouseEnter += buttonDeleteAllApplication_MouseEnter;
             buttonDeleteAllApplication.MouseLeave += buttonDeleteAllApplication_MouseLeave;
             buttonDeleteAllApplication.MouseLeftButtonDown += buttonDeleteAllApplication_MouseLeftButtonDown;
 
             Label buttonEditActivity = ButtonCreator.CreateButton(contentCanvas, "Edytuj aktywność", 120, 28, 12, 450, 260,
                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 0, 255, 0), 1);
             buttonEditActivity.Background = new SolidColorBrush(Color.FromArgb(60, 0, 200, 0));
-            buttonEditActivity.MouseMove += buttonEditActivity_MouseMove;
+            buttonEditActivity.MouseEnter += buttonEditActivity_MouseEnter;
             buttonEditActivity.MouseLeave += buttonEditActivity_MouseLeave;
+            buttonEditActivity.MouseLeftButtonDown += buttonEditActivity_MouseLeftButtonDown;
         }
-
-        
 
         private void UpdateListOfAddedApps()
         {
@@ -284,7 +286,7 @@ namespace ApplicationTimeCounter
                 Label buttonDeleteApplication = ButtonCreator.CreateButton(applicationInActivity, "x", 25, 25, 8, 110, 3 + (29 * i),
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
                 buttonDeleteApplication.Background = new SolidColorBrush(Color.FromArgb(155, 236, 236, 236));
-                buttonDeleteApplication.MouseMove += buttonDeleteApplication_MouseMove;
+                buttonDeleteApplication.MouseEnter += buttonDeleteApplication_MouseEnter;
                 buttonDeleteApplication.MouseLeave += buttonDeleteApplication_MouseLeave;
                 buttonDeleteApplication.Name = "ID_" + i;
                 ButtonCreator.SetToolTip(buttonDeleteApplication, "Usuń aplikacje z aktywności");
@@ -401,6 +403,39 @@ namespace ApplicationTimeCounter
             }
         }
 
+        private void buttonAdd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SetEditModeActivity();
+        }
+
+        private void buttonEditActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SetEditModeActivity();
+        }
+
+        private void SetEditModeActivity()
+        {
+            if (nameActivity.Visibility == Visibility.Visible)
+            {
+                nameActivity.Visibility = Visibility.Hidden;
+                TextBox textBox = new TextBox
+                {
+                    Width = 270,
+                    Height = 26,
+                    FontSize = 18,
+                    MaxLength = 30,
+                };
+                Canvas.SetLeft(textBox, 15);
+                Canvas.SetTop(textBox, 15);
+                mainCanvas.Children.Add(textBox);
+
+                Label buttonSaveEditActivity = ButtonCreator.CreateButton(mainCanvas, "Zapisz", 80, 28, 12, 300, 14,
+                   Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1);
+                buttonSaveEditActivity.Background = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+                buttonSaveEditActivity.MouseEnter += buttonSaveEditActivity_MouseEnter;
+                buttonSaveEditActivity.MouseLeave += buttonSaveEditActivity_MouseLeave;
+            }
+        }
 
         private void buttonDeleteAllApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -425,12 +460,22 @@ namespace ApplicationTimeCounter
             CloseWindowShowActivityDelegate();
         }
 
+        private void buttonSaveEditActivity_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+        }
+
+        private void buttonSaveEditActivity_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(155, 200, 200, 200));
+        }
+
         private void buttonExit_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
         }
 
-        private void buttonExit_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void buttonExit_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(120, 132, 177, 255));
         }
@@ -440,7 +485,7 @@ namespace ApplicationTimeCounter
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
         }
 
-        private void buttonDelete_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void buttonDelete_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(120, 255, 132, 132));
         }
@@ -450,12 +495,12 @@ namespace ApplicationTimeCounter
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
         }
 
-        private void buttonAdd_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void buttonAdd_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(120, 132, 255, 140));
         }
 
-        private void buttonDeleteApplication_MouseMove(object sender, MouseEventArgs e)
+        private void buttonDeleteApplication_MouseEnter(object sender, MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 236, 236, 236));
         }
@@ -465,7 +510,7 @@ namespace ApplicationTimeCounter
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(155, 236, 236, 236));
         }
 
-        private void buttonDeleteAllApplication_MouseMove(object sender, MouseEventArgs e)
+        private void buttonDeleteAllApplication_MouseEnter(object sender, MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(180, 255, 93, 93));
         }
@@ -480,7 +525,7 @@ namespace ApplicationTimeCounter
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(60, 0, 200, 0));
         }
 
-        private void buttonEditActivity_MouseMove(object sender, MouseEventArgs e)
+        private void buttonEditActivity_MouseEnter(object sender, MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(160, 0, 250, 0));
         }

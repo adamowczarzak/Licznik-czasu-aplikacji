@@ -65,7 +65,7 @@ namespace ApplicationTimeCounter
                         Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 255, 255), 1);
                 activity.Height += 29;
 
-                buttonActivity.MouseMove += buttonActivity_MouseMove;
+                buttonActivity.MouseEnter += buttonActivity_MouseEnter;
                 buttonActivity.MouseLeave += buttonActivity_MouseLeave;
                 buttonActivity.MouseLeftButtonDown += buttonActivity_MouseLeftButtonDown;
                 buttonActivity.Name = "ID_" + dictioanry.Value;
@@ -101,7 +101,7 @@ namespace ApplicationTimeCounter
             button.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
 
-        private void buttonActivity_MouseMove(object sender, MouseEventArgs e)
+        private void buttonActivity_MouseEnter(object sender, MouseEventArgs e)
         {
             Label button = (Label)sender;
             button.Background = new SolidColorBrush(Color.FromArgb(100, 0, 0, 200));

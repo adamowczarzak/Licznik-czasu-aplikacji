@@ -82,7 +82,7 @@
     </Window.Resources>
     <Grid>
         <Image x:Name="upperBar" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Source="Pictures/upperBar.png" Width="850" Cursor="Hand" MouseDown="upperBar_MouseDown" OpacityMask="#FF007BFF"/>
-        <Image x:Name="hideWindow" HorizontalAlignment="Left" Height="40" Margin="810,0,0,0" VerticalAlignment="Top" Width="40" Source="Pictures/hideWindow.png" Cursor="Hand" MouseMove="hideWindow_MouseMove" MouseLeave="hideWindow_MouseLeave" MouseLeftButtonDown="hideWindow_MouseLeftButtonDown"/>
+        <Image x:Name="hideWindow" HorizontalAlignment="Left" Height="40" Margin="810,0,0,0" VerticalAlignment="Top" Width="40" Source="Pictures/hideWindow.png" Cursor="Hand" MouseLeave="hideWindow_MouseLeave" MouseLeftButtonDown="hideWindow_MouseLeftButtonDown" MouseEnter="hideWindow_MouseEnter"/>
         <Canvas HorizontalAlignment="Left" Height="410" Margin="0,40,0,0" VerticalAlignment="Top" Width="230" Background="#FF040023" Panel.ZIndex="1"/>
         <Image HorizontalAlignment="Left" Margin="25,40,0,0" VerticalAlignment="Top" Source="Pictures/Logo.png" Width="150" Height="70" Panel.ZIndex="1"/>
         <Button x:Name="homeButton" Content="  Start" HorizontalAlignment="Left" Height="48" Margin="0,174,0,0" Style="{DynamicResource ButtonStyle1}" VerticalAlignment="Top" Width="230" FontFamily="Verdana" FontSize="18.667" Foreground="#FFE2E2E2" Cursor="Hand" Panel.ZIndex="1" Click="homeButton_Click">

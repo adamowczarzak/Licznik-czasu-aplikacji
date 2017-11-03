@@ -110,7 +110,7 @@ namespace ApplicationTimeCounter
 
         //********************* Wygląd ******************************************//
 
-        private void hideWindow_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void hideWindow_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             interfaceApplication.IfCanHighLightHideWindow(hideWindow);
         }
@@ -136,20 +136,6 @@ namespace ApplicationTimeCounter
         private void categoryButton_Click(object sender, RoutedEventArgs e)
         {        
             categoryForm.ShowCategoryForm();  
-        }
-
-        
-
-
-       
-
-
-       
-
-
-
-        
-
-        
+        }        
     }
 }
