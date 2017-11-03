@@ -25,11 +25,16 @@ namespace ApplicationTimeCounter
         private string[] nameDay;
         private MyLabel[] average;
         private MyLabel[] growth;
-        private MyLabel[] time;
+        private MyLabel[] time;       
         private string[] namesActivity;
         private List<Label> footerActivity;
         private int index;
+        private bool isEditMode;
         private List<ActiveApplication> activeApplication;
+
+        private TextBox nameEditActivity;
+        private Label buttonSaveEditActivity;
+        private Label buttonClose;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowShowActivityDelegate;
@@ -76,32 +81,35 @@ namespace ApplicationTimeCounter
             UpdateListOfAddedApps();
             UpdateChart();
             UpdateTableWithInformation();
-            UpdateActivityFooter();
+            UpdateActivityFooter(index);
         }
 
         private void mainCanvas_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Left || e.Key == Key.Right)
+            if (nameActivity.Visibility == Visibility.Visible)
             {
-                BackgroundWorker backgroundWorkerLoadingWindow = new BackgroundWorker();
-                backgroundWorkerLoadingWindow.DoWork += backgroundWorkerLoadingWindow_DoWork;
-                backgroundWorkerLoadingWindow.RunWorkerAsync();
-            }
-            if (e.Key == Key.Right)
-            {
-                if (index < namesActivity.Length - 1)
+                if (e.Key == Key.Left || e.Key == Key.Right)
                 {
-                    index++;
-                    Update();
+                    BackgroundWorker backgroundWorkerLoadingWindow = new BackgroundWorker();
+                    backgroundWorkerLoadingWindow.DoWork += backgroundWorkerLoadingWindow_DoWork;
+                    backgroundWorkerLoadingWindow.RunWorkerAsync();
                 }
-
-            }
-            if (e.Key == Key.Left)
-            {
-                if (index > 0)
+                if (e.Key == Key.Right)
                 {
-                    index--;
-                    Update();
+                    if (index < namesActivity.Length - 1)
+                    {
+                        index++;
+                        Update();
+                    }
+
+                }
+                if (e.Key == Key.Left)
+                {
+                    if (index > 0)
+                    {
+                        index--;
+                        Update();
+                    }
                 }
             }
         }
@@ -373,7 +381,7 @@ namespace ApplicationTimeCounter
                 footerActivity[i].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
             }
         }
-        private void UpdateActivityFooter()
+        private void UpdateActivityFooter(int index)
         {
             for (int i = 0; i < namesActivity.Length; i++)
             {
@@ -405,11 +413,13 @@ namespace ApplicationTimeCounter
 
         private void buttonAdd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            isEditMode = false;
             SetEditModeActivity();
         }
 
         private void buttonEditActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            isEditMode = true;
             SetEditModeActivity();
         }
 
@@ -418,24 +428,68 @@ namespace ApplicationTimeCounter
             if (nameActivity.Visibility == Visibility.Visible)
             {
                 nameActivity.Visibility = Visibility.Hidden;
-                TextBox textBox = new TextBox
+                nameEditActivity = new TextBox
                 {
                     Width = 270,
                     Height = 26,
                     FontSize = 18,
                     MaxLength = 30,
                 };
-                Canvas.SetLeft(textBox, 15);
-                Canvas.SetTop(textBox, 15);
-                mainCanvas.Children.Add(textBox);
+                Canvas.SetLeft(nameEditActivity, 15);
+                Canvas.SetTop(nameEditActivity, 15);
+                mainCanvas.Children.Add(nameEditActivity);
 
-                Label buttonSaveEditActivity = ButtonCreator.CreateButton(mainCanvas, "Zapisz", 80, 28, 12, 300, 14,
+                buttonSaveEditActivity = ButtonCreator.CreateButton(mainCanvas, "Dodaj", 80, 28, 12, 300, 14,
                    Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1);
                 buttonSaveEditActivity.Background = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
                 buttonSaveEditActivity.MouseEnter += buttonSaveEditActivity_MouseEnter;
                 buttonSaveEditActivity.MouseLeave += buttonSaveEditActivity_MouseLeave;
+                buttonSaveEditActivity.MouseLeftButtonDown += buttonSaveEditActivity_MouseLeftButtonDown;
+
+                buttonClose = ButtonCreator.CreateButton(mainCanvas, "X", 25, 25, 11, 400, 16,
+                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 1);
+                buttonClose.Background = new SolidColorBrush(Color.FromArgb(185, 240, 0, 0));
+                buttonClose.FontWeight = FontWeights.ExtraBold;
+                ButtonCreator.SetToolTip(buttonClose, "Anuluj");
+                buttonClose.MouseEnter += buttonClose_MouseEnter;
+                buttonClose.MouseLeave += buttonClose_MouseLeave;
+                buttonClose.MouseLeftButtonDown += buttonClose_MouseLeftButtonDown;
+
+                if (isEditMode)
+                {
+                    buttonSaveEditActivity.Content = "Zmień";
+                    nameEditActivity.Text = namesActivity[index];
+                }
+                else
+                {
+                    footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, 0 + (footerActivity.Count * 120), 320,
+                    Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
+                    footerActivity[footerActivity.Count-1].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
+                    UpdateActivityFooter(footerActivity.Count - 1);
+                }
+            }
+        }           
+
+        private void buttonSaveEditActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(isEditMode)
+            { 
+
             }
         }
+        private void buttonClose_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            mainCanvas.Children.Remove(nameEditActivity);
+            mainCanvas.Children.Remove(buttonSaveEditActivity);
+            mainCanvas.Children.Remove(buttonClose);
+            nameActivity.Visibility = Visibility.Visible;
+            if (!isEditMode)
+            {
+                contentCanvas.Children.Remove(footerActivity[footerActivity.Count - 1]);
+                footerActivity.RemoveAt(footerActivity.Count - 1);
+                UpdateActivityFooter(index);
+            }
+        } 
 
         private void buttonDeleteAllApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -528,6 +582,16 @@ namespace ApplicationTimeCounter
         private void buttonEditActivity_MouseEnter(object sender, MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(160, 0, 250, 0));
+        }
+
+        private void buttonClose_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(185, 240, 0, 0));
+        }
+
+        private void buttonClose_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(255, 240, 0, 0));
         }
     }
 }
