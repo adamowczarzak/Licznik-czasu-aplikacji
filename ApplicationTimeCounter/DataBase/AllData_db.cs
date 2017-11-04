@@ -82,10 +82,10 @@ namespace ApplicationTimeCounter
                     if (CheckIfDateExistInBase((-i).ToString()) == false)
                     {
                         if (Add(1, 60 * 24, -i, true, true))
-                            ApplicationLog.LogService.AddRaportInformation("Information\tTabela 'alldata' została uzupełniona o brakujące rekordy.");
+                            ApplicationLog.LogService.AddRaportInformation("Tabela 'alldata' została uzupełniona o brakujące rekordy.");
                         else
                         {
-                            ApplicationLog.LogService.AddRaportError("Error !!!\tNie Udało się dodać nowego rekordu do tabeli 'alldate'",
+                            ApplicationLog.LogService.AddRaportError("Nie Udało się dodać nowego rekordu do tabeli 'alldate'",
                                 ApplicationLog.LogService.GetNameCurrentMethod() + "()",
                                 System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\AllData_db.cs");
                         }

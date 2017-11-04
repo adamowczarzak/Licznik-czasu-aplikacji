@@ -60,7 +60,7 @@ namespace ApplicationTimeCounter
             }
             catch (Exception)
             {
-                ApplicationLog.LogService.AddRaportError("Error !!!\tNie udało się otworzyć pliku konfiguracyjnego.",
+                ApplicationLog.LogService.AddRaportError("Nie udało się otworzyć pliku konfiguracyjnego.",
                     ApplicationLog.LogService.GetNameCurrentMethod() + "()",
                     System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\RunApplication.cs");
                 isLoadAndConnect = false;

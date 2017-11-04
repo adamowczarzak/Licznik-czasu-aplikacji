@@ -50,7 +50,7 @@ namespace ApplicationLog
         public static void AddRaportError(string statement, string nameMethod, string path)
         {
             CheckIfVariablesIsCorrect(ref statement, ref nameMethod, ref path);
-            string raport = statement + Environment.NewLine + "Metoda : " +nameMethod + "   " + path +
+            string raport = "Error!!!" + Environment.NewLine + statement + Environment.NewLine + "Metoda : " + nameMethod + "   " + path +
                 Environment.NewLine +  DateTime.Now + Environment.NewLine;
             SaveRaportInFileLog(raport);
         }
@@ -62,7 +62,18 @@ namespace ApplicationLog
         public static void AddRaportInformation(string statement)
         {
             if (string.IsNullOrEmpty(statement)) statement = "Brak zawartości";
-            string raport = statement + Environment.NewLine + DateTime.Now + Environment.NewLine;
+            string raport = "Information" + Environment.NewLine + statement + Environment.NewLine + DateTime.Now + Environment.NewLine;
+            SaveRaportInFileLog(raport);
+        }
+
+        /// <summary>
+        /// Metoda dodaje wpis informacyjny do pliku log.
+        /// </summary>
+        /// <param name="statement">Treś komunikatu.</param>
+        public static void AddRaportWarning(string statement)
+        {
+            if (string.IsNullOrEmpty(statement)) statement = "Brak zawartości";
+            string raport = "Warning!" + Environment.NewLine + statement + Environment.NewLine + DateTime.Now + Environment.NewLine;
             SaveRaportInFileLog(raport);
         }
 

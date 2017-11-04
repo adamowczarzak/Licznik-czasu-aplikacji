@@ -76,7 +76,7 @@ namespace ApplicationTimeCounter
         private void CreateSegmentRecordDay(int xLabelLegend, int yLabelLegend, int index)
         {
             MyRectangle colorLegend = new MyRectangle(canvas, 10, 10, nameColor[index], xLabelLegend, yLabelLegend);
-            labelLegend[index] = new MyLabel(canvas, " - ", 80, 25, 10, xLabelLegend + 8, yLabelLegend - 7, Color.FromArgb(255, 47, 79, 79),Color.FromArgb(0, 0, 0, 0),
+            labelLegend[index] = new MyLabel(canvas, " - ", 65, 25, 10, xLabelLegend + 8, yLabelLegend - 7, Color.FromArgb(255, 47, 79, 79),Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
             labels[index] = new MyLabel(canvas, "", 40, 25, 10, 0, 0, Color.FromArgb(255, 47, 79, 79), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Center);
         }
