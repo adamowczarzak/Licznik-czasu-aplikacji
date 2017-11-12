@@ -28,6 +28,7 @@ namespace ApplicationTimeCounter
         private MyLabel[] time;       
         private string[] namesActivity;
         private List<Label> footerActivity;
+        private MyLabel[] footerActivityCounter;
         private int index;
         private bool isOnlyEditMode;
         private List<ActiveApplication> activeApplication;
@@ -376,12 +377,19 @@ namespace ApplicationTimeCounter
         private void CreateActivityFooter()
         {
             footerActivity = new List<Label>();
+            footerActivityCounter = new MyLabel[2];
             for(int i = 0; i < namesActivity.Length; i++)
             {
                 footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, namesActivity[i], 120, 28, 12, 0 + (i * 120), 320,
                    Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
                 footerActivity[i].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
             }
+            for (int i = 0; i < 2; i++)
+            {
+                footerActivityCounter[i] = new MyLabel(contentCanvas, "", 24, 23, 10, 1 + i * 594, 298, Color.FromArgb(255, 100, 100, 100),
+                    Color.FromArgb(255, 200, 200, 200), 1, fontWeight: FontWeights.Bold);
+            }
+
         }
         private void UpdateActivityFooter(int index, int prewIndex = 0)
         {
@@ -400,6 +408,21 @@ namespace ApplicationTimeCounter
                     Canvas.SetLeft(footerActivity[i], Canvas.GetLeft(footerActivity[i]) + (footerActivity[index].Width * numberShift));
             }
             footerActivity[index].Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236));
+            UpdateFooterActivityCounter();
+        }
+
+        private void UpdateFooterActivityCounter()
+        {
+            footerActivityCounter[0].SetContent((-Canvas.GetLeft(footerActivity[0]) / 120).ToString());
+            footerActivityCounter[1].SetContent(((Canvas.GetLeft(footerActivity[footerActivity.Count - 1]) / 120) - 4).ToString());
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (Int32.Parse(footerActivityCounter[i].GetContent()) > 0)
+                    footerActivityCounter[i].Visibility = Visibility.Visible;
+                else
+                    footerActivityCounter[i].Visibility = Visibility.Hidden;
+            }
         }
 
         private int GetNumberDayOfWeek(int nextDay)
