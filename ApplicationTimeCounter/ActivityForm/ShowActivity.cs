@@ -88,30 +88,32 @@ namespace ApplicationTimeCounter
         {
             if (nameActivity.Visibility == Visibility.Visible)
             {
-                if (e.Key == Key.Left || e.Key == Key.Right)
-                {
-                    BackgroundWorker backgroundWorkerLoadingWindow = new BackgroundWorker();
-                    backgroundWorkerLoadingWindow.DoWork += backgroundWorkerLoadingWindow_DoWork;
-                    backgroundWorkerLoadingWindow.RunWorkerAsync();
-                }
                 if (e.Key == Key.Right)
                 {
                     if (index < namesActivity.Length - 1)
                     {
+                        CreateAndStartBackgroundWorker();
                         index++;
                         Update();
                     }
-
                 }
                 if (e.Key == Key.Left)
                 {
                     if (index > 0)
                     {
+                        CreateAndStartBackgroundWorker();
                         index--;
                         Update();
                     }
                 }
             }
+        }
+
+        private void CreateAndStartBackgroundWorker()
+        {
+            BackgroundWorker backgroundWorkerLoadingWindow = new BackgroundWorker();
+            backgroundWorkerLoadingWindow.DoWork += backgroundWorkerLoadingWindow_DoWork;
+            backgroundWorkerLoadingWindow.RunWorkerAsync();
         }
 
         private void backgroundWorkerLoadingWindow_DoWork(object sender, DoWorkEventArgs e)
@@ -133,7 +135,7 @@ namespace ApplicationTimeCounter
                 Application.Current.Dispatcher.Invoke(() => { canvasLoad.Opacity -= 0.04; });
                 Thread.Sleep(20);
             }
-            Application.Current.Dispatcher.Invoke(() => { mainCanvas.Children.Remove(canvasLoad); this.canvas.Focus(); });
+            Application.Current.Dispatcher.Invoke(() => { mainCanvas.Children.Remove(canvasLoad); this.canvas.Focus();});
         }
 
         private void CreateControlUser()
@@ -381,15 +383,24 @@ namespace ApplicationTimeCounter
                 footerActivity[i].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
             }
         }
-        private void UpdateActivityFooter(int index)
+        private void UpdateActivityFooter(int index, int prewIndex = 0)
         {
-            for (int i = 0; i < namesActivity.Length; i++)
+            bool moveLeft = (Canvas.GetLeft(footerActivity[index]) + footerActivity[index].Width > contentCanvas.Width) ? true : false;
+            bool moveRight = (Canvas.GetLeft(footerActivity[index]) < 0) ? true : false;
+            int numberShift = (Math.Abs(index - this.index) != 0) ? Math.Abs(index - this.index) : 1;
+
+            if (prewIndex > 0)
+                numberShift = prewIndex - index;
+            for (int i = 0; i < footerActivity.Count; i++)
             {
                 footerActivity[i].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
+                if (moveLeft)
+                    Canvas.SetLeft(footerActivity[i], Canvas.GetLeft(footerActivity[i]) - (footerActivity[index].Width * numberShift));
+                if (moveRight)
+                    Canvas.SetLeft(footerActivity[i], Canvas.GetLeft(footerActivity[i]) + (footerActivity[index].Width * numberShift));
             }
             footerActivity[index].Background = new SolidColorBrush(Color.FromArgb(255, 236, 236, 236));
         }
-
 
         private int GetNumberDayOfWeek(int nextDay)
         {
@@ -466,9 +477,8 @@ namespace ApplicationTimeCounter
                 }
                 else
                 {
-                    footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, 0 + (footerActivity.Count * 120), 320,
+                    footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, Canvas.GetLeft(footerActivity[footerActivity.Count-1]) + 120, 320,
                     Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
-                    footerActivity[footerActivity.Count-1].Background = new SolidColorBrush(Color.FromArgb(255, 206, 206, 206));
                     UpdateActivityFooter(footerActivity.Count - 1);
                 }
             }
@@ -523,7 +533,7 @@ namespace ApplicationTimeCounter
             {
                 contentCanvas.Children.Remove(footerActivity[footerActivity.Count - 1]);
                 footerActivity.RemoveAt(footerActivity.Count - 1);
-                UpdateActivityFooter(index);
+                UpdateActivityFooter(index, footerActivity.Count);
             }
         }
 
