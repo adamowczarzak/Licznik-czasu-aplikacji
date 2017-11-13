@@ -87,7 +87,7 @@ namespace ApplicationTimeCounter.AdditionalWindows
 
         private void DeleteAllApplicationsWithActivity()
         {
-            if (ActiveApplication_db.DeleteAllApplicationsWithActivity(activityID))
+            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(activityID))
             {
                 ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
                     ApplicationLog.LogService.GetNameCurrentMethod() + "()",
