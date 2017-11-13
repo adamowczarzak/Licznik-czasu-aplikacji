@@ -10,5 +10,6 @@
     {
         DeleteAllApplicationsWithAcitivty = 0,
         DeleteOneApplicationWithAcitivty = 1,
+        DeleteAcitivty = 2,
     }
 }

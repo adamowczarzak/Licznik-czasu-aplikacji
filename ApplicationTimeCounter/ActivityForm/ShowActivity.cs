@@ -160,6 +160,7 @@ namespace ApplicationTimeCounter
             buttonDelete.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
             buttonDelete.MouseEnter += buttonDelete_MouseEnter;
             buttonDelete.MouseLeave += buttonDelete_MouseLeave;
+            buttonDelete.MouseLeftButtonDown += buttonDelete_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonDelete, "Usuń aktywność");
 
             new MyLabel(mainCanvas, "x", 30, 50, 24, 590, 10, Color.FromArgb(255, 70, 70, 70),
@@ -173,8 +174,6 @@ namespace ApplicationTimeCounter
             buttonExit.MouseLeftButtonDown += buttonExit_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonExit, "Zamknij okno aktywności");
         }
-
-        
 
         private void CreateChart()
         {
@@ -212,32 +211,32 @@ namespace ApplicationTimeCounter
             AllData_db allData_db = new AllData_db();
             DailyUseOfApplication_db dailyUseOfApplication_db = new DailyUseOfApplication_db();
             List<int> activityID = new List<int>();
-            int[] timeAvtivity = new int[7];
+            int[] timeActivity = new int[7];
             DateTime dateTime = DateTime.Now;
             activityID.Add(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
 
             for (int i = 0; i < 7; i++)
             {
                 if (i < 6)
-                    timeAvtivity[i] = allData_db.GetTimeForNumberActivity(activityID, dateTime.AddDays(-(7 - (i + 1))).ToShortDateString());
+                    timeActivity[i] = allData_db.GetTimeForNumberActivity(activityID, dateTime.AddDays(-(7 - (i + 1))).ToShortDateString());
                 else
-                    timeAvtivity[i] = dailyUseOfApplication_db.GetTimeForNumberActivity(activityID);
+                    timeActivity[i] = dailyUseOfApplication_db.GetTimeForNumberActivity(activityID);
             }
 
-            double maxValue = ActionOnNumbers.DivisionD((timeAvtivity.Max() > 2)? timeAvtivity.Max() : 3, 60);
+            double maxValue = ActionOnNumbers.DivisionD((timeActivity.Max() > 2) ? timeActivity.Max() : 3, 60);
             for (int i = 0; i < 4; i++)
             {
                 scaleLabel[i].SetContent((((maxValue / 3.0) * 3) - ((maxValue / 3.0) * i)).ToString("0.0") + " h");
             }
-            
-            if (timeAvtivity.Max() > 0)
+
+            if (timeActivity.Max() > 0)
             {
                 double scale = maxValue / Convert.ToDouble(scaleLabel[0].GetContent().Replace(" h", ""));
                 for (int i = 0; i < 7; i++)
-                {                   
-                    charts[i].Resize((int)(timeAvtivity[i] * (120 * scale) / timeAvtivity.Max()), 16);
-                    charts[i].Position(y: 200 - timeAvtivity[i] * (120 * scale / timeAvtivity.Max()));                
-                    charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
+                {
+                    charts[i].Resize((int)(timeActivity[i] * (120 * scale) / timeActivity.Max()), 16);
+                    charts[i].Position(y: 200 - timeActivity[i] * (120 * scale / timeActivity.Max()));                
+                    charts[i].ToolTip(ActionOnTime.GetTime(timeActivity[i]));
                 }
             }
             else
@@ -245,7 +244,7 @@ namespace ApplicationTimeCounter
                 for (int i = 0; i < 7; i++)
                 {
                     charts[i].Resize(0, 16);
-                    charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
+                    charts[i].ToolTip(ActionOnTime.GetTime(timeActivity[i]));
                 }
             }
             SetVisibleScale();
@@ -579,6 +578,15 @@ namespace ApplicationTimeCounter
             int indexApplication = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteOneApplicationWithAcitivty);
             dialogWindow.SetActivityIDAndApplicationID(NameActivity_db.GetIDForNameActivity(namesActivity[index]), indexApplication);
+            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
+            dialogWindow.ShowDialog();
+        }
+
+        private void buttonDelete_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
+            dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
             dialogWindow.ShowDialog();

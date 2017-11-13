@@ -24,6 +24,12 @@ namespace ApplicationTimeCounter
             return Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "Id")[0]);
         }
 
+        public static string GetNameActivityForID(int idActivity)
+        {
+            string contentCommand = "SELECT NameActivity FROM nameactivity WHERE Id = " + idActivity;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "NameActivity")[0];
+        }
+
         public static bool CheckIfExistName(string name)
         {
             string contentCommand = "SELECT COUNT(*) AS ifExistName FROM nameactivity WHERE NameActivity = '" + name + "'";
@@ -52,6 +58,16 @@ namespace ApplicationTimeCounter
                 ApplicationLog.LogService.AddRaportInformation("Została dodana nowa aktywność '" + nameActivity + "'");
             else
                 ApplicationLog.LogService.AddRaportWarning("Nie udało się dodać nowej aktywności'" + nameActivity + "'");
+        }
+
+        public static void DeleteActivity(string nameActivity)
+        {
+            string contentCommand = "DELETE FROM nameactivity WHERE NameActivity = '" + nameActivity + "' ";
+
+            if (DataBase.ExecuteNonQuery(contentCommand))
+                ApplicationLog.LogService.AddRaportInformation("Została usunięta aktywność '" + nameActivity + "'");
+            else
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aktywności'" + nameActivity + "'");
         }
 
     }

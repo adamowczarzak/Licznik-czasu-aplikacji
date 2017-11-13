@@ -60,6 +60,9 @@ namespace ApplicationTimeCounter.AdditionalWindows
                 case DialogWindowsMessage.DeleteOneApplicationWithAcitivty:
                     questionMessages.Text = "Czy napewno chcesz usunąć tą applikacje z tej aktywności? " + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
                     break;
+                case DialogWindowsMessage.DeleteAcitivty:
+                    questionMessages.Text = "Czy napewno chcesz usunąć tą aktywność? " + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
+                    break;
             }
         }
 
@@ -79,6 +82,9 @@ namespace ApplicationTimeCounter.AdditionalWindows
                     break;
                 case DialogWindowsMessage.DeleteOneApplicationWithAcitivty:
                     DeleteOneApplicationWithActivity();
+                    break;
+                case DialogWindowsMessage.DeleteAcitivty:
+                    DeleteActivity();
                     break;
             }
             this.Close();
@@ -101,6 +107,12 @@ namespace ApplicationTimeCounter.AdditionalWindows
             {
                 ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
             }
+        }
+
+        private void DeleteActivity()
+        {
+            DeleteAllApplicationsWithActivity();
+            NameActivity_db.DeleteActivity(NameActivity_db.GetNameActivityForID(activityID));
         }
     }
 }
