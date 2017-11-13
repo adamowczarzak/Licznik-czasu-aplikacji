@@ -90,7 +90,7 @@ namespace ApplicationTimeCounter
                     }
                     catch (MySqlException message)
                     {
-                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
+                        ApplicationLog.LogService.AddRaportCatchException("Error !!!\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
                 }
                 DataBase.CloseConnection();
@@ -116,7 +116,7 @@ namespace ApplicationTimeCounter
                     }
                     catch (MySqlException message)
                     {
-                        ApplicationLog.LogService.AddRaportCatchException("Error\tPobranie słownika nie powiodło się.", message);
+                        ApplicationLog.LogService.AddRaportCatchException("Error !!!\tPobranie słownika nie powiodło się.", message);
                     }
                 }
                 DataBase.CloseConnection();

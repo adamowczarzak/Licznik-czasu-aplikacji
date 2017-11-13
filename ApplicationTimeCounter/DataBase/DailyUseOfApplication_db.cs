@@ -149,7 +149,7 @@ namespace ApplicationTimeCounter
             }
             catch (Exception message)
             {
-                ApplicationLog.LogService.AddRaportCatchException("Error\tNie udało się wykonać zapytania!!!", message);
+                ApplicationLog.LogService.AddRaportCatchException("Error !!!\tNie udało się wykonać zapytania", message);
             }
             return reader;
         }

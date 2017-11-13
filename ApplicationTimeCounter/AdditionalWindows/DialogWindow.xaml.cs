@@ -10,6 +10,7 @@ namespace ApplicationTimeCounter.AdditionalWindows
     {
         private DialogWindowsMessage dialogWindowsMessage;
         private int activityID;
+        private int applicationID;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowAcceptButtonDelegate;
@@ -26,6 +27,12 @@ namespace ApplicationTimeCounter.AdditionalWindows
         public void SetActivityID(int activityID)
         {
             this.activityID = activityID;
+        }
+
+        public void SetActivityIDAndApplicationID(int activityID, int applicationID)
+        {
+            this.activityID = activityID;
+            this.applicationID = applicationID;
         }
 
         private void SetComponents(DialogWindowsState dialogWindowsState)
@@ -47,11 +54,11 @@ namespace ApplicationTimeCounter.AdditionalWindows
         {
             switch (dialogWindowsMessage)
             {
-                case DialogWindowsMessage.DeleteApplicationWithAcitivty:
+                case DialogWindowsMessage.DeleteAllApplicationsWithAcitivty:
                     questionMessages.Text = "Czy napewno chcesz usunąć wszystkie aplikacje z tej aktywności? " + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
                     break;
-                case DialogWindowsMessage.Test:
-                    questionMessages.Text = "to jest testowa treść";
+                case DialogWindowsMessage.DeleteOneApplicationWithAcitivty:
+                    questionMessages.Text = "Czy napewno chcesz usunąć tą applikacje z tej aktywności? " + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
                     break;
             }
         }
@@ -67,25 +74,25 @@ namespace ApplicationTimeCounter.AdditionalWindows
         {
             switch (dialogWindowsMessage)
             {
-                case DialogWindowsMessage.DeleteApplicationWithAcitivty:
-                    DeleteApplicationWithActivity();                    
+                case DialogWindowsMessage.DeleteAllApplicationsWithAcitivty:
+                    DeleteAllApplicationsWithActivity();                    
                     break;
-                case DialogWindowsMessage.Test:
-                    questionMessages.Text = "to jest testowa treść";
+                case DialogWindowsMessage.DeleteOneApplicationWithAcitivty:
+                    DeleteOneApplicationWithActivity();
                     break;
             }
             this.Close();
             CloseWindowAcceptButtonDelegate();
         }
 
-        private void DeleteApplicationWithActivity()
+        private void DeleteAllApplicationsWithActivity()
         {
-            ActiveApplication_db.DeleteAllApplicationWithActivity(activityID);
+            ActiveApplication_db.DeleteAllApplicationsWithActivity(activityID);
         }
 
-        private void Test()
+        private void DeleteOneApplicationWithActivity()
         {
-
+            ActiveApplication_db.DeleteOneApplicationWithActivity(activityID, applicationID);
         }
     }
 }

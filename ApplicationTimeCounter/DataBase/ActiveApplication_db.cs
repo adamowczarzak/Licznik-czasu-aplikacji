@@ -24,15 +24,20 @@ namespace ApplicationTimeCounter
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
-        public static bool DeleteAllApplicationWithActivity(int idActivity)
+        public static bool DeleteAllApplicationsWithActivity(int idActivity)
         {
-            string contentCommand = "UPDATE activeapplications SET IdNameActivity = 1 WHERE IdNameActivity  = " + idActivity;
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = " 
+                + ((int)ApplicationTimeCounter.ActiveApplication.IdNameActivityEnum.Lack).ToString() 
+                + " WHERE IdNameActivity  = " + idActivity;
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
-        public static bool DeleteApplicationWithActivity(string idApplication)
+        public static bool DeleteOneApplicationWithActivity(int idActivity, int idApplication)
         {
-            return AddActivityToApplication(idApplication, ApplicationTimeCounter.ActiveApplication.IdNameActivityEnum.Lack.ToString());
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = " 
+                + ((int)ApplicationTimeCounter.ActiveApplication.IdNameActivityEnum.Lack).ToString() 
+                + " WHERE IdNameActivity  = " + idActivity + " AND ID = " + idApplication;
+            return DataBase.ExecuteNonQuery(contentCommand);
         }
 
         internal static List<ActiveApplication> GetNonAssignedApplication()
@@ -97,7 +102,7 @@ namespace ApplicationTimeCounter
                     }
                     catch (MySqlException message)
                     {
-                        ApplicationLog.LogService.AddRaportCatchException("Error\tZapytanie nie zwróciło żadnej wartości.", message);
+                        ApplicationLog.LogService.AddRaportCatchException("Error!!!\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
                 }
                 DataBase.CloseConnection();

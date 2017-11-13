@@ -150,7 +150,7 @@ namespace ApplicationTimeCounter
             }
             catch (Exception message)
             {
-                ApplicationLog.LogService.AddRaportCatchException("Warrning!!! Nie udało się zparsować daty", message);
+                ApplicationLog.LogService.AddRaportCatchException("Warrning !!! Nie udało się zparsować daty", message);
             }
 
             string returnValue = string.Empty;

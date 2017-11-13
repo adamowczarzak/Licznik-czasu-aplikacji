@@ -29,7 +29,7 @@ namespace ApplicationTimeCounter
             int timeAllApp = dailyUseOfApplication_db.GetTimeForAllTitle();
 
             if (timeApp > 0) timeOfAplication.SetContent(ActionOnTime.GetTime(timeApp));
-            if (timeAllApp > 0) totalTime.SetContent(ActionOnTime.GetTime(timeApp));
+            if (timeAllApp > 0) totalTime.SetContent(ActionOnTime.GetTime(timeAllApp));
         }
     }
 }

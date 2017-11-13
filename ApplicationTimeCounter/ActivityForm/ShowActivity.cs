@@ -155,7 +155,6 @@ namespace ApplicationTimeCounter
             new MyLabel(mainCanvas, "-", 30, 50, 30, 560, 6, Color.FromArgb(255, 70, 70, 70),
                Color.FromArgb(255, 70, 70, 70), 0);
 
-
             Label buttonDelete = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 560, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
             buttonDelete.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
@@ -165,7 +164,6 @@ namespace ApplicationTimeCounter
 
             new MyLabel(mainCanvas, "x", 30, 50, 24, 590, 10, Color.FromArgb(255, 70, 70, 70),
                 Color.FromArgb(255, 70, 70, 70), 0);
-
 
             Label buttonExit = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 590, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
@@ -234,9 +232,9 @@ namespace ApplicationTimeCounter
             
             if (timeAvtivity.Max() > 0)
             {
+                double scale = maxValue / Convert.ToDouble(scaleLabel[0].GetContent().Replace(" h", ""));
                 for (int i = 0; i < 7; i++)
-                {
-                    double scale = maxValue / Convert.ToDouble(scaleLabel[0].GetContent().Replace(" h", ""));
+                {                   
                     charts[i].Resize((int)(timeAvtivity[i] * (120 * scale) / timeAvtivity.Max()), 16);
                     charts[i].Position(y: 200 - timeAvtivity[i] * (120 * scale / timeAvtivity.Max()));                
                     charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
@@ -247,7 +245,6 @@ namespace ApplicationTimeCounter
                 for (int i = 0; i < 7; i++)
                 {
                     charts[i].Resize(0, 16);
-                    charts[i].Position(80);
                     charts[i].ToolTip(ActionOnTime.GetTime(timeAvtivity[i]));
                 }
             }
@@ -299,7 +296,8 @@ namespace ApplicationTimeCounter
                 buttonDeleteApplication.Background = new SolidColorBrush(Color.FromArgb(155, 236, 236, 236));
                 buttonDeleteApplication.MouseEnter += buttonDeleteApplication_MouseEnter;
                 buttonDeleteApplication.MouseLeave += buttonDeleteApplication_MouseLeave;
-                buttonDeleteApplication.Name = "ID_" + i;
+                buttonDeleteApplication.MouseLeftButtonDown += buttonDeleteApplication_MouseLeftButtonDown;
+                buttonDeleteApplication.Name = "ID_" + activeApplication[i].ID;
                 ButtonCreator.SetToolTip(buttonDeleteApplication, "Usuń aplikacje z aktywności");
                 applicationInActivity.Height += 29;
             }
@@ -562,7 +560,7 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteAllApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteApplicationWithAcitivty);
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAllApplicationsWithAcitivty);
             dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
@@ -576,10 +574,21 @@ namespace ApplicationTimeCounter
 
         private void dialogWindow_CloseWindowCancelButtonDelegate(){}
 
-        private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void buttonDeleteApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            int indexApplication = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteOneApplicationWithAcitivty);
+            dialogWindow.SetActivityIDAndApplicationID(NameActivity_db.GetIDForNameActivity(namesActivity[index]), indexApplication);
+            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
+            dialogWindow.ShowDialog();
+        }
+
+        private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {  
             mainCanvas.Children.RemoveRange(0, mainCanvas.Children.Count);
             this.canvas.Children.Remove(mainCanvas);
+            this.canvas.KeyDown -= mainCanvas_KeyDown;
             CloseWindowShowActivityDelegate();
         }
 

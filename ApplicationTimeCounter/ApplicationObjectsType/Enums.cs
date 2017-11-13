@@ -8,7 +8,7 @@
 
     public enum DialogWindowsMessage
     {
-        DeleteApplicationWithAcitivty = 0,
-        Test = 1,
+        DeleteAllApplicationsWithAcitivty = 0,
+        DeleteOneApplicationWithAcitivty = 1,
     }
 }
