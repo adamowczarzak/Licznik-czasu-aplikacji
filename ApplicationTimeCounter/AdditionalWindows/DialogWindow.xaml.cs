@@ -87,12 +87,20 @@ namespace ApplicationTimeCounter.AdditionalWindows
 
         private void DeleteAllApplicationsWithActivity()
         {
-            ActiveApplication_db.DeleteAllApplicationsWithActivity(activityID);
+            if (ActiveApplication_db.DeleteAllApplicationsWithActivity(activityID))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
+                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                    System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\DialogWindow.xaml.cs"); 
+            }
         }
 
         private void DeleteOneApplicationWithActivity()
         {
-            ActiveApplication_db.DeleteOneApplicationWithActivity(activityID, applicationID);
+            if (!ActiveApplication_db.DeleteOneApplicationWithActivity(activityID, applicationID))
+            {
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
+            }
         }
     }
 }
