@@ -50,24 +50,38 @@ namespace ApplicationTimeCounter
                 ApplicationLog.LogService.AddRaportWarning("Nie udało się zamienić nazwy aktywności '" + oldNameActivity + "' na '" + newNameActivity + "'");
         }
 
-        public static void AddNewActivity(string nameActivity)
+        public static bool AddNewActivity(string nameActivity)
         {
             string contentCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('" + nameActivity + "')";
 
             if (DataBase.ExecuteNonQuery(contentCommand))
+            {
                 ApplicationLog.LogService.AddRaportInformation("Została dodana nowa aktywność '" + nameActivity + "'");
+                return true;
+            }
             else
+            {
                 ApplicationLog.LogService.AddRaportWarning("Nie udało się dodać nowej aktywności'" + nameActivity + "'");
+                return false;
+            }
+                
         }
 
-        public static void DeleteActivity(string nameActivity)
+        public static bool DeleteActivity(string nameActivity)
         {
             string contentCommand = "DELETE FROM nameactivity WHERE NameActivity = '" + nameActivity + "' ";
 
             if (DataBase.ExecuteNonQuery(contentCommand))
+            {
                 ApplicationLog.LogService.AddRaportInformation("Została usunięta aktywność '" + nameActivity + "'");
+                return true;
+            }
             else
+            {
                 ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aktywności'" + nameActivity + "'");
+                return false;
+            }
+                
         }
 
     }

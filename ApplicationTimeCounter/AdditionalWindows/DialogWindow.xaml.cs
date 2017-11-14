@@ -83,9 +83,9 @@ namespace ApplicationTimeCounter.AdditionalWindows
                 case DialogWindowsMessage.DeleteOneApplicationWithAcitivty:
                     DeleteOneApplicationWithActivity();
                     break;
-                case DialogWindowsMessage.DeleteAcitivty:
-                    DeleteActivity();
-                    break;
+                //case DialogWindowsMessage.DeleteAcitivty:
+                   // DeleteActivity();
+                   // break;
             }
             this.Close();
             CloseWindowAcceptButtonDelegate();

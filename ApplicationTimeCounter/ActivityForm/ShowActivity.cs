@@ -25,7 +25,7 @@ namespace ApplicationTimeCounter
         private string[] nameDay;
         private MyLabel[] average;
         private MyLabel[] growth;
-        private MyLabel[] time;       
+        private MyLabel[] time;
         private string[] namesActivity;
         private List<Label> footerActivity;
         private MyLabel[] footerActivityCounter;
@@ -43,13 +43,13 @@ namespace ApplicationTimeCounter
         public ShowActivity(ref Canvas canvas)
         {
             this.canvas = canvas;
-            
+
             mainCanvas = CanvasCreator.CreateCanvas(canvas, 620, 410, Color.FromArgb(255, 226, 240, 255), 0, 0);
             this.canvas.KeyDown += mainCanvas_KeyDown;
             contentCanvas = CanvasCreator.CreateCanvas(mainCanvas, 620, 320, Color.FromArgb(255, 236, 236, 236), 0, 50);
-           
+
             new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(30, 110, 110, 110), 0, 50);
-            new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(50, 110, 110, 110), 0, 370); 
+            new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(50, 110, 110, 110), 0, 370);
             new MyRectangle(contentCanvas, 185, 294, Color.FromArgb(0, 10, 10, 10), 420, 15, 2);
             new MyRectangle(contentCanvas, 390, 294, Color.FromArgb(0, 10, 10, 10), 15, 15, 2);
 
@@ -67,7 +67,6 @@ namespace ApplicationTimeCounter
             this.canvas.Focusable = true;
             this.canvas.Focus();
             Update();
-
         }
 
         private void Update()
@@ -136,7 +135,7 @@ namespace ApplicationTimeCounter
                 Application.Current.Dispatcher.Invoke(() => { canvasLoad.Opacity -= 0.04; });
                 Thread.Sleep(20);
             }
-            Application.Current.Dispatcher.Invoke(() => { mainCanvas.Children.Remove(canvasLoad); this.canvas.Focus();});
+            Application.Current.Dispatcher.Invoke(() => { mainCanvas.Children.Remove(canvasLoad); this.canvas.Focus(); });
         }
 
         private void CreateControlUser()
@@ -155,13 +154,13 @@ namespace ApplicationTimeCounter
             new MyLabel(mainCanvas, "-", 30, 50, 30, 560, 6, Color.FromArgb(255, 70, 70, 70),
                Color.FromArgb(255, 70, 70, 70), 0);
 
-            Label buttonDelete = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 560, 20,
+            Label buttonDeleteActivity = ButtonCreator.CreateButton(mainCanvas, "", 30, 30, 14, 560, 20,
                 Color.FromArgb(0, 155, 155, 155), Color.FromArgb(0, 155, 155, 155), 0);
-            buttonDelete.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
-            buttonDelete.MouseEnter += buttonDelete_MouseEnter;
-            buttonDelete.MouseLeave += buttonDelete_MouseLeave;
-            buttonDelete.MouseLeftButtonDown += buttonDelete_MouseLeftButtonDown;
-            ButtonCreator.SetToolTip(buttonDelete, "Usuń aktywność");
+            buttonDeleteActivity.Background = new SolidColorBrush(Color.FromArgb(180, 215, 215, 215));
+            buttonDeleteActivity.MouseEnter += buttonDelete_MouseEnter;
+            buttonDeleteActivity.MouseLeave += buttonDelete_MouseLeave;
+            buttonDeleteActivity.MouseLeftButtonDown += buttonDeleteActivity_MouseLeftButtonDown;
+            ButtonCreator.SetToolTip(buttonDeleteActivity, "Usuń aktywność");
 
             new MyLabel(mainCanvas, "x", 30, 50, 24, 590, 10, Color.FromArgb(255, 70, 70, 70),
                 Color.FromArgb(255, 70, 70, 70), 0);
@@ -235,7 +234,7 @@ namespace ApplicationTimeCounter
                 for (int i = 0; i < 7; i++)
                 {
                     charts[i].Resize((int)(timeActivity[i] * (120 * scale) / timeActivity.Max()), 16);
-                    charts[i].Position(y: 200 - timeActivity[i] * (120 * scale / timeActivity.Max()));                
+                    charts[i].Position(y: 200 - timeActivity[i] * (120 * scale / timeActivity.Max()));
                     charts[i].ToolTip(ActionOnTime.GetTime(timeActivity[i]));
                 }
             }
@@ -360,7 +359,7 @@ namespace ApplicationTimeCounter
 
 
             average[0].SetContent((ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1]) * 100).ToString("0.00") + " %");
-            average[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1])* 100).ToString("0.00") + " %");
+            average[1].SetContent((ActionOnNumbers.DivisionD(valueQuery[1, 0, 0], valueQuery[1, 0, 1]) * 100).ToString("0.00") + " %");
 
             growth[0].SetContent(((ActionOnNumbers.DivisionD(valueQuery[0, 1, 0], valueQuery[0, 1, 1])
                 - ActionOnNumbers.DivisionD(valueQuery[0, 0, 0], valueQuery[0, 0, 1])) * 100 * -1).ToString("0.00") + " %");
@@ -375,7 +374,7 @@ namespace ApplicationTimeCounter
         {
             footerActivity = new List<Label>();
             footerActivityCounter = new MyLabel[2];
-            for(int i = 0; i < namesActivity.Length; i++)
+            for (int i = 0; i < namesActivity.Length; i++)
             {
                 footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, namesActivity[i], 120, 28, 12, 0 + (i * 120), 320,
                    Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
@@ -489,7 +488,7 @@ namespace ApplicationTimeCounter
                 buttonClose.MouseLeave += buttonClose_MouseLeave;
                 buttonClose.MouseLeftButtonDown += buttonClose_MouseLeftButtonDown;
 
-               
+
                 if (isOnlyEditMode)
                 {
                     buttonSaveEditActivity.Content = "Zmień";
@@ -497,18 +496,18 @@ namespace ApplicationTimeCounter
                 }
                 else
                 {
-                    footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, Canvas.GetLeft(footerActivity[footerActivity.Count-1]) + 120, 320,
+                    footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, Canvas.GetLeft(footerActivity[footerActivity.Count - 1]) + 120, 320,
                     Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
                     UpdateActivityFooter(footerActivity.Count - 1);
                 }
             }
-        }         
+        }
 
         private void buttonSaveEditActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(isOnlyEditMode)
+            if (isOnlyEditMode)
             {
-                if(!NameActivity_db.CheckIfExistName(nameEditActivity.Text))
+                if (!NameActivity_db.CheckIfExistName(nameEditActivity.Text))
                 {
                     NameActivity_db.ChangeNameActivity(namesActivity[index], nameEditActivity.Text);
                     namesActivity[index] = nameEditActivity.Text;
@@ -540,7 +539,7 @@ namespace ApplicationTimeCounter
         private void buttonClose_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             CloseEditModeActivity(false);
-        } 
+        }
 
         private void CloseEditModeActivity(bool ifAddActivity)
         {
@@ -563,15 +562,8 @@ namespace ApplicationTimeCounter
             dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
-            dialogWindow.ShowDialog();   
+            dialogWindow.ShowDialog();
         }
-
-        private void dialogWindow_CloseWindowAcceptButtonDelegate()
-        {
-            Update();
-        }
-
-        private void dialogWindow_CloseWindowCancelButtonDelegate(){}
 
         private void buttonDeleteApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -583,17 +575,49 @@ namespace ApplicationTimeCounter
             dialogWindow.ShowDialog();
         }
 
-        private void buttonDelete_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void buttonDeleteActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
             dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
-            dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteActivity;
             dialogWindow.ShowDialog();
         }
 
+        private void DeleteActivity()
+        {
+            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(NameActivity_db.GetIDForNameActivity(namesActivity[index])))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
+                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                    System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\ShowActivity.cs");
+            }
+            else
+            {
+                if (NameActivity_db.DeleteActivity(namesActivity[index]))
+                {                  
+                    namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
+                    contentCanvas.Children.Remove(footerActivity[index]);
+                    footerActivity.RemoveAt(index);
+                    for (int i = index; i < footerActivity.Count; i++ )
+                    {
+                        Canvas.SetLeft(footerActivity[i], Canvas.GetLeft(footerActivity[i]) - 120);
+                    }
+                    index = index - 1;
+                    Update();
+                }
+            }
+        }
+
+        private void dialogWindow_CloseWindowAcceptButtonDelegate()
+        {
+            Update();
+        }
+
+        private void dialogWindow_CloseWindowCancelButtonDelegate() { }
+
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {  
+        {
             mainCanvas.Children.RemoveRange(0, mainCanvas.Children.Count);
             this.canvas.Children.Remove(mainCanvas);
             this.canvas.KeyDown -= mainCanvas_KeyDown;
@@ -683,6 +707,6 @@ namespace ApplicationTimeCounter
         private void nameEditActivity_DisableError(object sender, MouseButtonEventArgs e)
         {
             nameEditActivity.Background = new SolidColorBrush(Color.FromArgb(255, 0, 123, 255));
-        }  
+        }
     }
 }
