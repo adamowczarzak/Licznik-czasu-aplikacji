@@ -30,6 +30,8 @@ namespace ApplicationTimeCounter
         private List<Label> footerActivity;
         private MyLabel[] footerActivityCounter;
         private int index;
+        private int deleteApplicationID;
+        private int viewActivityID;
         private bool isOnlyEditMode;
         private List<ActiveApplication> activeApplication;
 
@@ -74,6 +76,7 @@ namespace ApplicationTimeCounter
             ActiveApplication parameters = new ActiveApplication();
             parameters.NameActivity = namesActivity[index];
             activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
+            viewActivityID = NameActivity_db.GetIDForNameActivity(namesActivity[index]);
             if (activeApplication.Count > 100)
                 activeApplication.RemoveRange(0, activeApplication.Count - 100);
 
@@ -212,7 +215,7 @@ namespace ApplicationTimeCounter
             List<int> activityID = new List<int>();
             int[] timeActivity = new int[7];
             DateTime dateTime = DateTime.Now;
-            activityID.Add(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
+            activityID.Add(viewActivityID);
 
             for (int i = 0; i < 7; i++)
             {
@@ -343,7 +346,7 @@ namespace ApplicationTimeCounter
             AllData_db allData_db = new AllData_db();
             List<int> activityID = new List<int>();
 
-            activityID.Add(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
+            activityID.Add(viewActivityID);
             double[, ,] valueQuery = new double[2, 2, 2];
             valueQuery[0, 0, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-7).ToShortDateString(), DateTime.Now.ToShortDateString());
             valueQuery[1, 0, 0] = allData_db.GetTimeForNumberActivity(activityID, DateTime.Now.AddDays(-30).ToShortDateString(), DateTime.Now.ToShortDateString());
@@ -559,34 +562,51 @@ namespace ApplicationTimeCounter
         private void buttonDeleteAllApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAllApplicationsWithAcitivty);
-            dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
-            dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteAllApplicationFromActivity;
             dialogWindow.ShowDialog();
         }
 
         private void buttonDeleteApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            int indexApplication = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
+            deleteApplicationID = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteOneApplicationWithAcitivty);
-            dialogWindow.SetActivityIDAndApplicationID(NameActivity_db.GetIDForNameActivity(namesActivity[index]), indexApplication);
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
-            dialogWindow.CloseWindowAcceptButtonDelegate += dialogWindow_CloseWindowAcceptButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteOneApplicationFromActivity;
             dialogWindow.ShowDialog();
         }
 
         private void buttonDeleteActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
-            dialogWindow.SetActivityID(NameActivity_db.GetIDForNameActivity(namesActivity[index]));
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += DeleteActivity;
             dialogWindow.ShowDialog();
         }
 
+        private void DeleteOneApplicationFromActivity()
+        {
+            if (!ActiveApplication_db.DeleteOneApplicationWithActivity(viewActivityID, deleteApplicationID))
+            {
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
+            }
+            Update();
+        }
+
+        private void DeleteAllApplicationFromActivity()
+        {
+            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
+                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                    System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\DialogWindow.xaml.cs");
+            }
+            Update();
+        }
+
         private void DeleteActivity()
         {
-            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(NameActivity_db.GetIDForNameActivity(namesActivity[index])))
+            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
             {
                 ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
                     ApplicationLog.LogService.GetNameCurrentMethod() + "()",
@@ -607,11 +627,6 @@ namespace ApplicationTimeCounter
                     Update();
                 }
             }
-        }
-
-        private void dialogWindow_CloseWindowAcceptButtonDelegate()
-        {
-            Update();
         }
 
         private void dialogWindow_CloseWindowCancelButtonDelegate() { }

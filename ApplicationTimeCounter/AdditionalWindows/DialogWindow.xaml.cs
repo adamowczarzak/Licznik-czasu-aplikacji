@@ -9,8 +9,6 @@ namespace ApplicationTimeCounter.AdditionalWindows
     public partial class DialogWindow : Window
     {
         private DialogWindowsMessage dialogWindowsMessage;
-        private int activityID;
-        private int applicationID;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowAcceptButtonDelegate;
@@ -22,17 +20,6 @@ namespace ApplicationTimeCounter.AdditionalWindows
             SetComponents(dialogWindowsState);
             SetMessageContent(dialogWindowsMessage);
             this.dialogWindowsMessage = dialogWindowsMessage;
-        }
-
-        public void SetActivityID(int activityID)
-        {
-            this.activityID = activityID;
-        }
-
-        public void SetActivityIDAndApplicationID(int activityID, int applicationID)
-        {
-            this.activityID = activityID;
-            this.applicationID = applicationID;
         }
 
         private void SetComponents(DialogWindowsState dialogWindowsState)
@@ -75,44 +62,8 @@ namespace ApplicationTimeCounter.AdditionalWindows
            
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
-            switch (dialogWindowsMessage)
-            {
-                case DialogWindowsMessage.DeleteAllApplicationsWithAcitivty:
-                    DeleteAllApplicationsWithActivity();                    
-                    break;
-                case DialogWindowsMessage.DeleteOneApplicationWithAcitivty:
-                    DeleteOneApplicationWithActivity();
-                    break;
-                //case DialogWindowsMessage.DeleteAcitivty:
-                   // DeleteActivity();
-                   // break;
-            }
             this.Close();
             CloseWindowAcceptButtonDelegate();
-        }
-
-        private void DeleteAllApplicationsWithActivity()
-        {
-            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(activityID))
-            {
-                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
-                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
-                    System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\DialogWindow.xaml.cs"); 
-            }
-        }
-
-        private void DeleteOneApplicationWithActivity()
-        {
-            if (!ActiveApplication_db.DeleteOneApplicationWithActivity(activityID, applicationID))
-            {
-                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
-            }
-        }
-
-        private void DeleteActivity()
-        {
-            DeleteAllApplicationsWithActivity();
-            NameActivity_db.DeleteActivity(NameActivity_db.GetNameActivityForID(activityID));
-        }
+        } 
     }
 }
