@@ -153,6 +153,7 @@
   <ItemGroup>
     <Compile Include="AppLook\IconInTaskbar.cs" />
     <Compile Include="Other\ActionOnTime.cs" />
+    <Compile Include="Other\SqlValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

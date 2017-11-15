@@ -1,6 +1,7 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -279,7 +280,7 @@ namespace ApplicationTimeCounter
         private static bool CheckIfExistTable(string nameTable, MySqlCommand command)
         {
             bool returnValue = true;
-            string stringCommand = @"SHOW TABLES LIKE '" + nameTable + "'";
+            string stringCommand = @"SHOW TABLES LIKE " + SqlValidator.Validate(nameTable);
             command = new MySqlCommand(stringCommand, Connection);
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read()) returnValue = false;

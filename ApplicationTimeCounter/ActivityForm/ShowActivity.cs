@@ -593,10 +593,7 @@ namespace ApplicationTimeCounter
         private void DeleteAllApplicationFromActivity()
         {
             if (ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
-            {
-               Update();
-            }
-            
+               Update();        
         }
 
         private void DeleteActivity()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -20,7 +21,7 @@ namespace ApplicationTimeCounter
 
         public static int GetIDForNameActivity(string nameActivity)
         {
-            string contentCommand = "SELECT Id FROM nameactivity WHERE NameActivity = '" + nameActivity + "'";
+            string contentCommand = "SELECT Id FROM nameactivity WHERE NameActivity = " + SqlValidator.Validate(nameActivity);
             return Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "Id")[0]);
         }
 
@@ -32,7 +33,7 @@ namespace ApplicationTimeCounter
 
         public static bool CheckIfExistName(string name)
         {
-            string contentCommand = "SELECT COUNT(*) AS ifExistName FROM nameactivity WHERE NameActivity = '" + name + "'";
+            string contentCommand = "SELECT COUNT(*) AS ifExistName FROM nameactivity WHERE NameActivity = " + SqlValidator.Validate(name);
             if (Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "ifExistName")[0]) > 0)
                 return true;
             else
@@ -41,27 +42,27 @@ namespace ApplicationTimeCounter
 
         public static void ChangeNameActivity(string oldNameActivity, string newNameActivity)
         {
-            string contentCommand = "UPDATE nameactivity SET NameActivity = '" + newNameActivity + "'"
-                + " WHERE NameActivity = '" + oldNameActivity + "'";
+            string contentCommand = "UPDATE nameactivity SET NameActivity = " + SqlValidator.Validate(newNameActivity)
+                + " WHERE NameActivity = " + SqlValidator.Validate(oldNameActivity);
 
             if (DataBase.ExecuteNonQuery(contentCommand))
-                ApplicationLog.LogService.AddRaportInformation("Nazwa aktywności '" + oldNameActivity + "' została zmieniona na '" + newNameActivity + "'");
+                ApplicationLog.LogService.AddRaportInformation("Nazwa aktywności " + SqlValidator.Validate(oldNameActivity) + " została zmieniona na " + SqlValidator.Validate(newNameActivity));
             else
-                ApplicationLog.LogService.AddRaportWarning("Nie udało się zamienić nazwy aktywności '" + oldNameActivity + "' na '" + newNameActivity + "'");
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się zamienić nazwy aktywności " + SqlValidator.Validate(oldNameActivity) + " na " + SqlValidator.Validate(newNameActivity));
         }
 
         public static bool AddNewActivity(string nameActivity)
         {
-            string contentCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('" + nameActivity + "')";
+            string contentCommand = "INSERT INTO nameactivity (NameActivity) VALUES (" + SqlValidator.Validate(nameActivity) + ")";
 
             if (DataBase.ExecuteNonQuery(contentCommand))
             {
-                ApplicationLog.LogService.AddRaportInformation("Została dodana nowa aktywność '" + nameActivity + "'");
+                ApplicationLog.LogService.AddRaportInformation("Została dodana nowa aktywność " + SqlValidator.Validate(nameActivity));
                 return true;
             }
             else
             {
-                ApplicationLog.LogService.AddRaportWarning("Nie udało się dodać nowej aktywności'" + nameActivity + "'");
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się dodać nowej aktywności " + SqlValidator.Validate(nameActivity));
                 return false;
             }
                 
@@ -69,16 +70,16 @@ namespace ApplicationTimeCounter
 
         public static bool DeleteActivity(string nameActivity)
         {
-            string contentCommand = "DELETE FROM nameactivity WHERE NameActivity = '" + nameActivity + "' ";
+            string contentCommand = "DELETE FROM nameactivity WHERE NameActivity = " + SqlValidator.Validate(nameActivity);
 
             if (DataBase.ExecuteNonQuery(contentCommand))
             {
-                ApplicationLog.LogService.AddRaportInformation("Została usunięta aktywność '" + nameActivity + "'");
+                ApplicationLog.LogService.AddRaportInformation("Została usunięta aktywność " + SqlValidator.Validate(nameActivity));
                 return true;
             }
             else
             {
-                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aktywności'" + nameActivity + "'");
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aktywności " + SqlValidator.Validate(nameActivity));
                 return false;
             }
                 

@@ -204,7 +204,7 @@ namespace ApplicationTimeCounter
         private void AddTimeToDisabledComputer(int time)
         {
             string contentCommand = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + "
-                + time + " WHERE IdTitle = '1'";
+                + time + " WHERE IdTitle = 1";
             DataBase.ExecuteNonQuery(contentCommand);
         }
 

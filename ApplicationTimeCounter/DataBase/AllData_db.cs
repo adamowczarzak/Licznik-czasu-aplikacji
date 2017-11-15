@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -121,11 +122,11 @@ namespace ApplicationTimeCounter
             }
             if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
             {
-                contentCommand += " AND '" + startDate + "' < alldate.Date  AND alldate.Date < '" + endDate + "'";
+                contentCommand += " AND " + SqlValidator.Validate(startDate) + " < alldate.Date  AND alldate.Date < " + SqlValidator.Validate(endDate);
             }
             else if (!string.IsNullOrEmpty(startDate))
             {
-                contentCommand += " AND alldate.Date = '" + startDate + "'";
+                contentCommand += " AND alldate.Date = " + SqlValidator.Validate(startDate);
             }
             int returnValue = 0;
             Int32.TryParse(DataBase.GetListStringFromExecuteReader(contentCommand, "sumTimeActivity")[0], out returnValue);

@@ -2,6 +2,7 @@
 using System.Linq;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -94,8 +95,8 @@ namespace ApplicationTimeCounter
                 "nameactivity.Id AS IdNameActivity FROM activeapplications LEFT OUTER JOIN " +
                 "nameactivity ON activeapplications.IdNameActivity = nameactivity.Id WHERE 1 = 1";
             if (parameters.ID > 0) query += " AND Id = " + parameters.ID;
-            if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = '" + parameters.Title + "'";
-            if (!string.IsNullOrEmpty(parameters.NameActivity)) query += " AND NameActivity = '" + parameters.NameActivity + "'";
+            if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + SqlValidator.Validate(parameters.Title);
+            if (!string.IsNullOrEmpty(parameters.NameActivity)) query += " AND NameActivity = " + SqlValidator.Validate(parameters.NameActivity);
             if (parameters.IdNameActivity > 0) query += " AND IdNameActivity = " + (int)parameters.IdNameActivity;
 
             if (DataBase.ConnectToDataBase())
