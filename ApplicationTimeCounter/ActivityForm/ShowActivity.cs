@@ -586,33 +586,22 @@ namespace ApplicationTimeCounter
 
         private void DeleteOneApplicationFromActivity()
         {
-            if (!ActiveApplication_db.DeleteOneApplicationWithActivity(viewActivityID, deleteApplicationID))
-            {
-                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
-            }
-            Update();
+            if (ActiveApplication_db.DeleteOneApplicationWithActivity(viewActivityID, deleteApplicationID))
+                Update();           
         }
 
         private void DeleteAllApplicationFromActivity()
         {
-            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
+            if (ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
             {
-                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
-                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
-                    System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\DialogWindow.xaml.cs");
+               Update();
             }
-            Update();
+            
         }
 
         private void DeleteActivity()
         {
-            if (!ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
-            {
-                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
-                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
-                    System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\ShowActivity.cs");
-            }
-            else
+            if (ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
             {
                 if (NameActivity_db.DeleteActivity(namesActivity[index]))
                 {                  

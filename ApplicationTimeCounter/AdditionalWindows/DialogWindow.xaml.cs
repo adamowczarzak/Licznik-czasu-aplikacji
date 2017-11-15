@@ -62,8 +62,8 @@ namespace ApplicationTimeCounter.AdditionalWindows
            
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
             CloseWindowAcceptButtonDelegate();
-        } 
+            this.Close();
+        }
     }
 }
