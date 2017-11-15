@@ -11,5 +11,7 @@
         DeleteAllApplicationsWithAcitivty = 0,
         DeleteOneApplicationWithAcitivty = 1,
         DeleteAcitivty = 2,
+        EditNameDefaultActivity = 3,
+        DeleteDefaultActivity = 4,
     }
 }

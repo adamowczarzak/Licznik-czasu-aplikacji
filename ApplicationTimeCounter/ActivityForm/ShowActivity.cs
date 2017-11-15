@@ -33,7 +33,6 @@ namespace ApplicationTimeCounter
         private int deleteApplicationID;
         private int viewActivityID;
         private bool isOnlyEditMode;
-        private List<ActiveApplication> activeApplication;
 
         private TextBox nameEditActivity;
         private Label buttonSaveEditActivity;
@@ -73,13 +72,7 @@ namespace ApplicationTimeCounter
 
         private void Update()
         {
-            ActiveApplication parameters = new ActiveApplication();
-            parameters.NameActivity = namesActivity[index];
-            activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
             viewActivityID = NameActivity_db.GetIDForNameActivity(namesActivity[index]);
-            if (activeApplication.Count > 100)
-                activeApplication.RemoveRange(0, activeApplication.Count - 100);
-
             nameActivity.SetContent(namesActivity[index]);
             UpdateListOfAddedApps();
             UpdateChart();
@@ -279,6 +272,12 @@ namespace ApplicationTimeCounter
 
         private void UpdateListOfAddedApps()
         {
+            ActiveApplication parameters = new ActiveApplication();
+            parameters.NameActivity = namesActivity[index];
+            List<ActiveApplication> activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
+            if (activeApplication.Count > 100)
+                activeApplication.RemoveRange(0, activeApplication.Count - 100);
+
             applicationInActivity.Children.Clear();
             string titleApplication = string.Empty;
             applicationInActivity.Height = 0;
@@ -452,8 +451,17 @@ namespace ApplicationTimeCounter
 
         private void buttonEditActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            isOnlyEditMode = true;
-            SetEditModeActivity();
+            if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+            {
+                isOnlyEditMode = true;
+                SetEditModeActivity();
+            }  
+            else
+            {
+                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.Ok, DialogWindowsMessage.EditNameDefaultActivity);
+                dialogWindow.CloseWindowOKButtonDelegate += dialogWindow_CloseWindowOKButtonDelegate;
+                dialogWindow.ShowDialog();
+            }
         }
 
         private void SetEditModeActivity()
@@ -532,6 +540,7 @@ namespace ApplicationTimeCounter
                     footerActivity[footerActivity.Count - 1].Content = nameEditActivity.Text;
                     index = footerActivity.Count - 1;
                     CloseEditModeActivity(true);
+                    Update();
                 }
                 else
                 {
@@ -578,10 +587,19 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
-            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
-            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteActivity;
-            dialogWindow.ShowDialog();
+            if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+            {
+                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
+                dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+                dialogWindow.CloseWindowAcceptButtonDelegate += DeleteActivity;
+                dialogWindow.ShowDialog();
+            }
+            else
+            {
+                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.Ok, DialogWindowsMessage.DeleteDefaultActivity);
+                dialogWindow.CloseWindowOKButtonDelegate += dialogWindow_CloseWindowOKButtonDelegate;
+                dialogWindow.ShowDialog();
+            }
         }
 
         private void DeleteOneApplicationFromActivity()
@@ -601,11 +619,11 @@ namespace ApplicationTimeCounter
             if (ActiveApplication_db.DeleteAllApplicationsWithActivity(viewActivityID))
             {
                 if (NameActivity_db.DeleteActivity(namesActivity[index]))
-                {                  
+                {
                     namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
                     contentCanvas.Children.Remove(footerActivity[index]);
                     footerActivity.RemoveAt(index);
-                    for (int i = index; i < footerActivity.Count; i++ )
+                    for (int i = index; i < footerActivity.Count; i++)
                     {
                         Canvas.SetLeft(footerActivity[i], Canvas.GetLeft(footerActivity[i]) - 120);
                     }
@@ -616,6 +634,8 @@ namespace ApplicationTimeCounter
         }
 
         private void dialogWindow_CloseWindowCancelButtonDelegate() { }
+
+        private void dialogWindow_CloseWindowOKButtonDelegate() { }
 
         private void buttonExit_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

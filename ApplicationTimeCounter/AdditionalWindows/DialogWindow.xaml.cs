@@ -13,6 +13,7 @@ namespace ApplicationTimeCounter.AdditionalWindows
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowAcceptButtonDelegate;
         public event CloseWindowDelegate CloseWindowCancelButtonDelegate;
+        public event CloseWindowDelegate CloseWindowOKButtonDelegate;
 
         public DialogWindow(DialogWindowsState dialogWindowsState, DialogWindowsMessage dialogWindowsMessage)
         {
@@ -29,10 +30,12 @@ namespace ApplicationTimeCounter.AdditionalWindows
                 case DialogWindowsState.YesCancel:
                     acceptButton.Visibility = System.Windows.Visibility.Visible;
                     cancelButton.Visibility = System.Windows.Visibility.Visible;
+                    okButton.Visibility = System.Windows.Visibility.Hidden;
                     break;
                 case DialogWindowsState.Ok:
-                    acceptButton.Visibility = System.Windows.Visibility.Visible;
+                    acceptButton.Visibility = System.Windows.Visibility.Hidden;
                     cancelButton.Visibility = System.Windows.Visibility.Hidden;
+                    okButton.Visibility = System.Windows.Visibility.Visible;
                     break;
             }
         }
@@ -50,6 +53,12 @@ namespace ApplicationTimeCounter.AdditionalWindows
                 case DialogWindowsMessage.DeleteAcitivty:
                     questionMessages.Text = "Czy napewno chcesz usunąć tą aktywność? " + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
                     break;
+                case DialogWindowsMessage.EditNameDefaultActivity:
+                    questionMessages.Text = "Nie można zmienić nazwy standardowej aktywności - Programowanie.";
+                    break;
+                case DialogWindowsMessage.DeleteDefaultActivity:
+                    questionMessages.Text = "Nie można usunąć standardowej " + Environment.NewLine + "aktywnowści - Programowanie.";
+                    break;
             }
         }
 
@@ -57,12 +66,17 @@ namespace ApplicationTimeCounter.AdditionalWindows
         {
             CloseWindowCancelButtonDelegate();
             this.Close();
-        }
-            
+        }           
            
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
             CloseWindowAcceptButtonDelegate();
+            this.Close();
+        }
+
+        private void okButton_Click(object sender, RoutedEventArgs e)
+        {
+            CloseWindowOKButtonDelegate();
             this.Close();
         }
     }

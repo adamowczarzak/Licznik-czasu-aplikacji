@@ -28,7 +28,7 @@ namespace ApplicationTimeCounter
         public static bool DeleteAllApplicationsWithActivity(int idActivity)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
-                + ((int)ApplicationTimeCounter.ActiveApplication.IdNameActivityEnum.Lack).ToString()
+                + ((int)ActiveApplication.IdNameActivityEnum.Lack).ToString()
                 + " WHERE IdNameActivity  = " + idActivity;
 
             if (!DataBase.ExecuteNonQuery(contentCommand))
@@ -44,7 +44,7 @@ namespace ApplicationTimeCounter
         public static bool DeleteOneApplicationWithActivity(int idActivity, int idApplication)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
-                + ((int)ApplicationTimeCounter.ActiveApplication.IdNameActivityEnum.Lack).ToString()
+                + ((int)ActiveApplication.IdNameActivityEnum.Lack).ToString()
                 + " WHERE IdNameActivity  = " + idActivity + " AND ID = " + idApplication;
 
             if (!DataBase.ExecuteNonQuery(contentCommand))
