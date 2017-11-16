@@ -90,6 +90,7 @@ namespace ApplicationTimeCounter
             labels[index].SetContent(Math.Round((valueUsingAplication * 100), 0) + " %");
             labels[index].Opacity(1);
             labelLegend[index].SetContent(nameApllication);
+            labelLegend[index].ToolTip(nameApllication);
         }
 
         private Point GetPositionLabelUsingApllication(double angle, int xCenter, int yCenter)
