@@ -387,8 +387,29 @@ namespace ApplicationTimeCounter
                 footerActivityCounter[i] = new MyLabel(contentCanvas, "", 24, 23, 10, 1 + i * 594, 298, Color.FromArgb(255, 100, 100, 100),
                     Color.FromArgb(255, 200, 200, 200), 1, fontWeight: FontWeights.Bold);
             }
-
         }
+
+        private void Restart()
+        {
+            for (int i = 0; i < 4; i++)
+                scaleLabel[i].SetContent("0 h");
+            SetVisibleScale();
+            for (int i = 0; i < 7; i++)
+            {
+                charts[i].Resize(0, 16);
+                charts[i].ToolTip(ActionOnTime.GetTime(0));
+            }
+            applicationInActivity.Children.Clear();
+            applicationInActivity.Height = 0;
+
+            average[0].SetContent("0.00 %");
+            average[1].SetContent("0.00 %");
+            growth[0].SetContent("0.00 %");
+            growth[1].SetContent("0.00 %");
+            time[0].SetContent("0.00 %");
+            time[1].SetContent("0.00 %");
+        }
+        
         private void UpdateActivityFooter(int index, int prewIndex = 0)
         {
             bool moveLeft = (Canvas.GetLeft(footerActivity[index]) + footerActivity[index].Width > contentCanvas.Width) ? true : false;
@@ -445,72 +466,76 @@ namespace ApplicationTimeCounter
 
         private void buttonAdd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            isOnlyEditMode = false;
-            SetEditModeActivity();
+            if (nameActivity.Visibility == Visibility.Visible)
+            {
+                isOnlyEditMode = false;
+                SetEditModeActivity();
+            }
         }
 
         private void buttonEditActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+            if (nameActivity.Visibility == Visibility.Visible)
             {
-                isOnlyEditMode = true;
-                SetEditModeActivity();
-            }  
-            else
-            {
-                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.Ok, DialogWindowsMessage.EditNameDefaultActivity);
-                dialogWindow.CloseWindowOKButtonDelegate += dialogWindow_CloseWindowOKButtonDelegate;
-                dialogWindow.ShowDialog();
+                if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+                {
+                    isOnlyEditMode = true;
+                    SetEditModeActivity();
+                }
+                else
+                {
+                    DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.Ok, DialogWindowsMessage.EditNameDefaultActivity);
+                    dialogWindow.CloseWindowOKButtonDelegate += dialogWindow_CloseWindowOKButtonDelegate;
+                    dialogWindow.ShowDialog();
+                }
             }
         }
 
         private void SetEditModeActivity()
         {
-            if (nameActivity.Visibility == Visibility.Visible)
+            nameActivity.Visibility = Visibility.Hidden;
+            nameEditActivity = new TextBox
             {
-                nameActivity.Visibility = Visibility.Hidden;
-                nameEditActivity = new TextBox
-                {
-                    Width = 270,
-                    Height = 26,
-                    FontSize = 18,
-                    MaxLength = 30,
-                    Background = new SolidColorBrush(Color.FromArgb(255, 0, 123, 255)),
-                };
-                Canvas.SetLeft(nameEditActivity, 15);
-                Canvas.SetTop(nameEditActivity, 15);
-                mainCanvas.Children.Add(nameEditActivity);
-                nameEditActivity.PreviewMouseLeftButtonDown += nameEditActivity_DisableError;
-                nameEditActivity.PreviewMouseRightButtonDown += nameEditActivity_DisableError;
+                Width = 270,
+                Height = 26,
+                FontSize = 18,
+                MaxLength = 30,
+                Background = new SolidColorBrush(Color.FromArgb(255, 0, 123, 255)),
+            };
+            Canvas.SetLeft(nameEditActivity, 15);
+            Canvas.SetTop(nameEditActivity, 15);
+            mainCanvas.Children.Add(nameEditActivity);
+            nameEditActivity.PreviewMouseLeftButtonDown += nameEditActivity_DisableError;
+            nameEditActivity.PreviewMouseRightButtonDown += nameEditActivity_DisableError;
 
-                buttonSaveEditActivity = ButtonCreator.CreateButton(mainCanvas, "Dodaj", 80, 28, 12, 300, 14,
-                   Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1);
-                buttonSaveEditActivity.Background = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
-                buttonSaveEditActivity.MouseEnter += buttonSaveEditActivity_MouseEnter;
-                buttonSaveEditActivity.MouseLeave += buttonSaveEditActivity_MouseLeave;
-                buttonSaveEditActivity.MouseLeftButtonDown += buttonSaveEditActivity_MouseLeftButtonDown;
+            buttonSaveEditActivity = ButtonCreator.CreateButton(mainCanvas, "Dodaj", 80, 28, 12, 300, 14,
+               Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1);
+            buttonSaveEditActivity.Background = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+            buttonSaveEditActivity.MouseEnter += buttonSaveEditActivity_MouseEnter;
+            buttonSaveEditActivity.MouseLeave += buttonSaveEditActivity_MouseLeave;
+            buttonSaveEditActivity.MouseLeftButtonDown += buttonSaveEditActivity_MouseLeftButtonDown;
 
-                buttonClose = ButtonCreator.CreateButton(mainCanvas, "X", 25, 25, 11, 400, 16,
-                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 1);
-                buttonClose.Background = new SolidColorBrush(Color.FromArgb(185, 240, 0, 0));
-                buttonClose.FontWeight = FontWeights.ExtraBold;
-                ButtonCreator.SetToolTip(buttonClose, "Anuluj");
-                buttonClose.MouseEnter += buttonClose_MouseEnter;
-                buttonClose.MouseLeave += buttonClose_MouseLeave;
-                buttonClose.MouseLeftButtonDown += buttonClose_MouseLeftButtonDown;
+            buttonClose = ButtonCreator.CreateButton(mainCanvas, "X", 25, 25, 11, 400, 16,
+                Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 1);
+            buttonClose.Background = new SolidColorBrush(Color.FromArgb(185, 240, 0, 0));
+            buttonClose.FontWeight = FontWeights.ExtraBold;
+            ButtonCreator.SetToolTip(buttonClose, "Anuluj");
+            buttonClose.MouseEnter += buttonClose_MouseEnter;
+            buttonClose.MouseLeave += buttonClose_MouseLeave;
+            buttonClose.MouseLeftButtonDown += buttonClose_MouseLeftButtonDown;
 
 
-                if (isOnlyEditMode)
-                {
-                    buttonSaveEditActivity.Content = "Zmień";
-                    nameEditActivity.Text = namesActivity[index];
-                }
-                else
-                {
-                    footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, Canvas.GetLeft(footerActivity[footerActivity.Count - 1]) + 120, 320,
-                    Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
-                    UpdateActivityFooter(footerActivity.Count - 1);
-                }
+            if (isOnlyEditMode)
+            {
+                buttonSaveEditActivity.Content = "Zmień";
+                nameEditActivity.Text = namesActivity[index];
+            }
+            else
+            {
+                footerActivity.Add(ButtonCreator.CreateButton(contentCanvas, "Nowa aktywność", 120, 28, 12, Canvas.GetLeft(footerActivity[footerActivity.Count - 1]) + 120, 320,
+                Color.FromArgb(255, 55, 55, 55), Color.FromArgb(255, 255, 255, 255), 1));
+                UpdateActivityFooter(footerActivity.Count - 1);
+                Restart();
             }
         }
 
@@ -565,15 +590,19 @@ namespace ApplicationTimeCounter
                 contentCanvas.Children.Remove(footerActivity[footerActivity.Count - 1]);
                 footerActivity.RemoveAt(footerActivity.Count - 1);
                 UpdateActivityFooter(index, footerActivity.Count);
+                Update();
             }
         }
 
         private void buttonDeleteAllApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAllApplicationsWithAcitivty);
-            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
-            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteAllApplicationFromActivity;
-            dialogWindow.ShowDialog();
+            if (nameActivity.Visibility == Visibility.Visible)
+            {
+                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAllApplicationsWithAcitivty);
+                dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+                dialogWindow.CloseWindowAcceptButtonDelegate += DeleteAllApplicationFromActivity;
+                dialogWindow.ShowDialog();
+            }
         }
 
         private void buttonDeleteApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -587,18 +616,21 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+            if (nameActivity.Visibility == Visibility.Visible)
             {
-                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
-                dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
-                dialogWindow.CloseWindowAcceptButtonDelegate += DeleteActivity;
-                dialogWindow.ShowDialog();
-            }
-            else
-            {
-                DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.Ok, DialogWindowsMessage.DeleteDefaultActivity);
-                dialogWindow.CloseWindowOKButtonDelegate += dialogWindow_CloseWindowOKButtonDelegate;
-                dialogWindow.ShowDialog();
+                if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+                {
+                    DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
+                    dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+                    dialogWindow.CloseWindowAcceptButtonDelegate += DeleteActivity;
+                    dialogWindow.ShowDialog();
+                }
+                else
+                {
+                    DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.Ok, DialogWindowsMessage.DeleteDefaultActivity);
+                    dialogWindow.CloseWindowOKButtonDelegate += dialogWindow_CloseWindowOKButtonDelegate;
+                    dialogWindow.ShowDialog();
+                }
             }
         }
 
