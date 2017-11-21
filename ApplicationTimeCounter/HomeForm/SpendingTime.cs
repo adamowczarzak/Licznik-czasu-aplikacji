@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ApplicationTimeCounter.Controls;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -51,8 +52,8 @@ namespace ApplicationTimeCounter
             int sum = 0;
             for (int i = 0; i < 4; i++) sum += tableTime[i];
             for (int i = 0; i < 4; i++)
-            {
-                if(sum > 0)tableTime[i] = Convert.ToInt32((Convert.ToDouble(tableTime[i]) / Convert.ToDouble(sum)) * 100);
+            {               
+                if(sum > 0)tableTime[i] = Convert.ToInt32(Math.Round(ActionOnNumbers.DivisionD(tableTime[i], sum)* 100));
                 UpdateSegment(i, tableTime[i]);
             }         
         }

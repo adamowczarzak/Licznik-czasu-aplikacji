@@ -164,6 +164,7 @@ namespace ApplicationTimeCounter
         {
             int z = 0;
             string firstLetter = string.Empty;
+            toSearch += "A";
             while (!Char.IsLetter(toSearch[z])) z++;
             firstLetter = toSearch[z].ToString().ToUpper();
 
