@@ -14,6 +14,7 @@ namespace ApplicationTimeCounter
         private Canvas contentPage;
         private MyLabel notAssignedApplications;
         private MyLabel numberActivity;
+        private MyLabel daysHistoryActivity;
 
         private ViewContent viewContent;
 
@@ -36,6 +37,7 @@ namespace ApplicationTimeCounter
         {
             GetNotAssignedApplicationsAndSetLabel();
             GetAllActivityAndSetLabel();
+            GetDaysHistoryActivity();
         }
 
         private void viewContent_Delegate(System.Windows.Visibility visibility)
@@ -89,13 +91,13 @@ namespace ApplicationTimeCounter
             //------------------------------------------------------------------------------------------------------------------
 
             // puste pole
-            MyLabel empty1 = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 275, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
-            Label empty2 = ButtonCreator.CreateButton(canvasActivity, "     Puste Pole    ", 225, 38, 16, 30, 275,
+            daysHistoryActivity = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 275, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
+            Label buttonHistoryActivity = ButtonCreator.CreateButton(canvasActivity, "     Historia Aktywności", 225, 38, 16, 30, 275,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
-            empty2.MouseEnter += empty2_MouseEnter;
-            empty2.MouseLeave += empty2_MouseLeave;
-            empty2.MouseLeftButtonDown += empty2_MouseLeftButtonDown;
+            buttonHistoryActivity.MouseEnter += buttonHistoryActivity_MouseEnter;
+            buttonHistoryActivity.MouseLeave += buttonHistoryActivity_MouseLeave;
+            buttonHistoryActivity.MouseLeftButtonDown += buttonHistoryActivity_MouseLeftButtonDown;
             MyRectangle r3 = new MyRectangle(canvasActivity, 200, 1, Color.FromArgb(100, 255, 255, 255), 40, 312);
             //------------------------------------------------------------------------------------------------------------------
         }
@@ -119,6 +121,11 @@ namespace ApplicationTimeCounter
         private void GetAllActivityAndSetLabel()
         {
             numberActivity.SetContent(NameActivity_db.GetAllNameActivity());
+        }
+
+        private void GetDaysHistoryActivity()
+        {
+            daysHistoryActivity.SetContent(NameActivity_db.GetAllNameActivity());
         }
 
         private void SetColorNotAssignedApplications(int value)
@@ -183,19 +190,20 @@ namespace ApplicationTimeCounter
             UpdateView();
         }
 
-        private void empty2_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void buttonHistoryActivity_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
         }
 
-        private void empty2_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        private void buttonHistoryActivity_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
 
-        private void empty2_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void buttonHistoryActivity_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-           // okno
+            var tempRef = MainCanvasCategory;
+            HistoryActivity historyActivity = new HistoryActivity(ref tempRef);
         }
 
         

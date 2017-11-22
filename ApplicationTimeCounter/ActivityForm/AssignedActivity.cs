@@ -32,7 +32,7 @@ namespace ApplicationTimeCounter
             backgroundWorkerLoadingWindow = new BackgroundWorker();
             backgroundWorkerLoadingWindow.DoWork += loadingWindow.Load;
             backgroundWorkerLoadingWindow.RunWorkerAsync();
-         
+
             ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(mainCanvas, 560, 300, 30, 60, nonAssignedApplications);
             MyLabel labelNonAssignedApplication = new MyLabel(mainCanvas, "Aplikacje bez przypisanej aktywności",
                 370, 38, 18, 30, 10, Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255));
@@ -47,8 +47,6 @@ namespace ApplicationTimeCounter
             backgroundWorkerUpdateContent.DoWork += UpdateContent;
             backgroundWorkerUpdateContent.RunWorkerAsync();
         }
-
-
 
         private void buttonCloseCanvas_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

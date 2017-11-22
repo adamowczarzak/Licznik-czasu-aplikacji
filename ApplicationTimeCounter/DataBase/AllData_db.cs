@@ -101,7 +101,7 @@ namespace ApplicationTimeCounter
             }
         }
         /// <summary>
-        /// Pobiera ilość dni pracy aplkacji.
+        /// Pobiera ilość dni pracy aplikacji. Zwraca ilość dni z minusem jako string.
         /// </summary>
         /// <returns>Zwraca ilość dni jako string.</returns>
         public string GetDayWorkingApplication()
