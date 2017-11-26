@@ -3,10 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using ApplicationTimeCounter.Other;
+using ApplicationTimeCounter.ApplicationObjectsType;
 
 namespace ApplicationTimeCounter
 {
-    class AllData_db
+    public class AllData_db
     {
 
         private MySqlCommand command;
@@ -122,7 +123,7 @@ namespace ApplicationTimeCounter
             }
             if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
             {
-                contentCommand += " AND " + SqlValidator.Validate(startDate) + " < alldate.Date  AND alldate.Date < " + SqlValidator.Validate(endDate);
+                contentCommand += " AND " + SqlValidator.Validate(startDate) + " < alldate.Date AND alldate.Date < " + SqlValidator.Validate(endDate);
             }
             else if (!string.IsNullOrEmpty(startDate))
             {
@@ -131,6 +132,53 @@ namespace ApplicationTimeCounter
             int returnValue = 0;
             Int32.TryParse(DataBase.GetListStringFromExecuteReader(contentCommand, "sumTimeActivity")[0], out returnValue);
             return returnValue;
+        }
+
+        /// <summary>
+        /// Pobierz dzienne aktywności jako obiekt 'Activity'
+        /// </summary>
+        /// <returns>Zwraca listę dziennych aktywności</returns>
+        public List<Activity> GetDailyActivity(CommandParameters parameters)
+        {
+            List<Activity> dailyActivity = new List<Activity>();
+            string query = "SELECT nameactivity.Id AS " + ColumnNames.ID + 
+                ", nameactivity.NameActivity AS " + ColumnNames.Name +
+                ", SUM(alldate.ActivityTime) AS " + ColumnNames.ActivityTime +
+                ", alldate.Date AS " + ColumnNames.Date +
+                " FROM nameactivity " +
+                "INNER JOIN activeapplications ON nameactivity.Id = activeapplications.IdNameActivity " +
+                "INNER JOIN alldate ON alldate.IdTitle = activeapplications.Id " +
+                "WHERE 1 = 1 ";
+            query += CommandParameters.CheckParameters(parameters);
+            query += " GROUP BY nameactivity.Id ";
+            
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = query;
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        dailyActivity.Add(Activity.GetActivityFromReader(reader));
+                    }
+                    catch (MySqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error!!!\tZapytanie nie zwróciło żadnej wartości.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return dailyActivity;
+        }
+
+        public string GetTimeActivityForDateAndIdActivity(string date, int idTitle)
+        {
+            string contentCommand = "SELECT ActivityTime from alldate WHERE Date = " + SqlValidator.Validate(date)
+                + " AND IdTitle = " + idTitle;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "ActivityTime")[0];
         }
 
         /// <summary>

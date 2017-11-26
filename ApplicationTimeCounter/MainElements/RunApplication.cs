@@ -2,7 +2,7 @@
 
 namespace ApplicationTimeCounter
 {
-    class RunApplication
+    public class RunApplication
     {
         private bool runApllication = false;
 

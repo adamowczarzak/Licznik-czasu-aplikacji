@@ -69,7 +69,7 @@ namespace ApplicationTimeCounter
                 sumResults += Convert.ToDouble(stringbiggestResults[i, 1]);
             for (int i = 0; i < 4; i++)
                 doubleBiggestResults[i] =
-                    Math.Round(((Convert.ToDouble(stringbiggestResults[i, 1])) / sumResults), 5);
+                    Math.Round(((Convert.ToDouble(stringbiggestResults[i, 1]) / sumResults)), 2);
             return doubleBiggestResults;
         }
 

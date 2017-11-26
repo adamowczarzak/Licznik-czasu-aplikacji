@@ -36,9 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApplicationTimeCounter">
-      <HintPath>..\ApplicationTimeCounter\bin\Debug\ApplicationTimeCounter.exe</HintPath>
-    </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -62,6 +59,13 @@
     <Compile Include="AnimatedClockTest.cs" />
     <Compile Include="MyTest.cs" />
     <Compile Include="DailyUseOfApplication_dbTest.cs" />
+    <Compile Include="AllData_dbTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationTimeCounter\ApplicationTimeCounter.csproj">
+      <Project>{e9e6c446-bcfc-4552-ab69-e341e900e521}</Project>
+      <Name>ApplicationTimeCounter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

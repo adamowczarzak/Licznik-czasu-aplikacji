@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ApplicationTimeCounter.Controls;
+using System.Collections.Generic;
+using ApplicationTimeCounter.ApplicationObjectsType;
 
 
 namespace ApplicationTimeCounter
@@ -13,6 +16,8 @@ namespace ApplicationTimeCounter
         private Canvas contentCanvas;
         private Canvas chartCanvas;
         private DatePicker datePicker;
+        private ScrollViewer sv;
+        private MyLabel[] scaleLabel;
 
         private AllData_db allData_db;
 
@@ -21,7 +26,8 @@ namespace ApplicationTimeCounter
             this.canvas = canvas;
             allData_db = new AllData_db();
             mainCanvas = CanvasCreator.CreateCanvas(canvas, 620, 410, Color.FromArgb(255, 226, 240, 255), 0, 0);
-            contentCanvas = CanvasCreator.CreateCanvas(mainCanvas, 620, 340, Color.FromArgb(255, 236, 236, 236), 0, 50);
+            contentCanvas = CanvasCreator.CreateCanvas(mainCanvas, 620, 360, Color.FromArgb(255, 236, 236, 236), 0, 50);
+            new MyRectangle(mainCanvas, 620, 1, Color.FromArgb(60, 110, 110, 110), 0, 50);
 
             MyLabel l = new MyLabel(mainCanvas, "Historia aktywności", 200, 38, 18, 30, 10, Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255));
             l.SetFont("Verdana");
@@ -37,7 +43,36 @@ namespace ApplicationTimeCounter
             buttonCloseActivityHistory.MouseLeftButtonDown += buttonCloseActivityHistory_MouseLeftButtonDown;
 
             CreateDatePickier();
+            CreateChart();
             
+        }
+
+        private void CreateChart()
+        {
+            chartCanvas = new Canvas() { Width = 500, Height = 320, Background = new SolidColorBrush(Color.FromArgb(0, 236, 200, 200)) };
+            sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 500, 350, 70, 10, chartCanvas);
+            scaleLabel = new MyLabel[5];
+
+            new MyRectangle(contentCanvas, 500, 1, Color.FromArgb(80, 110, 110, 110), 70, 300);
+            new MyRectangle(contentCanvas, 1, 280, Color.FromArgb(80, 110, 110, 110), 70, 20);
+            
+            for (int i = 0; i < 4; i++ )
+            {
+                scaleLabel[i] = new MyLabel(contentCanvas, "0", 40, 30, 16, 24, 210 - (60 * i), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
+                new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 40, 240 - (60 * i));
+            }
+            new MyLabel(contentCanvas, "[%]", 40, 30, 16, 30, 0, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(180, 150, 150, 150));       
+        }
+
+        private void UpdateChart()
+        {
+
+            for (int i = 0; i < 4; i++)
+            {
+                scaleLabel[i].SetContent("0");
+            }
+             if(chartCanvas.Width > sv.Width)
+               sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
         }
 
         private void CreateDatePickier()
@@ -62,7 +97,21 @@ namespace ApplicationTimeCounter
 
         private void buttonShowActivityHistory_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            // szukanie
+            CommandParameters commandParameters = new CommandParameters();
+            commandParameters.StartDate = commandParameters.EndDate = datePicker.SelectedDate.ToString();
+            List<Activity> dailyActivity = allData_db.GetDailyActivity(commandParameters).OrderBy(x => x.ActivityTime).ToList();
+
+            Activity activity = new Activity();
+            activity.ActivityTime = Convert.ToInt32(allData_db.GetTimeActivityForDateAndIdActivity(datePicker.SelectedDate.ToString(), 2));
+            activity.Name = "Brak akty. użytkownika";
+            dailyActivity.Add(activity);
+
+            activity = new Activity();
+            activity.ActivityTime = Convert.ToInt32(allData_db.GetTimeActivityForDateAndIdActivity(datePicker.SelectedDate.ToString(), 1));
+            activity.Name = "Wyłączony komputer";
+            dailyActivity.Add(activity);
+
+            dailyActivity.Reverse();
         }
 
         private void buttonShowActivityHistory_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -77,7 +126,7 @@ namespace ApplicationTimeCounter
 
         void buttonCloseActivityHistory_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            //chartCanvas.Children.Clear();
+            chartCanvas.Children.Clear();
             contentCanvas.Children.Clear();
             mainCanvas.Children.Clear();
             this.canvas.Children.Remove(mainCanvas);
