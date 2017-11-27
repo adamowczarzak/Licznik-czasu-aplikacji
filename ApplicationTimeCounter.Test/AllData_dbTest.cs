@@ -10,7 +10,7 @@ namespace ApplicationTimeCounter.Test
     public class AllData_dbTest
     {
         [TestMethod]
-        public void GetDailyActivityTest()
+        public void TestGetDailyActivity()
         {
             RunApplication runApplication = new RunApplication();
             AllData_db allData_db = new AllData_db();

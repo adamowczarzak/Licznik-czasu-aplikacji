@@ -64,15 +64,26 @@ namespace ApplicationTimeCounter
             new MyLabel(contentCanvas, "[%]", 40, 30, 16, 30, 0, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(180, 150, 150, 150));       
         }
 
-        private void UpdateChart()
+        private void UpdateChart(List<Activity> dailyActivity)
         {
-
+            chartCanvas.Children.Clear();
+            int maxScale = dailyActivity.Select(x => x.ActivityTime).Max();
+            int sumScale = dailyActivity.Select(x => x.ActivityTime).Sum();
             for (int i = 0; i < 4; i++)
             {
-                scaleLabel[i].SetContent("0");
+                scaleLabel[i].SetContent(((((maxScale * 100) / sumScale) / 4) * (i + 1)).ToString());
             }
-             if(chartCanvas.Width > sv.Width)
-               sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+
+            for (int i = 0; i < dailyActivity.Count; i++)
+            {
+                new MyRectangle(chartCanvas, 25, ((dailyActivity[i].ActivityTime * 235) / maxScale), Color.FromArgb(200, 0, 125, 250), 30 + (70 * i),
+                    272 - ((dailyActivity[i].ActivityTime * 235) / maxScale));
+                string sa = dailyActivity[i].Name;
+                new MyLabel(chartCanvas, sa , 70, 50, 10, 10 + (70 * i), 275, Color.FromArgb(255, 100, 100, 100), Color.FromArgb(200, 200, 0, 0), 1);
+            }
+
+            if (chartCanvas.Width > sv.Width)
+                sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
         }
 
         private void CreateDatePickier()
@@ -97,6 +108,12 @@ namespace ApplicationTimeCounter
 
         private void buttonShowActivityHistory_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            List<Activity> dailyActivity = GetDailyActivity();
+            UpdateChart(dailyActivity);
+        }
+
+        private List<Activity> GetDailyActivity()
+        {
             CommandParameters commandParameters = new CommandParameters();
             commandParameters.StartDate = commandParameters.EndDate = datePicker.SelectedDate.ToString();
             List<Activity> dailyActivity = allData_db.GetDailyActivity(commandParameters).OrderBy(x => x.ActivityTime).ToList();
@@ -112,6 +129,8 @@ namespace ApplicationTimeCounter
             dailyActivity.Add(activity);
 
             dailyActivity.Reverse();
+
+            return dailyActivity;
         }
 
         private void buttonShowActivityHistory_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
