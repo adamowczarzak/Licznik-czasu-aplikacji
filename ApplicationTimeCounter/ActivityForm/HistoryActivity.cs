@@ -44,7 +44,7 @@ namespace ApplicationTimeCounter
 
             CreateDatePickier();
             CreateChart();
-            
+
         }
 
         private void CreateChart()
@@ -55,13 +55,13 @@ namespace ApplicationTimeCounter
 
             new MyRectangle(contentCanvas, 500, 1, Color.FromArgb(80, 110, 110, 110), 70, 300);
             new MyRectangle(contentCanvas, 1, 280, Color.FromArgb(80, 110, 110, 110), 70, 20);
-            
-            for (int i = 0; i < 4; i++ )
+
+            for (int i = 0; i < 4; i++)
             {
                 scaleLabel[i] = new MyLabel(contentCanvas, "0", 40, 30, 16, 24, 210 - (60 * i), Color.FromArgb(180, 150, 150, 150), Color.FromArgb(0, 20, 20, 20));
                 new MyRectangle(contentCanvas, 30, 1, Color.FromArgb(100, 150, 150, 150), 40, 240 - (60 * i));
             }
-            new MyLabel(contentCanvas, "[%]", 40, 30, 16, 30, 0, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(180, 150, 150, 150));       
+            new MyLabel(contentCanvas, "[%]", 40, 30, 16, 30, 0, Color.FromArgb(180, 150, 150, 150), Color.FromArgb(180, 150, 150, 150));
         }
 
         private void UpdateChart(List<Activity> dailyActivity)
@@ -76,10 +76,13 @@ namespace ApplicationTimeCounter
 
             for (int i = 0; i < dailyActivity.Count; i++)
             {
-                new MyRectangle(chartCanvas, 25, ((dailyActivity[i].ActivityTime * 235) / maxScale), Color.FromArgb(200, 0, 125, 250), 30 + (70 * i),
+                MyRectangle r = new MyRectangle(chartCanvas, 25, ((dailyActivity[i].ActivityTime * 235) / maxScale), Color.FromArgb(200, 0, 125, 250), 30 + (70 * i),
                     272 - ((dailyActivity[i].ActivityTime * 235) / maxScale));
-                string sa = dailyActivity[i].Name;
-                new MyLabel(chartCanvas, sa , 70, 50, 10, 10 + (70 * i), 275, Color.FromArgb(255, 100, 100, 100), Color.FromArgb(200, 200, 0, 0), 1);
+                dailyActivity[i].Name = (i > 1) ? dailyActivity[i].Name.Replace(" ", "\n") : dailyActivity[i].Name;
+                MyLabel l = new MyLabel(chartCanvas, dailyActivity[i].Name, 70, 50, 10, 8 + (70 * i), 275, Color.FromArgb(255, 100, 100, 100), Color.FromArgb(200, 200, 0, 0));
+                l.ToolTip(dailyActivity[i].Name);
+                r.ToolTip(dailyActivity[i].ActivityTime.ToString());
+                r.ToolTipResizeAbout(20, 0, true);
             }
 
             if (chartCanvas.Width > sv.Width)
@@ -103,13 +106,16 @@ namespace ApplicationTimeCounter
             buttonShowActivityHistory.MouseLeave += buttonShowActivityHistory_MouseLeave;
             buttonShowActivityHistory.MouseLeftButtonDown += buttonShowActivityHistory_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonShowActivityHistory, "Wyszukaj aktywności dla wybranego dnia");
-
         }
 
         private void buttonShowActivityHistory_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            List<Activity> dailyActivity = GetDailyActivity();
-            UpdateChart(dailyActivity);
+            if (!string.IsNullOrEmpty(datePicker.SelectedDate.ToString()))
+            {
+                List<Activity> dailyActivity = GetDailyActivity();
+                UpdateChart(dailyActivity);
+            }
+
         }
 
         private List<Activity> GetDailyActivity()
@@ -120,13 +126,13 @@ namespace ApplicationTimeCounter
 
             Activity activity = new Activity();
             activity.ActivityTime = Convert.ToInt32(allData_db.GetTimeActivityForDateAndIdActivity(datePicker.SelectedDate.ToString(), 2));
-            activity.Name = "Brak akty. użytkownika";
-            dailyActivity.Add(activity);
-
+            activity.Name = "Brak akty. \nużytkownika";
+            if (activity.ActivityTime > 0) dailyActivity.Add(activity);
+                
             activity = new Activity();
             activity.ActivityTime = Convert.ToInt32(allData_db.GetTimeActivityForDateAndIdActivity(datePicker.SelectedDate.ToString(), 1));
-            activity.Name = "Wyłączony komputer";
-            dailyActivity.Add(activity);
+            activity.Name = "Wyłączony \nkomputer";
+            if (activity.ActivityTime > 0) dailyActivity.Add(activity);
 
             dailyActivity.Reverse();
 

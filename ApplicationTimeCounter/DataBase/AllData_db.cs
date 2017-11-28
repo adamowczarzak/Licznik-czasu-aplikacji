@@ -179,8 +179,10 @@ namespace ApplicationTimeCounter
             string contentCommand = "SELECT ActivityTime from alldate WHERE Date = " + SqlValidator.Validate(date)
                 + " AND IdTitle = " + idTitle;
 
-            string returnValue = DataBase.GetListStringFromExecuteReader(contentCommand, "ActivityTime")[0];
-            return (!string.IsNullOrEmpty(returnValue)) ? returnValue : "0";
+            string returnValue = string.Empty;
+            if (DataBase.GetListStringFromExecuteReader(contentCommand, "ActivityTime").Any())
+                return DataBase.GetListStringFromExecuteReader(contentCommand, "ActivityTime")[0];
+            else return "0";
         }
 
         /// <summary>

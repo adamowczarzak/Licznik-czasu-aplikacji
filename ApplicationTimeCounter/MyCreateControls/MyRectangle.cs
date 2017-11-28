@@ -19,7 +19,7 @@ namespace ApplicationTimeCounter.Controls
                 Height = height,
                 Fill = new SolidColorBrush(color),
                 StrokeThickness = strokeThickness,
-                Stroke = new SolidColorBrush(Color.FromArgb(255,255,255,255)),
+                Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255)),
                 Opacity = opacity
             };
             Canvas.SetLeft(myRectangle, x);
@@ -56,7 +56,7 @@ namespace ApplicationTimeCounter.Controls
             myRectangle.RenderTransform = rotate;
         }
 
-        public void Opacity( double value )
+        public void Opacity(double value)
         {
             myRectangle.Opacity = value;
         }
@@ -69,6 +69,26 @@ namespace ApplicationTimeCounter.Controls
         public void ToolTip(string content)
         {
             toolTip.ToolTip(content);
+        }
+
+        /// <summary>
+        /// Rozszerzenie wyłapywania ToolTipa o dodatkowe wielkości szerokości i wysokości.
+        /// 
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="width"></param>
+        /// <param name="ifToZeroHeight">Czy wysokość rozrzerzając się zmierza do warości 0.</param>
+        /// <param name="ifToZeroWidth">Czy szerokość rozrzerzając się zmierza do warości 0.</param>
+        public void ToolTipResizeAbout(int height, int width, bool ifToZeroHeight = false, bool ifToZeroWidth = false)
+        {
+            int newHeight = ((int)myRectangle.Height + height > 0) ? (int)myRectangle.Height + height : 0;
+            int newWidth = ((int)myRectangle.Width + width > 0) ? (int)myRectangle.Width + width : 0;
+
+            height = ifToZeroHeight ? -height : height;
+            width = ifToZeroWidth ? -width : width;
+
+            toolTip.Resize(newHeight, newWidth);
+            toolTip.Position(Canvas.GetLeft(myRectangle) + width, Canvas.GetTop(myRectangle) + height);
         }
 
         public void EnableResizeToolTip(bool ifResize)
