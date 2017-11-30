@@ -21,6 +21,10 @@ namespace ApplicationTimeCounter
 
         private AllData_db allData_db;
 
+        private static readonly string NoUserActivity = "Brak akty. \nużytkownika";
+        private static readonly string NoActivity = "Brak";
+        private static readonly string TurnedOffComputer = "Wyłączony \nkomputer";
+
         public HistoryActivity(ref Canvas canvas)
         {
             this.canvas = canvas;
@@ -31,7 +35,6 @@ namespace ApplicationTimeCounter
 
             MyLabel l = new MyLabel(mainCanvas, "Historia aktywności", 200, 38, 18, 30, 10, Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255));
             l.SetFont("Verdana");
-
 
             new MyLabel(mainCanvas, "x", 30, 50, 24, 590, 10, Color.FromArgb(255, 70, 70, 70),
                 Color.FromArgb(255, 70, 70, 70), 0);
@@ -49,9 +52,10 @@ namespace ApplicationTimeCounter
 
         private void CreateChart()
         {
-            chartCanvas = new Canvas() { Width = 500, Height = 320, Background = new SolidColorBrush(Color.FromArgb(0, 236, 200, 200)) };
-            sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 500, 350, 70, 10, chartCanvas);
+            chartCanvas = new Canvas() { Width = 500, Height = 290, Background = new SolidColorBrush(Color.FromArgb(0, 236, 200, 200)) };
+            sv = ScrollViewerCreator.CreateScrollViewer(contentCanvas, 500, 360, 70, 0, chartCanvas);
             scaleLabel = new MyLabel[5];
+            sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
 
             new MyRectangle(contentCanvas, 500, 1, Color.FromArgb(80, 110, 110, 110), 70, 300);
             new MyRectangle(contentCanvas, 1, 280, Color.FromArgb(80, 110, 110, 110), 70, 20);
@@ -67,6 +71,7 @@ namespace ApplicationTimeCounter
         private void UpdateChart(List<Activity> dailyActivity)
         {
             chartCanvas.Children.Clear();
+            chartCanvas.Width = 500;
             int maxScale = dailyActivity.Select(x => x.ActivityTime).Max();
             int sumScale = dailyActivity.Select(x => x.ActivityTime).Sum();
             for (int i = 0; i < 4; i++)
@@ -83,10 +88,12 @@ namespace ApplicationTimeCounter
                 l.ToolTip(dailyActivity[i].Name);
                 r.ToolTip(dailyActivity[i].ActivityTime.ToString());
                 r.ToolTipResizeAbout(20, 0, true);
-            }
+                if (i > 6) chartCanvas.Width += 70;
 
-            if (chartCanvas.Width > sv.Width)
-                sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                if (string.Equals(dailyActivity[i].Name, TurnedOffComputer)) r.SetFillColor(Color.FromArgb(200, 178, 174, 174));
+                if (string.Equals(dailyActivity[i].Name, NoUserActivity)) r.SetFillColor(Color.FromArgb(200, 160, 180, 255));
+                if (string.Equals(dailyActivity[i].Name, NoActivity)) r.SetFillColor(Color.FromArgb(200, 223, 132, 132));
+            }
         }
 
         private void CreateDatePickier()
@@ -126,12 +133,12 @@ namespace ApplicationTimeCounter
 
             Activity activity = new Activity();
             activity.ActivityTime = Convert.ToInt32(allData_db.GetTimeActivityForDateAndIdActivity(datePicker.SelectedDate.ToString(), 2));
-            activity.Name = "Brak akty. \nużytkownika";
+            activity.Name = NoUserActivity;
             if (activity.ActivityTime > 0) dailyActivity.Add(activity);
-                
+
             activity = new Activity();
             activity.ActivityTime = Convert.ToInt32(allData_db.GetTimeActivityForDateAndIdActivity(datePicker.SelectedDate.ToString(), 1));
-            activity.Name = "Wyłączony \nkomputer";
+            activity.Name = TurnedOffComputer;
             if (activity.ActivityTime > 0) dailyActivity.Add(activity);
 
             dailyActivity.Reverse();

@@ -125,7 +125,8 @@ namespace ApplicationTimeCounter
 
         private void GetDaysHistoryActivity()
         {
-            daysHistoryActivity.SetContent(NameActivity_db.GetAllNameActivity());
+            AllData_db allData_db = new AllData_db();
+            daysHistoryActivity.SetContent(allData_db.GetDayWorkingApplication().Replace("-", string.Empty));
         }
 
         private void SetColorNotAssignedApplications(int value)
