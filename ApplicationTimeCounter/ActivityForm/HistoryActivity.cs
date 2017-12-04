@@ -5,6 +5,7 @@ using System.Windows.Media;
 using ApplicationTimeCounter.Controls;
 using System.Collections.Generic;
 using ApplicationTimeCounter.ApplicationObjectsType;
+using ApplicationTimeCounter.Other;
 
 
 namespace ApplicationTimeCounter
@@ -84,9 +85,10 @@ namespace ApplicationTimeCounter
                 MyRectangle r = new MyRectangle(chartCanvas, 25, ((dailyActivity[i].ActivityTime * 235) / maxScale), Color.FromArgb(200, 0, 125, 250), 30 + (70 * i),
                     272 - ((dailyActivity[i].ActivityTime * 235) / maxScale));
                 dailyActivity[i].Name = (i > 1) ? dailyActivity[i].Name.Replace(" ", "\n") : dailyActivity[i].Name;
-                MyLabel l = new MyLabel(chartCanvas, dailyActivity[i].Name, 70, 50, 10, 8 + (70 * i), 275, Color.FromArgb(255, 100, 100, 100), Color.FromArgb(200, 200, 0, 0));
+                MyLabel l = new MyLabel(chartCanvas, dailyActivity[i].Name, 70, 36, 10, 8 + (70 * i), 275, Color.FromArgb(255, 100, 100, 100), Color.FromArgb(200, 200, 0, 0));
                 l.ToolTip(dailyActivity[i].Name);
-                r.ToolTip(dailyActivity[i].ActivityTime.ToString());
+
+                r.ToolTip(ActionOnTime.GetTime(dailyActivity[i].ActivityTime));
                 r.ToolTipResizeAbout(20, 0, true);
                 if (i > 6) chartCanvas.Width += 70;
 
