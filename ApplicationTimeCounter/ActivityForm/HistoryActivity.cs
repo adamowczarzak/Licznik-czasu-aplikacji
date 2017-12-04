@@ -115,6 +115,7 @@ namespace ApplicationTimeCounter
             buttonShowActivityHistory.MouseLeave += buttonShowActivityHistory_MouseLeave;
             buttonShowActivityHistory.MouseLeftButtonDown += buttonShowActivityHistory_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonShowActivityHistory, "Wyszukaj aktywności dla wybranego dnia");
+            if (datePicker.DisplayDateEnd == datePicker.DisplayDateStart) datePicker.IsEnabled = false;
         }
 
         private void buttonShowActivityHistory_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

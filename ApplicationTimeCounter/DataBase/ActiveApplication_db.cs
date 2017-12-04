@@ -125,5 +125,13 @@ namespace ApplicationTimeCounter
             }
             return activeApplication;
         }
+
+        public static string GetAllNotJoinedApplication()
+        {
+            string contentCommand = "SELECT COUNT(*) as noJoinedApplication from activeapplications " +
+                "WHERE IdMembership IS NULL";
+            string AllNotAssignedApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "noJoinedApplication")[0];
+            return AllNotAssignedApplication;
+        }
     }
 }
