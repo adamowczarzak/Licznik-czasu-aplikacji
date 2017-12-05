@@ -84,6 +84,7 @@
     <Compile Include="ApplicationObjectsType\Enums.cs" />
     <Compile Include="ApplicationObjectsType\ColumnNames.cs" />
     <Compile Include="MembershipForm\JoinApplications.cs" />
+    <Compile Include="MembershipForm\ShowMemberships.cs" />
     <Compile Include="Other\ActionOnNumbers.cs" />
     <Compile Include="ApplicationObjectsType\ActiveApplication.cs" />
     <Compile Include="DataBase\ActiveApplication_db.cs" />

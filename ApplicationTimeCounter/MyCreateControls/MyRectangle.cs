@@ -96,5 +96,10 @@ namespace ApplicationTimeCounter.Controls
             enableResizeToolTip = ifResize;
         }
 
+        public void SetStroke(Color color)
+        {
+            myRectangle.Stroke = new SolidColorBrush(color);
+        }
+
     }
 }

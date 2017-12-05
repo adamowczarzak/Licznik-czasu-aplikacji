@@ -116,7 +116,7 @@ namespace ApplicationTimeCounter
 
             // przyłącz aplikacje ----------------------------------------------------------------------------------------------
             notJoinedApplications = new MyLabel(canvasMembership, "0", 50, 38, 18, 30, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 0);
-            Label buttonJoinApplication = ButtonCreator.CreateButton(canvasMembership, "     Przyłącz aplikacje", 225, 38, 16, 30, 200,
+            Label buttonJoinApplication = ButtonCreator.CreateButton(canvasMembership, "     Przyłącz Aplikacje", 225, 38, 16, 30, 200,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
             buttonJoinApplication.MouseEnter += buttonJoinApplication_MouseEnter;
@@ -139,7 +139,7 @@ namespace ApplicationTimeCounter
 
             // historia aktywności
             numberOfConfiguredGroups = new MyLabel(canvasMembership, "0", 50, 38, 18, 30, 275, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
-            Label buttonConfigurationGroups= ButtonCreator.CreateButton(canvasMembership, "     Konfiguracje grup", 225, 38, 16, 30, 275,
+            Label buttonConfigurationGroups= ButtonCreator.CreateButton(canvasMembership, "     Konfiguracje Grup", 225, 38, 16, 30, 275,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
             buttonConfigurationGroups.MouseEnter += buttonConfigurationGroups_MouseEnter;
@@ -227,7 +227,9 @@ namespace ApplicationTimeCounter
 
         private void buttonShowGroups_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
+            var tempRef = MainCanvasCategory;
+            ShowMemberships showMemberships = new ShowMemberships(ref tempRef);
+            showMemberships.CloseWindowShowMembershipsDelegate += Update; 
         }
 
         private void buttonShowGroups_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -243,8 +245,8 @@ namespace ApplicationTimeCounter
         private void buttonJoinApplication_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var tempRef = MainCanvasCategory;
-            JoinApplications assignedActivity = new JoinApplications(ref tempRef);
-            assignedActivity.CloseWindowAssignedActivityDelegate += showActivity_Update;
+            JoinApplications joinApplications = new JoinApplications(ref tempRef);
+            joinApplications.CloseWindowAssignedActivityDelegate += Update;
         }
 
         private void buttonJoinApplication_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -271,7 +273,7 @@ namespace ApplicationTimeCounter
         {
             var tempRef = MainCanvasCategory;
             AssignedActivity assignedActivity = new AssignedActivity(ref tempRef);
-            assignedActivity.CloseWindowAssignedActivityDelegate += showActivity_Update;
+            assignedActivity.CloseWindowAssignedActivityDelegate += Update;
         }
 
         private void buttonShowActivity_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -288,10 +290,10 @@ namespace ApplicationTimeCounter
         {
             var tempRef = MainCanvasCategory;
             ShowActivity showActivity = new ShowActivity(ref tempRef);
-            showActivity.CloseWindowShowActivityDelegate += showActivity_Update; 
+            showActivity.CloseWindowShowActivityDelegate += Update; 
         }
 
-        private void showActivity_Update()
+        private void Update()
         {
             UpdateView();
         }
