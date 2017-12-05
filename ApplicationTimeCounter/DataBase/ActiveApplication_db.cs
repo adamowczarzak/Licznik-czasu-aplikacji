@@ -61,7 +61,6 @@ namespace ApplicationTimeCounter
             parameters.IdNameActivity = ActiveApplication.IdNameActivityEnum.Lack;
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
 
-
             if (DataBase.ConnectToDataBase())
             {
                 command.Connection = DataBase.Connection;

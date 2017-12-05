@@ -44,5 +44,31 @@ namespace ApplicationTimeCounter.Other
             int percent = Convert.ToInt32(((24 * 60) - ActionOnTime.GetNowTimeInMinuts()) / (24 * 60) * 100);
             return percent + " %";
         }
+
+        /// <summary>
+        /// Metoda zwraca w formie stringu ilość dni które mienły od dzisiejszej daty.
+        /// </summary>
+        /// <param name="dateAgo">Data od któej ma być liczona różnica. </param>
+        /// <returns>Zwraca ilość dni od podanej daty.</returns>
+        public static string GetNumberDayAgo(string dateAgo)
+        {
+            DateTime dateApplication;
+            TimeSpan wynik = new TimeSpan(0);
+            try
+            {
+                dateApplication = DateTime.Parse(dateAgo);
+                wynik = DateTime.Now - dateApplication;
+            }
+            catch (Exception message)
+            {
+                ApplicationLog.LogService.AddRaportCatchException("Warrning !!! Nie udało się zparsować daty", message);
+            }
+
+            string returnValue = string.Empty;
+            if (wynik.Days.ToString() == "0") returnValue = "Dziś";
+            else if (wynik.Days.ToString() == "1") returnValue = "1 dzień temu";
+            else returnValue = wynik.Days.ToString() + " dni temu";
+            return returnValue;
+        }
     }
 }

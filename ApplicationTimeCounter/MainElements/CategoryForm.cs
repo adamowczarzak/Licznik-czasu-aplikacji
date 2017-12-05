@@ -16,6 +16,8 @@ namespace ApplicationTimeCounter
         private MyLabel numberActivity;
         private MyLabel daysHistoryActivity;
         private MyLabel notJoinedApplications;
+        private MyLabel numberGroups;
+        private MyLabel numberOfConfiguredGroups;
 
         private ViewContent viewContent;
 
@@ -123,10 +125,29 @@ namespace ApplicationTimeCounter
             MyRectangle r = new MyRectangle(canvasMembership, 200, 1, Color.FromArgb(100, 255, 255, 255), 40, 237);
             //-----------------------------------------------------------------------------------------------------------------
 
+            // przegląd grup
+            numberGroups = new MyLabel(canvasMembership, "0", 50, 38, 18, 30, 237, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
+            Label buttonShowGroups = ButtonCreator.CreateButton(canvasMembership, "     Przegląd Grup      ", 225, 38, 16, 30, 237,
+                Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
+
+            buttonShowGroups.MouseEnter += buttonShowGroups_MouseEnter;
+            buttonShowGroups.MouseLeave += buttonShowGroups_MouseLeave;
+            buttonShowGroups.MouseLeftButtonDown += buttonShowGroups_MouseLeftButtonDown;
+            MyRectangle r2 = new MyRectangle(canvasMembership, 200, 1, Color.FromArgb(100, 255, 255, 255), 40, 275);
+            //------------------------------------------------------------------------------------------------------------------
+
+
+            // historia aktywności
+            numberOfConfiguredGroups = new MyLabel(canvasMembership, "0", 50, 38, 18, 30, 275, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
+            Label buttonConfigurationGroups= ButtonCreator.CreateButton(canvasMembership, "     Konfiguracje grup", 225, 38, 16, 30, 275,
+                Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
+
+            buttonConfigurationGroups.MouseEnter += buttonConfigurationGroups_MouseEnter;
+            buttonConfigurationGroups.MouseLeave += buttonConfigurationGroups_MouseLeave;
+            buttonConfigurationGroups.MouseLeftButtonDown += buttonConfigurationGroups_MouseLeftButtonDown;
+            MyRectangle r3 = new MyRectangle(canvasMembership, 200, 1, Color.FromArgb(100, 255, 255, 255), 40, 312);
+            //------------------------------------------------------------------------------------------------------------------
         }
-
-
-
 
         /// <summary>
         /// Pobiera ilość nie przypisanych aplikacji i ustawia kontrolkę 'notAssignedApplications'.
@@ -189,9 +210,41 @@ namespace ApplicationTimeCounter
             }
         }
 
-        private void buttonJoinApplication_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void buttonConfigurationGroups_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             
+        }
+
+        private void buttonConfigurationGroups_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        }
+
+        private void buttonConfigurationGroups_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
+        }
+
+        private void buttonShowGroups_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void buttonShowGroups_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        }
+
+        private void buttonShowGroups_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(140, 0, 123, 255));
+        }
+
+        private void buttonJoinApplication_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var tempRef = MainCanvasCategory;
+            JoinApplications assignedActivity = new JoinApplications(ref tempRef);
+            assignedActivity.CloseWindowAssignedActivityDelegate += showActivity_Update;
         }
 
         private void buttonJoinApplication_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

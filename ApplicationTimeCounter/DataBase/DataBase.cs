@@ -248,6 +248,13 @@ namespace ApplicationTimeCounter
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
+            stringCommand = @"CREATE TABLE IF NOT EXISTS `membership`(
+                `Id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL)
+                CHARACTER SET utf8 COLLATE utf8_polish_ci";
+            command = new MySqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
             if (addnameActivity)
             {
                 stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') ";
