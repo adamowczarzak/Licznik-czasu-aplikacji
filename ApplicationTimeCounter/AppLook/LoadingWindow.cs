@@ -16,7 +16,7 @@ namespace ApplicationTimeCounter
         {
             this._canvas = _canvas;
             notClose = true;
-            LoadCanvas = CanvasCreator.CreateCanvas(this._canvas, (int)_canvas.Width, (int)_canvas.Height, Color.FromArgb(255, 156, 156, 156), 0, 0);
+            LoadCanvas = CanvasCreator.CreateCanvas(this._canvas, (int)_canvas.Width, (int)_canvas.Height, Color.FromArgb(255, 226, 240, 255), 0, 0);
         }
 
         public void Load(object sender, System.ComponentModel.DoWorkEventArgs e)

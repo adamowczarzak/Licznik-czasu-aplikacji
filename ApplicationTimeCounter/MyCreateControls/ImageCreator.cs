@@ -14,8 +14,8 @@ namespace ApplicationTimeCounter.Controls
             BitmapImage src = new BitmapImage();
             src.BeginInit();
             src.UriSource = new Uri(nameImage, UriKind.Relative);
-            Canvas.SetTop(image, x);
-            Canvas.SetLeft(image, y);
+            Canvas.SetTop(image, y);
+            Canvas.SetLeft(image, x);
             _canvas.Children.Add(image);
             src.EndInit();
             image.Source = src;

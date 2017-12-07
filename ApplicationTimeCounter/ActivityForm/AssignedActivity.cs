@@ -38,7 +38,6 @@ namespace ApplicationTimeCounter
             MyLabel labelNonAssignedApplication = new MyLabel(mainCanvas, "Aplikacje bez przypisanej aktywności",
                 370, 38, 18, 30, 10, Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255));
             labelNonAssignedApplication.SetFont("Verdana");
-            MyRectangle r = new MyRectangle(mainCanvas, 560, 1, Color.FromArgb(255, 220, 220, 220), 30, 45);
 
             buttonCloseCanvas = ButtonCreator.CreateButton(mainCanvas, "Zamknij", 80, 30, 13, 510, 370,
                 Color.FromArgb(255, 0, 123, 255), Color.FromArgb(200, 0, 56, 255), 1);
