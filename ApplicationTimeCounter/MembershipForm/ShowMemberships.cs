@@ -161,7 +161,15 @@ namespace ApplicationTimeCounter
 
         private void buttonSaveGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+            if (!Membership_db.CheckIfExistName(nameGroup.Text))
+            {
+                Membership_db.Add(nameGroup.Text);
+                CloseAddingGroup();
+            }
+            else
+            {
+                nameGroup.Background = new SolidColorBrush(Color.FromArgb(220, 255, 55, 55));
+            }          
         }
 
         private void buttonExit_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -174,10 +182,10 @@ namespace ApplicationTimeCounter
 
         private void buttonClose_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CloseEditModeActivity(false);
+            CloseAddingGroup();
         }
 
-        private void CloseEditModeActivity(bool ifAddActivity)
+        private void CloseAddingGroup()
         {
             mainCanvas.Children.Remove(nameGroup);
             mainCanvas.Children.Remove(buttonSaveGroup);
