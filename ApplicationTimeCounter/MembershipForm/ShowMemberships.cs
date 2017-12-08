@@ -3,6 +3,10 @@ using System.Windows.Media;
 using ApplicationTimeCounter.Controls;
 using System.Windows;
 using System.Windows.Input;
+using System;
+using System.Windows.Media.Imaging;
+using ApplicationTimeCounter.ApplicationObjectsType;
+using System.Collections.Generic;
 
 namespace ApplicationTimeCounter
 {
@@ -17,6 +21,7 @@ namespace ApplicationTimeCounter
         private Label buttonDeleteGroup;
         private Label buttonShowApplications;
         private Label buttonActivationGroup;
+        private Image[] activationGroup;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowShowMembershipsDelegate;
@@ -69,13 +74,17 @@ namespace ApplicationTimeCounter
 
         private void LoadGroups()
         {
+            List<Membership> allGroups = Membership_db.GetAllGroups();
             Application.Current.Dispatcher.Invoke(() => {
-            for(int i = 0; i < 10; i++)
+
+            activationGroup = new Image[allGroups.Count];
+
+            for (int i = 0; i < allGroups.Count; i++)
             {
                 new MyRectangle(contentCanvas, 600, 40, Color.FromArgb((byte)(50 + (i % 2 * 30)), 0, 125, 255), 0, i * 39, 2).SetStroke(Color.FromArgb(255, 30, 39, 93));
                 new MyLabel(contentCanvas, (i+1).ToString(), 30, 30, 12, 5, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
-                new MyLabel(contentCanvas, "Jakaś tam nazwa "+ (i + 1), 200, 30, 12, 35, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
-                new MyLabel(contentCanvas, "2017-11-22", 90, 30, 12, 445, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
+                new MyLabel(contentCanvas, allGroups[i].Title, 200, 30, 12, 35, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
+                new MyLabel(contentCanvas, allGroups[i].Date, 90, 30, 12, 445, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
 
                 ImageCreator.CreateImage(contentCanvas, 20, 20, 245, 10 + (i * 39), "Pictures/rubbishBin.png");                
                 buttonDeleteGroup = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 240, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
@@ -91,8 +100,9 @@ namespace ApplicationTimeCounter
 
                 ImageCreator.CreateImage(contentCanvas, 20, 20, 380, 10 + (i * 39), "Pictures/cancel.png");
 
-                ImageCreator.CreateImage(contentCanvas, 20, 20, 565, 10 + (i * 39), "Pictures/checkSymbol.png");
+                activationGroup[i] = ImageCreator.CreateImage(contentCanvas, 20, 20, 565, 10 + (i * 39), "Pictures/checkSymbol.png");
                 buttonActivationGroup = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 560, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
+                buttonActivationGroup.Name = "ID_" + i.ToString();
                 buttonActivationGroup.MouseEnter += buttonGroup_MouseEnter;
                 buttonActivationGroup.MouseLeave += buttonGroup_MouseLeave;
                 buttonActivationGroup.MouseLeftButtonDown += buttonActivationGroup_MouseLeftButtonDown;
@@ -110,7 +120,18 @@ namespace ApplicationTimeCounter
 
         private void buttonActivationGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-        
+            int id = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
+            bool ifActivation = (activationGroup[id].Source.ToString().Contains("checkSymbol.png")) ? false : true;
+            
+            if (Membership_db.ActivationGroup(id.ToString(), ifActivation))
+            {
+                BitmapImage src = new BitmapImage();
+                src.BeginInit();
+                if (ifActivation) src.UriSource = new Uri("Pictures/checkSymbol.png", UriKind.Relative);
+                else src.UriSource = new Uri("Pictures/cancel.png", UriKind.Relative);
+                src.EndInit();
+                activationGroup[id].Source = src;
+            }
         }
 
         private void buttonShowApplications_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

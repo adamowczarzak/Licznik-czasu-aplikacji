@@ -12,6 +12,9 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
         public static readonly string Name = "NameActivity";
         public static readonly string ActivityTime = "ActivityTime";
         public static readonly string Date = "Date";
+        public static readonly string Title = "Title";
+        public static readonly string IfActive = "Active";
+        public static readonly string IfConfiguration = "Configuration";
 
 
     }
