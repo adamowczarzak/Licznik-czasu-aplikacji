@@ -85,15 +85,15 @@
     <Compile Include="ApplicationObjectsType\ColumnNames.cs" />
     <Compile Include="ApplicationObjectsType\Membership.cs" />
     <Compile Include="DataBase\Membership_db.cs" />
+    <Compile Include="AdditionalWindows\WindowAddTo.xaml.cs">
+      <DependentUpon>WindowAddTo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MembershipForm\JoinApplications.cs" />
     <Compile Include="MembershipForm\ShowMemberships.cs" />
     <Compile Include="Other\ActionOnNumbers.cs" />
     <Compile Include="ApplicationObjectsType\ActiveApplication.cs" />
     <Compile Include="DataBase\ActiveApplication_db.cs" />
     <Compile Include="Counter\ActivityUser.cs" />
-    <Compile Include="ActivityForm\AddActivity.xaml.cs">
-      <DependentUpon>AddActivity.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DataBase\AllData_db.cs" />
     <Compile Include="HomeForm\AnimatedClock.cs" />
     <Compile Include="ActivityForm\AssignedActivity.cs" />
@@ -122,10 +122,6 @@
     <Compile Include="HomeForm\SpendingTime.cs" />
     <Compile Include="HomeForm\TimeUsingApplication.cs" />
     <Compile Include="AppLook\ViewContent.cs" />
-    <Page Include="ActivityForm\AddActivity.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="AdditionalWindows\DialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -144,6 +140,10 @@
     </Page>
     <Compile Include="Counter\ActiveWindow.cs" />
     <Compile Include="App\App.xaml.cs" />
+    <Page Include="AdditionalWindows\WindowAddTo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MyCreateControls\CircleBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

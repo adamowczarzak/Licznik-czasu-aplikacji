@@ -59,6 +59,9 @@ namespace ApplicationTimeCounter.AdditionalWindows
                 case DialogWindowsMessage.DeleteDefaultActivity:
                     questionMessages.Text = "Nie można usunąć standardowej " + Environment.NewLine + "aktywnowści - Programowanie.";
                     break;
+                case DialogWindowsMessage.DeleteGroup:
+                    questionMessages.Text = "Czy napewno chcesz usunąc grupę?" + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
+                    break;
             }
         }
 

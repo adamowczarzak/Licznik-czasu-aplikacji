@@ -7,6 +7,7 @@ using System;
 using System.Windows.Media.Imaging;
 using ApplicationTimeCounter.ApplicationObjectsType;
 using System.Collections.Generic;
+using ApplicationTimeCounter.AdditionalWindows;
 
 namespace ApplicationTimeCounter
 {
@@ -97,12 +98,20 @@ namespace ApplicationTimeCounter
                 buttonShowApplications.MouseEnter += buttonGroup_MouseEnter;
                 buttonShowApplications.MouseLeave += buttonGroup_MouseLeave;
                 buttonShowApplications.MouseLeftButtonDown += buttonShowApplications_MouseLeftButtonDown;
+                
+                string loadPictures = string.Empty;
+                if (allGroups[i].IfConfiguration) loadPictures = "Pictures/checkSymbol.png";
+                else loadPictures = "Pictures/cancel.png";
 
-                ImageCreator.CreateImage(contentCanvas, 20, 20, 380, 10 + (i * 39), "Pictures/cancel.png");
+                ImageCreator.CreateImage(contentCanvas, 20, 20, 380, 10 + (i * 39), loadPictures);
 
-                activationGroup[i] = ImageCreator.CreateImage(contentCanvas, 20, 20, 565, 10 + (i * 39), "Pictures/checkSymbol.png");
+                if (allGroups[i].IfActive)loadPictures = "Pictures/checkSymbol.png";
+                else loadPictures = "Pictures/cancel.png";
+
+                activationGroup[i] = ImageCreator.CreateImage(contentCanvas, 20, 20, 565, 10 + (i * 39), loadPictures);
+                activationGroup[i].Name = "ID_" + allGroups[i].ID.ToString();
                 buttonActivationGroup = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 560, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
-                buttonActivationGroup.Name = "ID_" + i.ToString();
+                buttonActivationGroup.Name = "ID_" + allGroups[i].ID.ToString();
                 buttonActivationGroup.MouseEnter += buttonGroup_MouseEnter;
                 buttonActivationGroup.MouseLeave += buttonGroup_MouseLeave;
                 buttonActivationGroup.MouseLeftButtonDown += buttonActivationGroup_MouseLeftButtonDown;
@@ -121,7 +130,13 @@ namespace ApplicationTimeCounter
         private void buttonActivationGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             int id = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
-            bool ifActivation = (activationGroup[id].Source.ToString().Contains("checkSymbol.png")) ? false : true;
+            int indexImage = 1;
+            bool ifActivation = false;
+
+            for (int i = 0; i < activationGroup.Length; i++)
+                if (activationGroup[i].Name.Replace("ID_", "") == id.ToString()) indexImage = i;        
+
+            ifActivation = (activationGroup[indexImage].Source.ToString().Contains("checkSymbol.png")) ? false : true;
             
             if (Membership_db.ActivationGroup(id.ToString(), ifActivation))
             {
@@ -130,7 +145,7 @@ namespace ApplicationTimeCounter
                 if (ifActivation) src.UriSource = new Uri("Pictures/checkSymbol.png", UriKind.Relative);
                 else src.UriSource = new Uri("Pictures/cancel.png", UriKind.Relative);
                 src.EndInit();
-                activationGroup[id].Source = src;
+                activationGroup[indexImage].Source = src;
             }
         }
 
@@ -141,7 +156,10 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-        
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteGroup);
+            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteGroup;
+            dialogWindow.ShowDialog();
         }
 
         private void buttonAdd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -211,6 +229,14 @@ namespace ApplicationTimeCounter
             mainCanvas.Children.Remove(nameGroup);
             mainCanvas.Children.Remove(buttonSaveGroup);
             mainCanvas.Children.Remove(buttonClose);
+        }
+
+        private void dialogWindow_CloseWindowCancelButtonDelegate() { }
+
+        private void DeleteGroup()
+        {
+            // najpierw usunięcie wszystkich aplikacji do niej przypisanych.
+            // a teraz usuwanie jej. + przeładowanie strony.
         }
 
         private void buttonAdd_MouseLeave(object sender, MouseEventArgs e)

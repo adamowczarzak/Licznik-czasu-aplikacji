@@ -13,5 +13,12 @@
         DeleteAcitivty = 2,
         EditNameDefaultActivity = 3,
         DeleteDefaultActivity = 4,
+        DeleteGroup = 5
+    }
+
+    public enum AddTo
+    {
+        Activity = 1,
+        Group = 2
     }
 }

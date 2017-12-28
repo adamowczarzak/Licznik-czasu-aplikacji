@@ -8,6 +8,7 @@
         public string Date { get; set; }
         public string NameActivity { get; set; }
         public IdNameActivityEnum IdNameActivity { get; set; }
+        public int IdMembership { get; set; }
 
         public ActiveApplication()
         {
@@ -17,6 +18,7 @@
             Date = string.Empty;
             NameActivity = string.Empty;
             IdNameActivity = IdNameActivityEnum.NonActive;
+            IdMembership = 0;
         }
 
         public enum IdNameActivityEnum : int

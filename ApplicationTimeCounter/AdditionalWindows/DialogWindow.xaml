@@ -80,7 +80,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid Background="#FF1E275D">
+    <Grid Background="#FF263380">
         <Button x:Name="acceptButton" Content="Tak" HorizontalAlignment="Left" Height="31" Margin="28,156,0,0" Style="{DynamicResource ButtonStyle1}" VerticalAlignment="Top" Width="97" FontFamily="Verdana" Foreground="#FFE2E2E2" Cursor="Hand" Panel.ZIndex="1" Click="acceptButton_Click" FontSize="14">
             <Button.OpacityMask>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

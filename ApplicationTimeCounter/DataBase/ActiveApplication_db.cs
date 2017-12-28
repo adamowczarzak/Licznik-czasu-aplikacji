@@ -25,6 +25,12 @@ namespace ApplicationTimeCounter
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
+        public static bool AddGroupToApplication(string idApplication, string idGroup)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdMembership = " + idGroup + " WHERE Id  = " + idApplication;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
         public static bool DeleteAllApplicationsWithActivity(int idActivity)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
@@ -60,24 +66,7 @@ namespace ApplicationTimeCounter
             ActiveApplication parameters = new ActiveApplication();
             parameters.IdNameActivity = ActiveApplication.IdNameActivityEnum.Lack;
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
-
-            if (DataBase.ConnectToDataBase())
-            {
-                command.Connection = DataBase.Connection;
-                string contentCommand = string.Empty;
-                for (int i = 0; i < activeApplication.Count; i++)
-                {
-                    contentCommand = "SELECT COUNT(*) as isToday FROM dailyuseofapplication WHERE IdTitle = " + activeApplication[i].ID;
-                    if (DataBase.GetListStringFromExecuteReader(contentCommand, "isToday")[0] != "0")
-                        activeApplication[i].Date = DateTime.Now.ToString();
-                    else
-                    {
-                        contentCommand = "SELECT alldate.date AS Date FROM alldate WHERE IdTitle = " + activeApplication[i].ID;
-                        activeApplication[i].Date = DataBase.GetListStringFromExecuteReader(contentCommand, "Date")[0];
-                    }
-                }
-            }
-            return activeApplication.OrderBy(x => x.Date).Reverse().ToList();
+            return GetDateForActiveApplication(activeApplication); 
         }
 
         public static bool CheckIfExistTitle(string title)
@@ -91,12 +80,14 @@ namespace ApplicationTimeCounter
         {
             List<ActiveApplication> activeApplication = new List<ActiveApplication>();
             string query = "SELECT activeapplications.Id AS Id, activeapplications.Title AS Title, nameactivity.NameActivity AS NameActivity, " +
-                "nameactivity.Id AS IdNameActivity FROM activeapplications LEFT OUTER JOIN " +
-                "nameactivity ON activeapplications.IdNameActivity = nameactivity.Id WHERE 1 = 1";
+                "nameactivity.Id AS IdNameActivity, activeapplications.IdMembership AS IdMembership FROM activeapplications LEFT OUTER JOIN " +
+                "nameactivity ON activeapplications.IdNameActivity = nameactivity.Id WHERE activeapplications.Id > 2 ";
             if (parameters.ID > 0) query += " AND Id = " + parameters.ID;
             if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + SqlValidator.Validate(parameters.Title);
             if (!string.IsNullOrEmpty(parameters.NameActivity)) query += " AND NameActivity = " + SqlValidator.Validate(parameters.NameActivity);
             if (parameters.IdNameActivity > 0) query += " AND IdNameActivity = " + (int)parameters.IdNameActivity;
+            if (parameters.IdMembership > 0) query += " AND IdMembership = " + parameters.IdMembership;
+            if (parameters.IdMembership == -1) query += " AND IdMembership IS NULL ";
 
             if (DataBase.ConnectToDataBase())
             {
@@ -112,6 +103,10 @@ namespace ApplicationTimeCounter
                         application.Title = (reader["Title"]).ToString();
                         application.NameActivity = (reader["NameActivity"]).ToString();
                         application.IdNameActivity = (ActiveApplication.IdNameActivityEnum)(Int32.Parse((reader["IdNameActivity"]).ToString()));
+                        int temp = 0;
+                        if(Int32.TryParse((reader["IdMembership"]).ToString(), out temp))
+                            application.IdMembership = temp;
+
                         activeApplication.Add(application);
                     }
                     catch (MySqlException message)
@@ -131,6 +126,35 @@ namespace ApplicationTimeCounter
                 "WHERE IdMembership IS NULL";
             string AllNotAssignedApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "noJoinedApplication")[0];
             return AllNotAssignedApplication;
+        }
+
+        internal static List<ActiveApplication> GetNonJoinedApplication()
+        {
+            ActiveApplication parameters = new ActiveApplication();
+            parameters.IdMembership = -1;
+            List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
+            return GetDateForActiveApplication(activeApplication);         
+        }
+
+        private static List<ActiveApplication> GetDateForActiveApplication(List<ActiveApplication> activeApplication)
+        {
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                string contentCommand = string.Empty;
+                for (int i = 0; i < activeApplication.Count; i++)
+                {
+                    contentCommand = "SELECT COUNT(*) as isToday FROM dailyuseofapplication WHERE IdTitle = " + activeApplication[i].ID;
+                    if (DataBase.GetListStringFromExecuteReader(contentCommand, "isToday")[0] != "0")
+                        activeApplication[i].Date = DateTime.Now.ToString();
+                    else
+                    {
+                        contentCommand = "SELECT alldate.date AS Date FROM alldate WHERE IdTitle = " + activeApplication[i].ID;
+                        activeApplication[i].Date = DataBase.GetListStringFromExecuteReader(contentCommand, "Date")[0];
+                    }
+                }
+            }
+            return activeApplication.OrderBy(x => x.Date).Reverse().ToList();
         }
     }
 }

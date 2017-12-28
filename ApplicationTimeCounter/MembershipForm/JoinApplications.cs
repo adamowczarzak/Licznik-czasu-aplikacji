@@ -62,7 +62,7 @@ namespace ApplicationTimeCounter
 
         private void LoadNonAssignedApplication()
         {
-            List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetNonAssignedApplication();
+            List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetNonJoinedApplication();
 
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {
@@ -124,15 +124,15 @@ namespace ApplicationTimeCounter
             Label btn = (Label)sender;
             if (string.Equals(btn.Content, "+"))
             {
-                AddActivity addActivity = new AddActivity((Canvas)btn.Parent);
+                WindowAddTo windowAddTo = new WindowAddTo((Canvas)btn.Parent, AddTo.Group);
                 var location = btn.PointToScreen(new Point(0, 0));
-                addActivity.Left = location.X + 16;
-                addActivity.Top = location.Y + 20;
-                addActivity.ShowDialog();
+                windowAddTo.Left = location.X + 16;
+                windowAddTo.Top = location.Y + 20;
+                windowAddTo.ShowDialog();
             }
             else
             {
-                AddActivity addActivity = new AddActivity((Canvas)btn.Parent, true);
+                WindowAddTo windowAddTo = new WindowAddTo((Canvas)btn.Parent, true, AddTo.Group);
             }
         }
     }
