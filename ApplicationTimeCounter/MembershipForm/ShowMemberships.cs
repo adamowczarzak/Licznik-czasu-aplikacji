@@ -38,7 +38,7 @@ namespace ApplicationTimeCounter
             new MyLabel(mainCanvas, "Nazwa", 200, 30, 13, 32, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
             new MyLabel(mainCanvas, "Akcje", 100, 30, 13, 232, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
             new MyLabel(mainCanvas, "Konfiguracja", 110, 30, 13, 332, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
-            new MyLabel(mainCanvas, "Dodana", 90, 30, 13, 442, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
+            new MyLabel(mainCanvas, "Dodana", 100, 30, 13, 442, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
             new MyLabel(mainCanvas, "Aktywna", 70, 30, 13, 532, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
 
 
@@ -85,8 +85,8 @@ namespace ApplicationTimeCounter
             {
                 new MyRectangle(contentCanvas, 600, 40, Color.FromArgb((byte)(50 + (i % 2 * 30)), 0, 125, 255), 0, i * 39, 2).SetStroke(Color.FromArgb(255, 30, 39, 93));
                 new MyLabel(contentCanvas, (i+1).ToString(), 30, 30, 12, 5, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
-                new MyLabel(contentCanvas, allGroups[i].Title, 200, 30, 12, 35, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
-                new MyLabel(contentCanvas, allGroups[i].Date, 90, 30, 12, 445, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
+                new MyLabel(contentCanvas, allGroups[i].Title, 200, 30, 12, 35, 7 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
+                new MyLabel(contentCanvas, allGroups[i].Date.Remove(16), 100, 30, 10, 445, 9 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
 
                 ImageCreator.CreateImage(contentCanvas, 20, 20, 245, 10 + (i * 39), "Pictures/rubbishBin.png");                
                 buttonDeleteGroup = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 240, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));

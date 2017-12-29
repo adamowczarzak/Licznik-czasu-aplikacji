@@ -43,6 +43,7 @@ namespace ApplicationTimeCounter
             GetDaysHistoryActivity();
 
             GetAllNotJoinedApplication();
+            GetAllGroups();
 
         }
 
@@ -185,6 +186,11 @@ namespace ApplicationTimeCounter
                 SetColorLabel(allNotJoinedApplicationInt, notJoinedApplications);
             }
             else notJoinedApplications.SetContent("-1");
+        }
+
+        private void GetAllGroups()
+        {
+            numberGroups.SetContent(Membership_db.GetNumberAllGroups());
         }
 
         private void SetColorLabel(int value, MyLabel label)
