@@ -8,6 +8,8 @@ using System.Windows.Media.Imaging;
 using ApplicationTimeCounter.ApplicationObjectsType;
 using System.Collections.Generic;
 using ApplicationTimeCounter.AdditionalWindows;
+using System.ComponentModel;
+using System.Threading;
 
 namespace ApplicationTimeCounter
 {
@@ -23,6 +25,9 @@ namespace ApplicationTimeCounter
         private Label buttonShowApplications;
         private Label buttonActivationGroup;
         private Image[] activationGroup;
+        private Canvas showApplicationsCanvas;
+        private Canvas contentCanvasShowApplication;
+
         private int editedGroupId;
 
         public delegate void CloseWindowDelegate();
@@ -84,11 +89,11 @@ namespace ApplicationTimeCounter
             for (int i = 0; i < allGroups.Count; i++)
             {
                 new MyRectangle(contentCanvas, 600, 40, Color.FromArgb((byte)(50 + (i % 2 * 30)), 0, 125, 255), 0, i * 39, 2).SetStroke(Color.FromArgb(255, 30, 39, 93));
-                new MyLabel(contentCanvas, (i+1).ToString(), 30, 30, 12, 5, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
+                new MyLabel(contentCanvas, (i+1).ToString(), 30, 30, 12, 7, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
                 new MyLabel(contentCanvas, allGroups[i].Title, 200, 30, 12, 35, 7 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
                 new MyLabel(contentCanvas, allGroups[i].Date.Remove(16), 100, 30, 10, 445, 9 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
 
-                ImageCreator.CreateImage(contentCanvas, 20, 20, 245, 10 + (i * 39), "Pictures/rubbishBin.png");                
+                ImageCreator.CreateImage(contentCanvas, 20, 20, 245, 10 + (i * 39), "Pictures/rubbishBin.png");         
                 buttonDeleteGroup = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 240, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
                 buttonDeleteGroup.Name = "ID_" + allGroups[i].ID.ToString();
                 buttonDeleteGroup.MouseEnter += buttonGroup_MouseEnter;
@@ -97,6 +102,7 @@ namespace ApplicationTimeCounter
 
                 ImageCreator.CreateImage(contentCanvas, 20, 20, 295, 10 + (i * 39), "Pictures/eye.png");
                 buttonShowApplications = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 290, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
+                buttonDeleteGroup.Name = "ID_" + allGroups[i].ID.ToString();
                 buttonShowApplications.MouseEnter += buttonGroup_MouseEnter;
                 buttonShowApplications.MouseLeave += buttonGroup_MouseLeave;
                 buttonShowApplications.MouseLeftButtonDown += buttonShowApplications_MouseLeftButtonDown;
@@ -153,7 +159,55 @@ namespace ApplicationTimeCounter
 
         private void buttonShowApplications_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-        
+            showApplicationsCanvas = CanvasCreator.CreateCanvas(canvas, 620, 400, Color.FromArgb(200, 30, 39, 93), 10, 10);
+            contentCanvasShowApplication = new Canvas() { Width = 420, Height = 310, Background = new SolidColorBrush(Color.FromArgb(200, 30, 39, 93)) };
+            ScrollViewerCreator.CreateScrollViewer(showApplicationsCanvas, 420, 310, 80, 40, contentCanvasShowApplication);
+
+            new MyLabel(showApplicationsCanvas, "x", 30, 50, 24, 573, 356, Color.FromArgb(255, 170, 170, 170),
+                Color.FromArgb(255, 70, 70, 70), 0);
+
+            Label buttonExit = ButtonCreator.CreateButton(showApplicationsCanvas, "", 30, 30, 14, 573, 366,
+                Color.FromArgb(0, 155, 155, 155), Color.FromArgb(255, 155, 155, 155), 1);
+            buttonExit.Background = new SolidColorBrush(Color.FromArgb(0, 215, 215, 215));
+            buttonExit.MouseEnter += buttonExit_MouseEnter;
+            buttonExit.MouseLeave += buttonExit_MouseLeave;
+            buttonExit.MouseLeftButtonDown += buttonCloseShowApplication_MouseLeftButtonDown;
+            ButtonCreator.SetToolTip(buttonExit, "Zamknij okno");
+
+            BackgroundWorker backgroundWorkerUpdateContent = new BackgroundWorker();
+            backgroundWorkerUpdateContent.DoWork += LoadContent;
+            backgroundWorkerUpdateContent.RunWorkerAsync();
+        }
+
+        private void LoadContent(object sender, DoWorkEventArgs e)
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                contentCanvasShowApplication.Dispatcher.Invoke(() =>
+                {
+                    new MyLabel(contentCanvasShowApplication, " Jakiś tam tytuł" + (i + 1).ToString(), 300, 39, 10, 12, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
+                    new MyLabel(contentCanvasShowApplication, "Manual", 50, 39, 12, 310, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
+
+                    MyCircle circle = new MyCircle(contentCanvasShowApplication, 15, 1, (Color.FromArgb(220, 255, 93, 93)), 385, 12 + (39 * i), 1, true);
+                    Label buttonDeleteApplication = ButtonCreator.CreateButton(contentCanvasShowApplication, "x", 25, 25, 8, 380, 7 + (39 * i),
+                        Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
+                    buttonDeleteApplication.Background = new SolidColorBrush(Color.FromArgb(155, 30, 39, 93));
+                    buttonDeleteApplication.MouseEnter += buttonDeleteApplication_MouseEnter;
+                    buttonDeleteApplication.MouseLeave += buttonDeleteApplication_MouseLeave;
+                    buttonDeleteApplication.MouseLeftButtonDown += buttonDeleteApplication_MouseLeftButtonDown;
+                    buttonDeleteApplication.Name = "ID_" + i;
+                    ButtonCreator.SetToolTip(buttonDeleteApplication, "Usuń aplikacje z grupy");
+
+                    new MyRectangle(contentCanvasShowApplication, 400, 1, Color.FromArgb(35, 250, 250, 250), 10, 39 + (i * 39));
+                    contentCanvasShowApplication.Height += 39;
+                });
+
+                Thread.Sleep(10);
+            }
+            contentCanvasShowApplication.Dispatcher.Invoke(() =>
+            {
+                contentCanvasShowApplication.Height = ((contentCanvasShowApplication.Height - 310) < 310) ? 310 : contentCanvasShowApplication.Height - 309;
+            });
         }
 
         private void buttonDeleteGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -214,12 +268,28 @@ namespace ApplicationTimeCounter
             }          
         }
 
+        private void buttonDeleteApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            /*deleteApplicationID = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteOneApplicationWithAcitivty);
+            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+            dialogWindow.CloseWindowAcceptButtonDelegate += DeleteOneApplicationFromActivity;
+            dialogWindow.ShowDialog();*/
+        }
+
         private void buttonExit_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             contentCanvas.Children.Clear();
             mainCanvas.Children.Clear();
             this.canvas.Children.Remove(mainCanvas);
             CloseWindowShowMembershipsDelegate();
+        }
+
+        private void buttonCloseShowApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            showApplicationsCanvas.Children.Clear();
+            this.canvas.Children.Remove(showApplicationsCanvas);
+
         }
 
         private void buttonClose_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -304,6 +374,16 @@ namespace ApplicationTimeCounter
         private void buttonGroup_MouseEnter(object sender, MouseEventArgs e)
         {
             (sender as Label).Background = new SolidColorBrush(Color.FromArgb(80, 215, 215, 215));
+        }
+
+        private void buttonDeleteApplication_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(0, 30, 39, 93));
+        }
+
+        private void buttonDeleteApplication_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Label).Background = new SolidColorBrush(Color.FromArgb(155, 30, 39, 93));
         }
     }
 }
