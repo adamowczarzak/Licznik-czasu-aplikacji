@@ -41,7 +41,7 @@ namespace ApplicationTimeCounter
             {
                 ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z aktywności",
                    ApplicationLog.LogService.GetNameCurrentMethod() + "()",
-                   System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\DialogWindow.xaml.cs");
+                   System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\ActiveApplication_db.cs");
                 return false;
             }
             else return true;

@@ -23,6 +23,7 @@ namespace ApplicationTimeCounter
         private Label buttonShowApplications;
         private Label buttonActivationGroup;
         private Image[] activationGroup;
+        private int editedGroupId;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowShowMembershipsDelegate;
@@ -89,6 +90,7 @@ namespace ApplicationTimeCounter
 
                 ImageCreator.CreateImage(contentCanvas, 20, 20, 245, 10 + (i * 39), "Pictures/rubbishBin.png");                
                 buttonDeleteGroup = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 240, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
+                buttonDeleteGroup.Name = "ID_" + allGroups[i].ID.ToString();
                 buttonDeleteGroup.MouseEnter += buttonGroup_MouseEnter;
                 buttonDeleteGroup.MouseLeave += buttonGroup_MouseLeave;
                 buttonDeleteGroup.MouseLeftButtonDown += buttonDeleteGroup_MouseLeftButtonDown;
@@ -156,6 +158,7 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            editedGroupId = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteGroup);
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += DeleteGroup;
@@ -229,14 +232,23 @@ namespace ApplicationTimeCounter
             mainCanvas.Children.Remove(nameGroup);
             mainCanvas.Children.Remove(buttonSaveGroup);
             mainCanvas.Children.Remove(buttonClose);
+
+            contentCanvas.Children.Clear();
+            LoadGroups();
         }
 
         private void dialogWindow_CloseWindowCancelButtonDelegate() { }
 
         private void DeleteGroup()
         {
-            // najpierw usunięcie wszystkich aplikacji do niej przypisanych.
-            // a teraz usuwanie jej. + przeładowanie strony.
+            if (Membership_db.DeleteAllApplicationsWithGroup(editedGroupId))
+            {
+                if (Membership_db.DeleteGroup(editedGroupId))
+                {
+                    contentCanvas.Children.Clear();
+                    LoadGroups();
+                }
+            }
         }
 
         private void buttonAdd_MouseLeave(object sender, MouseEventArgs e)

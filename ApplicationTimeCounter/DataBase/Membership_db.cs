@@ -75,5 +75,40 @@ namespace ApplicationTimeCounter
             Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Title", "Id");
             return nameGroups;
         }
+
+        public static bool DeleteAllApplicationsWithGroup(int idGroup)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdMembership = NULL"
+                + " WHERE IdMembership = " + idGroup;
+
+            if (!DataBase.ExecuteNonQuery(contentCommand))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z grupy",
+                   ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                   System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Membership_db.cs");
+                return false;
+            }
+            else return true;
+        }
+
+        public static bool DeleteGroup(int idGroup)
+        {
+            string contentCommand = "SELECT Title from membership WHERE Id = " + idGroup;
+            string nameGroup = DataBase.GetListStringFromExecuteReader(contentCommand, "Title")[0];
+
+            contentCommand = "DELETE FROM membership WHERE Id = " + idGroup;
+
+            if (DataBase.ExecuteNonQuery(contentCommand))
+            {
+                ApplicationLog.LogService.AddRaportInformation("Została usunięta aktywność '" + nameGroup + "'");
+                return true;
+            }
+            else
+            {
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aktywności '" + nameGroup + "'");
+                return false;
+            }
+
+        }
     }
 }
