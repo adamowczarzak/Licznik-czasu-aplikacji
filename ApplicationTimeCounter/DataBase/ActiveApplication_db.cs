@@ -3,6 +3,7 @@ using System.Linq;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using ApplicationTimeCounter.Other;
+using ApplicationTimeCounter.ApplicationObjectsType;
 
 namespace ApplicationTimeCounter
 {
@@ -79,8 +80,13 @@ namespace ApplicationTimeCounter
         internal static List<ActiveApplication> GetActiveApplication(ActiveApplication parameters)
         {
             List<ActiveApplication> activeApplications = new List<ActiveApplication>();
-            string query = "SELECT activeapplications.Id AS Id, activeapplications.Title AS Title, nameactivity.NameActivity AS NameActivity, " +
-                "nameactivity.Id AS IdNameActivity, activeapplications.IdMembership AS IdMembership, activeapplications.AutoGrouping AS IfAutoGrouping FROM activeapplications LEFT OUTER JOIN " +
+            string query = "SELECT activeapplications.Id AS " + ColumnNames.ID + 
+                ", activeapplications.Title AS " + ColumnNames.Title + 
+                ", nameactivity.NameActivity AS " + ColumnNames.NameActivity + 
+                ", nameactivity.Id AS " + ColumnNames.IdNameActivity + 
+                ", activeapplications.IdMembership AS " + ColumnNames.IdMembership + 
+                ", activeapplications.AutoGrouping AS " + ColumnNames.IfAutoGrouping + 
+                " FROM activeapplications LEFT OUTER JOIN " +
                 "nameactivity ON activeapplications.IdNameActivity = nameactivity.Id WHERE activeapplications.Id > 2 ";
             if (parameters.ID > 0) query += " AND Id = " + parameters.ID;
             if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + SqlValidator.Validate(parameters.Title);
@@ -98,21 +104,7 @@ namespace ApplicationTimeCounter
                 {
                     try
                     {
-                        ActiveApplication application = new ActiveApplication();
-                        application.ID = Int32.Parse((reader["Id"]).ToString());
-                        application.Title = (reader["Title"]).ToString();
-                        application.NameActivity = (reader["NameActivity"]).ToString();
-                        application.IdNameActivity = (ActiveApplication.IdNameActivityEnum)(Int32.Parse((reader["IdNameActivity"]).ToString()));
-                        int temp = 0;
-                        if (Int32.TryParse((reader["IdMembership"]).ToString(), out temp))
-                            application.IdMembership = temp;
-
-                        bool IfAutoGrouping = false;
-                        if (bool.TryParse(reader["IfAutoGrouping"].ToString(), out IfAutoGrouping))
-                            application.IfAutoGrouping = IfAutoGrouping;
-
-                        activeApplications.Add(application);
-                        //activeApplications.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
+                        activeApplications.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
                     }
                     catch (MySqlException message)
                     {

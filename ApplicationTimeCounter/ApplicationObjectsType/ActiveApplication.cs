@@ -49,12 +49,6 @@ namespace ApplicationTimeCounter
             if (namesField.Contains(ColumnNames.Title))
                 activeApplication.Title = reader[ColumnNames.Title].ToString();
 
-            //if (namesField.Contains(ColumnNames.ActivityTime))
-                //activeApplication.ActivityTime = Int32.Parse((reader[ColumnNames.ActivityTime]).ToString());
-
-            //if (namesField.Contains(ColumnNames.Date))
-              //  activeApplication.Date = reader[ColumnNames.Date].ToString();
-
             if (namesField.Contains(ColumnNames.NameActivity))
                 activeApplication.NameActivity = reader[ColumnNames.NameActivity].ToString();
 
