@@ -62,6 +62,9 @@ namespace ApplicationTimeCounter.AdditionalWindows
                 case DialogWindowsMessage.DeleteGroup:
                     questionMessages.Text = "Czy napewno chcesz usunąc grupę?" + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
                     break;
+                case DialogWindowsMessage.DeleteOneApplicationWithGroup:
+                    questionMessages.Text = "Czy napewno chcesz usunąć tą applikacje z tej grupy? " + Environment.NewLine + Environment.NewLine + "Pamiętaj że zmiany będą nieodwracalne!";
+                    break;
             }
         }
 

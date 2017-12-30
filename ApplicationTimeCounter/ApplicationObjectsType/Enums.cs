@@ -13,7 +13,8 @@
         DeleteAcitivty = 2,
         EditNameDefaultActivity = 3,
         DeleteDefaultActivity = 4,
-        DeleteGroup = 5
+        DeleteGroup = 5,
+        DeleteOneApplicationWithGroup = 6
     }
 
     public enum AddTo

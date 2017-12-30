@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using ApplicationTimeCounter.AdditionalWindows;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows.Shapes;
+using System.Linq;
 
 namespace ApplicationTimeCounter
 {
@@ -27,8 +29,10 @@ namespace ApplicationTimeCounter
         private Image[] activationGroup;
         private Canvas showApplicationsCanvas;
         private Canvas contentCanvasShowApplication;
+        private Rectangle checkRemovedActivity;
 
         private int activeGroupId;
+        private int deleteApplicationID;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowShowMembershipsDelegate;
@@ -185,13 +189,14 @@ namespace ApplicationTimeCounter
             ActiveApplication parameters = new ActiveApplication();
             parameters.IdMembership = activeGroupId;
             List<ActiveApplication> activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
+            activeApplication = activeApplication.OrderBy(x => x.ID).Reverse().ToList();
             for (int i = 0; i < activeApplication.Count; i++)
             {
                 contentCanvasShowApplication.Dispatcher.Invoke(() =>
                 {
                     MyLabel l = new MyLabel(contentCanvasShowApplication, (i + 1) + ".  " + activeApplication[i].Title, 250, 30, 12, 14, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
                     l.ToolTip(activeApplication[i].Title);
-                    new MyLabel(contentCanvasShowApplication, (activeApplication[i].IfAutoGrouping) ? "Auto" : "Manual", 50, 39, 10, 310, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0));
+                    new MyLabel(contentCanvasShowApplication, (activeApplication[i].IfAutoGrouping) ? "Auto" : "Manual", 50, 39, 10, 310, 7 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0));
 
                     MyCircle circle = new MyCircle(contentCanvasShowApplication, 15, 1, (Color.FromArgb(220, 255, 93, 93)), 385, 12 + (39 * i), 1, true);
                     Label buttonDeleteApplication = ButtonCreator.CreateButton(contentCanvasShowApplication, "x", 25, 25, 8, 380, 7 + (39 * i),
@@ -200,7 +205,7 @@ namespace ApplicationTimeCounter
                     buttonDeleteApplication.MouseEnter += buttonDeleteApplication_MouseEnter;
                     buttonDeleteApplication.MouseLeave += buttonDeleteApplication_MouseLeave;
                     buttonDeleteApplication.MouseLeftButtonDown += buttonDeleteApplication_MouseLeftButtonDown;
-                    buttonDeleteApplication.Name = "ID_" + i;
+                    buttonDeleteApplication.Name = "ID_" + activeApplication[i].ID.ToString();
                     ButtonCreator.SetToolTip(buttonDeleteApplication, "Usuń aplikacje z grupy");
 
                     new MyRectangle(contentCanvasShowApplication, 400, 1, Color.FromArgb(35, 250, 250, 250), 10, 39 + (i * 39));
@@ -275,11 +280,24 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            /*deleteApplicationID = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
-            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteOneApplicationWithAcitivty);
+            deleteApplicationID = Int32.Parse((sender as Label).Name.ToString().Replace("ID_", ""));
+            checkRemovedActivity = new Rectangle(){Width = 420, Height = 40, Fill = new SolidColorBrush(Color.FromArgb(0, 200, 0, 0))};
+            Canvas.SetLeft(checkRemovedActivity, 0);
+            Canvas.SetTop(checkRemovedActivity, Canvas.GetTop(sender as Label) - 7);
+            contentCanvasShowApplication.Children.Add(checkRemovedActivity);
+
+            DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteOneApplicationWithGroup);
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += DeleteOneApplicationFromActivity;
-            dialogWindow.ShowDialog();*/
+            dialogWindow.ShowDialog();
+        }
+
+        private void DeleteOneApplicationFromActivity()
+        {
+            if (ActiveApplication_db.DeleteOneApplicationWithGroup(deleteApplicationID))
+            {
+                checkRemovedActivity.Fill = new SolidColorBrush(Color.FromArgb(70, 200, 0, 0));
+            }
         }
 
         private void buttonExit_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -312,7 +330,10 @@ namespace ApplicationTimeCounter
             LoadGroups();
         }
 
-        private void dialogWindow_CloseWindowCancelButtonDelegate() { }
+        private void dialogWindow_CloseWindowCancelButtonDelegate()
+        {
+            contentCanvasShowApplication.Children.Remove(checkRemovedActivity);
+        }
 
         private void DeleteGroup()
         {

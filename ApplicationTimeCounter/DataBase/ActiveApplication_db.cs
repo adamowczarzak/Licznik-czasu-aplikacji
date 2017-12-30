@@ -62,6 +62,18 @@ namespace ApplicationTimeCounter
             else return true;
         }
 
+        public static bool DeleteOneApplicationWithGroup(int idApplication)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdMembership = NULL WHERE ID = " + idApplication;
+
+            if (!DataBase.ExecuteNonQuery(contentCommand))
+            {
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
+                return false;
+            }
+            else return true;
+        }
+
         internal static List<ActiveApplication> GetNonAssignedApplication()
         {
             ActiveApplication parameters = new ActiveApplication();
