@@ -48,7 +48,7 @@ namespace ApplicationTimeCounter
             backgroundWorkerUpdateContent.RunWorkerAsync();
         }
 
-        private void UpdateContent(object sender, DoWorkEventArgs e)
+        private void UpdateContent(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             LoadNonAssignedApplication();
         }

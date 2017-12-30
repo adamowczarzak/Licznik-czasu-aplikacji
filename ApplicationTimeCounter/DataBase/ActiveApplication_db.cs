@@ -27,7 +27,7 @@ namespace ApplicationTimeCounter
 
         public static bool AddGroupToApplication(string idApplication, string idGroup)
         {
-            string contentCommand = "UPDATE activeapplications SET IdMembership = " + idGroup + " WHERE Id  = " + idApplication;
+            string contentCommand = "UPDATE activeapplications SET IdMembership = " + idGroup + ", AutoGrouping = 0 WHERE Id = " + idApplication;
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
@@ -66,7 +66,7 @@ namespace ApplicationTimeCounter
             ActiveApplication parameters = new ActiveApplication();
             parameters.IdNameActivity = ActiveApplication.IdNameActivityEnum.Lack;
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
-            return GetDateForActiveApplication(activeApplication); 
+            return GetDateForActiveApplication(activeApplication);
         }
 
         public static bool CheckIfExistTitle(string title)
@@ -78,9 +78,9 @@ namespace ApplicationTimeCounter
 
         internal static List<ActiveApplication> GetActiveApplication(ActiveApplication parameters)
         {
-            List<ActiveApplication> activeApplication = new List<ActiveApplication>();
+            List<ActiveApplication> activeApplications = new List<ActiveApplication>();
             string query = "SELECT activeapplications.Id AS Id, activeapplications.Title AS Title, nameactivity.NameActivity AS NameActivity, " +
-                "nameactivity.Id AS IdNameActivity, activeapplications.IdMembership AS IdMembership FROM activeapplications LEFT OUTER JOIN " +
+                "nameactivity.Id AS IdNameActivity, activeapplications.IdMembership AS IdMembership, activeapplications.AutoGrouping AS IfAutoGrouping FROM activeapplications LEFT OUTER JOIN " +
                 "nameactivity ON activeapplications.IdNameActivity = nameactivity.Id WHERE activeapplications.Id > 2 ";
             if (parameters.ID > 0) query += " AND Id = " + parameters.ID;
             if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + SqlValidator.Validate(parameters.Title);
@@ -104,10 +104,15 @@ namespace ApplicationTimeCounter
                         application.NameActivity = (reader["NameActivity"]).ToString();
                         application.IdNameActivity = (ActiveApplication.IdNameActivityEnum)(Int32.Parse((reader["IdNameActivity"]).ToString()));
                         int temp = 0;
-                        if(Int32.TryParse((reader["IdMembership"]).ToString(), out temp))
+                        if (Int32.TryParse((reader["IdMembership"]).ToString(), out temp))
                             application.IdMembership = temp;
 
-                        activeApplication.Add(application);
+                        bool IfAutoGrouping = false;
+                        if (bool.TryParse(reader["IfAutoGrouping"].ToString(), out IfAutoGrouping))
+                            application.IfAutoGrouping = IfAutoGrouping;
+
+                        activeApplications.Add(application);
+                        //activeApplications.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
                     }
                     catch (MySqlException message)
                     {
@@ -117,13 +122,13 @@ namespace ApplicationTimeCounter
                 DataBase.CloseConnection();
                 reader.Dispose();
             }
-            return activeApplication;
+            return activeApplications;
         }
 
         public static string GetAllNotJoinedApplication()
         {
             string contentCommand = "SELECT COUNT(*) as noJoinedApplication from activeapplications " +
-                "WHERE IdMembership IS NULL";
+                "WHERE IdMembership IS NULL AND Id > 2";
             string AllNotAssignedApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "noJoinedApplication")[0];
             return AllNotAssignedApplication;
         }
@@ -133,27 +138,26 @@ namespace ApplicationTimeCounter
             ActiveApplication parameters = new ActiveApplication();
             parameters.IdMembership = -1;
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
-            return GetDateForActiveApplication(activeApplication);         
+            return GetDateForActiveApplication(activeApplication);
         }
 
         private static List<ActiveApplication> GetDateForActiveApplication(List<ActiveApplication> activeApplication)
         {
-            if (DataBase.ConnectToDataBase())
+            string contentCommand = string.Empty;
+            Dictionary<string, string> dateIdTitileList = new Dictionary<string, string>();
+
+            contentCommand = "SELECT IdTitle, Date FROM alldate WHERE IdTitle IN(";
+            for (int i = 0; i < activeApplication.Count; i++)
+                contentCommand += activeApplication[i].ID + ((i < activeApplication.Count-1) ? ", " : "");
+            contentCommand += ")";
+            dateIdTitileList = DataBase.GetDictionaryFromExecuteReader(contentCommand, "IdTitle", "Date");
+            for (int i = 0; i < activeApplication.Count; i++)
             {
-                command.Connection = DataBase.Connection;
-                string contentCommand = string.Empty;
-                for (int i = 0; i < activeApplication.Count; i++)
-                {
-                    contentCommand = "SELECT COUNT(*) as isToday FROM dailyuseofapplication WHERE IdTitle = " + activeApplication[i].ID;
-                    if (DataBase.GetListStringFromExecuteReader(contentCommand, "isToday")[0] != "0")
-                        activeApplication[i].Date = DateTime.Now.ToString();
-                    else
-                    {
-                        contentCommand = "SELECT alldate.date AS Date FROM alldate WHERE IdTitle = " + activeApplication[i].ID;
-                        activeApplication[i].Date = DataBase.GetListStringFromExecuteReader(contentCommand, "Date")[0];
-                    }
-                }
+                activeApplication[i].Date = dateIdTitileList.FirstOrDefault(x => string.Equals(x.Key.ToString(), activeApplication[i].ID.ToString())).Value;
+                if (String.IsNullOrEmpty(activeApplication[i].Date)) 
+                    activeApplication[i].Date = DateTime.Now.ToString();
             }
+
             return activeApplication.OrderBy(x => x.Date).Reverse().ToList();
         }
     }

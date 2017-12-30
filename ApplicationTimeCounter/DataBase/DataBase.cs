@@ -113,7 +113,8 @@ namespace ApplicationTimeCounter
                 {
                     try
                     {
-                        dictionary.Add(reader[nameKey].ToString(), reader[nameValue].ToString());
+                        if (!dictionary.ContainsKey(reader[nameKey].ToString()))
+                            dictionary.Add(reader[nameKey].ToString(), reader[nameValue].ToString());
                     }
                     catch (MySqlException message)
                     {
@@ -235,7 +236,10 @@ namespace ApplicationTimeCounter
             stringCommand = @"CREATE TABLE IF NOT EXISTS `activeapplications`(
                 `Id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 `Title` varchar(256) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
-                `IdNameActivity` int(11), `IdMembership` int(11)) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+                `IdNameActivity` int(11), `IdMembership` int(11),
+                `AutoGrouping` TINYINT(1) DEFAULT NULL) CHARACTER SET utf8 COLLATE utf8_polish_ci";
+                
+
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 

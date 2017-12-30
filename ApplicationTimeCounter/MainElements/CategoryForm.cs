@@ -72,7 +72,7 @@ namespace ApplicationTimeCounter
 
 
             // przypisz aktywności----------------------------------------------------------------------------------------------
-            notAssignedApplications = new MyLabel(canvasActivity, "0", 50, 38, 18, 30, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 0);
+            notAssignedApplications = new MyLabel(canvasActivity, "0", 60, 38, 18, 20, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 0);
             Label buttonAssignActivity = ButtonCreator.CreateButton(canvasActivity, "     Przypisz Aktywności", 225, 38, 16, 30, 200,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 
@@ -116,7 +116,7 @@ namespace ApplicationTimeCounter
 
 
             // przyłącz aplikacje ----------------------------------------------------------------------------------------------
-            notJoinedApplications = new MyLabel(canvasMembership, "0", 50, 38, 18, 30, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 0);
+            notJoinedApplications = new MyLabel(canvasMembership, "0", 60, 38, 18, 20, 200, Color.FromArgb(255, 125, 255, 0), Color.FromArgb(255, 255, 255, 255), 0);
             Label buttonJoinApplication = ButtonCreator.CreateButton(canvasMembership, "     Przyłącz Aplikacje", 225, 38, 16, 30, 200,
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 0);
 

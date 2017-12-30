@@ -28,7 +28,7 @@ namespace ApplicationTimeCounter
         private Canvas showApplicationsCanvas;
         private Canvas contentCanvasShowApplication;
 
-        private int editedGroupId;
+        private int activeGroupId;
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowShowMembershipsDelegate;
@@ -102,7 +102,7 @@ namespace ApplicationTimeCounter
 
                 ImageCreator.CreateImage(contentCanvas, 20, 20, 295, 10 + (i * 39), "Pictures/eye.png");
                 buttonShowApplications = ButtonCreator.CreateButton(contentCanvas, "", 30, 30, 10, 290, 5 + (i * 39), Color.FromArgb(0, 0, 0, 0), Color.FromArgb(0, 0, 0, 0));
-                buttonDeleteGroup.Name = "ID_" + allGroups[i].ID.ToString();
+                buttonShowApplications.Name = "ID_" + allGroups[i].ID.ToString();
                 buttonShowApplications.MouseEnter += buttonGroup_MouseEnter;
                 buttonShowApplications.MouseLeave += buttonGroup_MouseLeave;
                 buttonShowApplications.MouseLeftButtonDown += buttonShowApplications_MouseLeftButtonDown;
@@ -174,6 +174,7 @@ namespace ApplicationTimeCounter
             buttonExit.MouseLeftButtonDown += buttonCloseShowApplication_MouseLeftButtonDown;
             ButtonCreator.SetToolTip(buttonExit, "Zamknij okno");
 
+            activeGroupId = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
             BackgroundWorker backgroundWorkerUpdateContent = new BackgroundWorker();
             backgroundWorkerUpdateContent.DoWork += LoadContent;
             backgroundWorkerUpdateContent.RunWorkerAsync();
@@ -181,12 +182,16 @@ namespace ApplicationTimeCounter
 
         private void LoadContent(object sender, DoWorkEventArgs e)
         {
-            for (int i = 0; i < 1000; i++)
+            ActiveApplication parameters = new ActiveApplication();
+            parameters.IdMembership = activeGroupId;
+            List<ActiveApplication> activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
+            for (int i = 0; i < activeApplication.Count; i++)
             {
                 contentCanvasShowApplication.Dispatcher.Invoke(() =>
                 {
-                    new MyLabel(contentCanvasShowApplication, " Jakiś tam tytuł" + (i + 1).ToString(), 300, 39, 10, 12, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
-                    new MyLabel(contentCanvasShowApplication, "Manual", 50, 39, 12, 310, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
+                    MyLabel l = new MyLabel(contentCanvasShowApplication, (i + 1) + ".  " + activeApplication[i].Title, 250, 30, 12, 14, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Left);
+                    l.ToolTip(activeApplication[i].Title);
+                    new MyLabel(contentCanvasShowApplication, (activeApplication[i].IfAutoGrouping) ? "Auto" : "Manual", 50, 39, 10, 310, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(0, 0, 0, 0));
 
                     MyCircle circle = new MyCircle(contentCanvasShowApplication, 15, 1, (Color.FromArgb(220, 255, 93, 93)), 385, 12 + (39 * i), 1, true);
                     Label buttonDeleteApplication = ButtonCreator.CreateButton(contentCanvasShowApplication, "x", 25, 25, 8, 380, 7 + (39 * i),
@@ -212,7 +217,7 @@ namespace ApplicationTimeCounter
 
         private void buttonDeleteGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            editedGroupId = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
+            activeGroupId = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteGroup);
             dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += DeleteGroup;
@@ -311,9 +316,9 @@ namespace ApplicationTimeCounter
 
         private void DeleteGroup()
         {
-            if (Membership_db.DeleteAllApplicationsWithGroup(editedGroupId))
+            if (Membership_db.DeleteAllApplicationsWithGroup(activeGroupId))
             {
-                if (Membership_db.DeleteGroup(editedGroupId))
+                if (Membership_db.DeleteGroup(activeGroupId))
                 {
                     contentCanvas.Children.Clear();
                     LoadGroups();
