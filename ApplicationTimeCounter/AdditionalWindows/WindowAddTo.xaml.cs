@@ -74,14 +74,14 @@ namespace ApplicationTimeCounter
             int nextIndex = 0;
             foreach (KeyValuePair<string, string> name in names)
             {
-                Label button = ButtonCreator.CreateButton(activity, name.Key, 150, 30, 12, 0, 29 * nextIndex,
+                Label button = ButtonCreator.CreateButton(activity, name.Value, 150, 30, 12, 0, 29 * nextIndex,
                         Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 255, 255), 1);
                 activity.Height += 29;
 
                 button.MouseEnter += button_MouseEnter;
                 button.MouseLeave += button_MouseLeave;
                 button.MouseLeftButtonDown += button_MouseLeftButtonDown;
-                button.Name = "ID_" + name.Value;
+                button.Name = "ID_" + name.Key;
                 nextIndex++;
             }
             activity.Height = ((activity.Height - 200) < 200) ? 200 : activity.Height - 199;

@@ -78,7 +78,7 @@ namespace ApplicationTimeCounter
         public static Dictionary<string, string> GetNameGroupsDictionary()
         {
             string contentCommand = "SELECT Id, Title FROM membership";
-            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Title", "Id");
+            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
             return nameGroups;
         }
 
@@ -115,6 +115,20 @@ namespace ApplicationTimeCounter
                 return false;
             }
 
+        }
+
+        public static Dictionary<string, string> GetNameGroupsDictionaryWithConfiguration()
+        {
+            string contentCommand = "SELECT Id, Title FROM membership WHERE Configuration = 1";
+            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
+            return nameGroups;
+        }
+
+        public static Dictionary<string, string> GetNameGroupsDictionaryWithoutConfiguration()
+        {
+            string contentCommand = "SELECT Id, Title FROM membership WHERE Configuration = 0";
+            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
+            return nameGroups;
         }
     }
 }

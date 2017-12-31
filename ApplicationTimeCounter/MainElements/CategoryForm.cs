@@ -218,7 +218,9 @@ namespace ApplicationTimeCounter
 
         private void buttonConfigurationGroups_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            
+            var tempRef = MainCanvasCategory;
+            ConfigurationGroups configurationGroups = new ConfigurationGroups(ref tempRef);
+            configurationGroups.CloseWindowShowMembershipsDelegate += Update; 
         }
 
         private void buttonConfigurationGroups_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
