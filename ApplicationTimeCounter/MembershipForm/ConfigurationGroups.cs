@@ -24,6 +24,8 @@ namespace ApplicationTimeCounter
         private Label addFiltrButton;
         private Label applyFilterButton;
         private MyLabel resultsApplyFilter;
+        private Label deleteApplicationWithFilterButton;
+        private MyLabel resultsDeleteApplication;
         private int selectGroupId;
         
 
@@ -121,9 +123,23 @@ namespace ApplicationTimeCounter
             applyFilterButton.MouseLeftButtonDown += applyFilterButton_MouseLeftButtonDown;
             applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
 
-            resultsApplyFilter = new MyLabel(addConfigurationCanvas, "", 150, 30, 10, 170, 350,
-                        Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 70, 70, 70), 0);
+            resultsApplyFilter = new MyLabel(addConfigurationCanvas, "", 150, 30, 10, 180, 350,
+                        Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 70, 70, 70), 0, System.Windows.HorizontalAlignment.Left);
             resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        private void CreateDeleteApplicationWithFilterButton()
+        {
+            deleteApplicationWithFilterButton = ButtonCreator.CreateButton(addConfigurationCanvas, "Usuń aplikacje z filtru", 200, 26, 12, 350, 310,
+                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155));
+            deleteApplicationWithFilterButton.Background = new SolidColorBrush(Color.FromArgb(50, 0, 125, 255));
+            deleteApplicationWithFilterButton.MouseEnter += buttonContent_MouseEnter;
+            deleteApplicationWithFilterButton.MouseLeave += buttonContent_MouseLeave;
+            deleteApplicationWithFilterButton.MouseLeftButtonDown += deleteApplicationWithFilterButton_MouseLeftButtonDown;
+
+            resultsDeleteApplication = new MyLabel(addConfigurationCanvas, "", 150, 30, 10, 350, 350,
+                        Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 70, 70, 70), 0, System.Windows.HorizontalAlignment.Left);
+            resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void buttonAdd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -169,6 +185,7 @@ namespace ApplicationTimeCounter
             CreateAddFilterButton();
             CreateAddFilterAccept();
             CreateApplyFilterButton();
+            CreateDeleteApplicationWithFilterButton();
         }
 
         private void buttonOpenChooseGroup(object sender, MouseButtonEventArgs e)
@@ -186,6 +203,8 @@ namespace ApplicationTimeCounter
             applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
             if (resultsApplyFilter != null)
                 resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
+            if (resultsDeleteApplication != null)
+                resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
             foreach (KeyValuePair<string, string> name in namesGroup)
             {
                 Label group = ButtonCreator.CreateButton(chooseGroupCanvas, name.Value , 200, 29, 12, 0, 0 + (nextIndex * 32),
@@ -242,6 +261,8 @@ namespace ApplicationTimeCounter
             applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
             if (resultsApplyFilter != null)
                 resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
+            if (resultsDeleteApplication != null)
+                resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void addFiltrButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -282,10 +303,15 @@ namespace ApplicationTimeCounter
                     count++;
                 }
             }
-            if (ActiveApplication_db.AddGroupToApplications(idApplicationFiltered, selectGroupId.ToString()))
-                resultsApplyFilter.SetContent("Znaleziono " + count + " element" + ((count == 1) ? "" : "ów."));
+            if (idApplicationFiltered.Count > 0)
+            {
+                if (ActiveApplication_db.AddGroupToApplications(idApplicationFiltered, selectGroupId.ToString()))
+                    resultsApplyFilter.SetContent("Znaleziono " + count + " element" + ((count == 1) ? "" : "ów."));
+                else
+                    resultsApplyFilter.SetContent("Wystąpił błąd z filtrem.");
+            }
             else
-                resultsApplyFilter.SetContent("Wystąpił błąd z filtrem.");
+                resultsApplyFilter.SetContent("Znaleziono " + count + " element" + ((count == 1) ? "" : "ów."));
             resultsApplyFilter.Visibility = System.Windows.Visibility.Visible;
         }
 
@@ -322,6 +348,16 @@ namespace ApplicationTimeCounter
             chooseGroup.Content = (sender as Label).Content;
             addFiltrPlus.Visibility = System.Windows.Visibility.Visible;
             addFiltrButton.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void deleteApplicationWithFilterButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string count = ActiveApplication_db.GetAllAutoGroupingApplication(selectGroupId);
+            if(ActiveApplication_db.DeleteAllApplicationsWithGroup(selectGroupId, true, true))
+                resultsDeleteApplication.SetContent("Usunięto " + count + " element" + ((string.Equals(count, "1")) ? "" : "ów."));
+            else
+                resultsDeleteApplication.SetContent("Wystąpił błąd podczas usuwania.");
+            resultsDeleteApplication.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void buttonCloseChooseGroup(object sender, MouseButtonEventArgs e)

@@ -16,8 +16,7 @@ namespace ApplicationTimeCounter
         {
             string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from activeapplications " +
                 "WHERE idNameActivity = 1";
-            string AllNotAssignedApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "noAssigmentApplication")[0];
-            return AllNotAssignedApplication;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "noAssigmentApplication")[0];
         }
 
         public static bool AddActivityToApplication(string idApplication, string idActivity)
@@ -70,11 +69,30 @@ namespace ApplicationTimeCounter
 
         public static bool DeleteOneApplicationWithGroup(int idApplication)
         {
-            string contentCommand = "UPDATE activeapplications SET IdMembership = NULL WHERE ID = " + idApplication;
+            string contentCommand = "UPDATE activeapplications SET IdMembership = NULL , AutoGrouping = NULL WHERE ID = " + idApplication;
 
             if (!DataBase.ExecuteNonQuery(contentCommand))
             {
                 ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aplikacji z aktywności");
+                return false;
+            }
+            else return true;
+        }
+
+        public static bool DeleteAllApplicationsWithGroup(int idGroup, bool ifAutoGrouping = false, bool ifAddAutoGrouping = false)
+        {
+            string autoGrouping = string.Empty;
+            if (ifAddAutoGrouping)
+                autoGrouping = " AND AutoGrouping = " + Convert.ToInt32(ifAutoGrouping);
+
+            string contentCommand = "UPDATE activeapplications SET IdMembership = NULL , AutoGrouping = NULL"
+                + " WHERE IdMembership = " + idGroup + autoGrouping;
+
+            if (!DataBase.ExecuteNonQuery(contentCommand))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć wszystkich aplikacji z grupy",
+                   ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                   System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\ActiveApplication_db.cs");
                 return false;
             }
             else return true;
@@ -176,6 +194,20 @@ namespace ApplicationTimeCounter
             string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership IS NULL";
             Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
             return nameGroups;
+        }
+
+        public static Dictionary<string, string> GetNameApplicationDictionaryWithGroup(int idGroup)
+        {
+            string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership " + idGroup + " AND AutoGrouping = 1";
+            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
+            return nameGroups;
+        }
+
+        public static string GetAllAutoGroupingApplication(int idGroup)
+        {
+            string contentCommand = "SELECT COUNT(*) as AutoGroupingApplication from activeapplications WHERE IdMembership = " 
+                + idGroup + " AND AutoGrouping = 1";
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "AutoGroupingApplication")[0];
         }
     }
 }

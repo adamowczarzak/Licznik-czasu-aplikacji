@@ -224,7 +224,7 @@ namespace ApplicationTimeCounter
         {
             activeGroupId = Convert.ToInt32(((sender as Label).Name).Replace("ID_", ""));
             DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteGroup);
-            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;
+            dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowDelegate;
             dialogWindow.CloseWindowAcceptButtonDelegate += DeleteGroup;
             dialogWindow.ShowDialog();
         }
@@ -335,9 +335,11 @@ namespace ApplicationTimeCounter
             contentCanvasShowApplication.Children.Remove(checkRemovedActivity);
         }
 
+        private void dialogWindow_CloseWindowDelegate(){}
+
         private void DeleteGroup()
         {
-            if (Membership_db.DeleteAllApplicationsWithGroup(activeGroupId))
+            if (ActiveApplication_db.DeleteAllApplicationsWithGroup(activeGroupId))
             {
                 if (Membership_db.DeleteGroup(activeGroupId))
                 {
