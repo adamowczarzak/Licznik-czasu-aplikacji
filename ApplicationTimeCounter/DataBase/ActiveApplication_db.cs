@@ -32,6 +32,12 @@ namespace ApplicationTimeCounter
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
+        public static bool AddGroupToApplications(List<int> idApplications, string idGroup)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdMembership = " + idGroup + ", AutoGrouping = 1 WHERE Id " + SqlValidator.Validate_IN(idApplications);
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
         public static bool DeleteAllApplicationsWithActivity(int idActivity)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
@@ -163,6 +169,13 @@ namespace ApplicationTimeCounter
             }
 
             return activeApplication.OrderBy(x => x.Date).Reverse().ToList();
+        }
+
+        public static Dictionary<string, string> GetNameApplicationDictionaryWithoutGroup()
+        {
+            string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership IS NULL";
+            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
+            return nameGroups;
         }
     }
 }

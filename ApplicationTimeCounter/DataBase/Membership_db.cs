@@ -130,5 +130,34 @@ namespace ApplicationTimeCounter
             Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
             return nameGroups;
         }
+
+        public static bool AddFilterToConfiguration(int idGroup, string filter)
+        {
+            string contentCommand = "UPDATE membership SET Filter = " + SqlValidator.Validate(filter)
+                + " WHERE Id = " + idGroup;
+
+            if (!DataBase.ExecuteNonQuery(contentCommand))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się dodać filtru ",
+                   ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                   System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Membership_db.cs");
+                return false;
+            }
+            else return true;
+        }
+
+        public static bool DeleteFilterToConfiguration(int idGroup)
+        {
+            string contentCommand = "UPDATE membership SET Filter = NULL WHERE Id = " + idGroup;
+
+            if (!DataBase.ExecuteNonQuery(contentCommand))
+            {
+                ApplicationLog.LogService.AddRaportError("Nie udało się usunąć filtru ",
+                   ApplicationLog.LogService.GetNameCurrentMethod() + "()",
+                   System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName + @"\Membership_db.cs");
+                return false;
+            }
+            else return true;
+        }
     }
 }

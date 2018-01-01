@@ -93,7 +93,7 @@ namespace ApplicationTimeCounter
             for (int i = 0; i < allGroups.Count; i++)
             {
                 new MyRectangle(contentCanvas, 600, 40, Color.FromArgb((byte)(50 + (i % 2 * 30)), 0, 125, 255), 0, i * 39, 2).SetStroke(Color.FromArgb(255, 30, 39, 93));
-                new MyLabel(contentCanvas, (i+1).ToString(), 30, 30, 12, 7, 5 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
+                new MyLabel(contentCanvas, (i+1).ToString(), 30, 30, 12, 7, 7 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
                 new MyLabel(contentCanvas, allGroups[i].Title, 200, 30, 12, 35, 7 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
                 new MyLabel(contentCanvas, allGroups[i].Date.Remove(16), 100, 30, 10, 445, 9 + (i * 39), Color.FromArgb(200, 220, 220, 220), Color.FromArgb(230, 230, 0, 0));
 
