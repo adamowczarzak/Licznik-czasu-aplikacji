@@ -157,8 +157,7 @@ namespace ApplicationTimeCounter
         {
             string contentCommand = "SELECT COUNT(*) as noJoinedApplication from activeapplications " +
                 "WHERE IdMembership IS NULL AND Id > 2";
-            string AllNotAssignedApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "noJoinedApplication")[0];
-            return AllNotAssignedApplication;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "noJoinedApplication")[0];
         }
 
         internal static List<ActiveApplication> GetNonJoinedApplication()
@@ -192,15 +191,13 @@ namespace ApplicationTimeCounter
         public static Dictionary<string, string> GetNameApplicationDictionaryWithoutGroup()
         {
             string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership IS NULL";
-            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
-            return nameGroups;
+            return DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
         }
 
         public static Dictionary<string, string> GetNameApplicationDictionaryWithGroup(int idGroup)
         {
             string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership " + idGroup + " AND AutoGrouping = 1";
-            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
-            return nameGroups;
+            return DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
         }
 
         public static string GetAllAutoGroupingApplication(int idGroup)

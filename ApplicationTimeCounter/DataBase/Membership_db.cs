@@ -3,6 +3,7 @@ using ApplicationTimeCounter.Other;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ApplicationTimeCounter
 {
@@ -143,6 +144,24 @@ namespace ApplicationTimeCounter
                 return false;
             }
             else return true;
+        }
+
+        public static string GetContentFilter(int idGroup)
+        {
+            string contentCommand = "SELECT Filter FROM membership WHERE Id = " + idGroup;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "Filter")[0];
+        }
+
+        public static string GetNumberApplicationInGroup(int idGroup)
+        {
+            string contentCommand = "SELECT COUNT(*) AS Num FROM activeapplications  WHERE IdMembership = " + idGroup;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "Num")[0];
+        }
+
+        public static string GetNumberApplicationInGroupWithFilter(int idGroup)
+        {
+            string contentCommand = "SELECT COUNT(*) AS Num FROM activeapplications  WHERE IdMembership = " + idGroup + " AND AutoGrouping = 1";
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "Num")[0];
         }
     }
 }
