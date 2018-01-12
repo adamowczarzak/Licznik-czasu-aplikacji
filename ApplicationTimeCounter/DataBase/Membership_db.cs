@@ -42,7 +42,7 @@ namespace ApplicationTimeCounter
             return DataBase.GetListStringFromExecuteReader(contentCommand, "numberGroups")[0];
         }
 
-        public static List<Membership> GetAllGroups()
+        public static List<Membership> GetAllGroups(CommandParameters parameters)
         {
             List<Membership> allGroups = new List<Membership>();
 
@@ -51,7 +51,11 @@ namespace ApplicationTimeCounter
                 ", membership.Date AS " + ColumnNames.Date +
                 ", membership.Active AS " + ColumnNames.IfActive +
                 ", membership.Configuration AS " + ColumnNames.IfConfiguration +
-                " FROM membership ";
+                ", membership.Filter AS " + ColumnNames.Filter +
+                ", membership.ActiveConfiguration AS " + ColumnNames.IfActiveConfiguration +
+                ", membership.AsOneApplication AS " + ColumnNames.IfAsOneApplication +
+                " FROM membership WHERE 1 = 1 ";
+                query += CommandParameters.CheckParameters(parameters);
 
                  if (DataBase.ConnectToDataBase())
             {
@@ -146,12 +150,6 @@ namespace ApplicationTimeCounter
             else return true;
         }
 
-        public static string GetContentFilter(int idGroup)
-        {
-            string contentCommand = "SELECT Filter FROM membership WHERE Id = " + idGroup;
-            return DataBase.GetListStringFromExecuteReader(contentCommand, "Filter")[0];
-        }
-
         public static string GetNumberApplicationInGroup(int idGroup)
         {
             string contentCommand = "SELECT COUNT(*) AS Num FROM activeapplications  WHERE IdMembership = " + idGroup;
@@ -162,6 +160,30 @@ namespace ApplicationTimeCounter
         {
             string contentCommand = "SELECT COUNT(*) AS Num FROM activeapplications  WHERE IdMembership = " + idGroup + " AND AutoGrouping = 1";
             return DataBase.GetListStringFromExecuteReader(contentCommand, "Num")[0];
+        }
+
+        public static bool SetActivityConfiguration(int idGroup, bool ifActivity)
+        {
+            string contentCommand = "UPDATE membership SET ActiveConfiguration = " + Convert.ToInt32(ifActivity) + " WHERE Id = " + idGroup;
+            return DataBase.ExecuteNonQuery(contentCommand);       
+        }
+
+        public static bool SetAsOneApplication(int idGroup, bool ifAsOneApplication)
+        {
+            string contentCommand = "UPDATE membership SET AsOneApplication = " + Convert.ToInt32(ifAsOneApplication) + " WHERE Id = " + idGroup;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
+        public static bool SaveConfiguration(int idGroup)
+        {
+            string contentCommand = "UPDATE membership SET Configuration = 1 WHERE Id = " + idGroup;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
+        public static bool DeleteConfiguration(int idGroup)
+        {
+            string contentCommand = "UPDATE membership SET Configuration = 0, Filter = NULL, ActiveConfiguration = 0, AsOneApplication = 0 WHERE Id = " + idGroup;
+            return DataBase.ExecuteNonQuery(contentCommand);
         }
     }
 }

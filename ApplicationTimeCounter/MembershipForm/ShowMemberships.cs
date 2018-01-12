@@ -85,7 +85,7 @@ namespace ApplicationTimeCounter
 
         private void LoadGroups()
         {
-            List<Membership> allGroups = Membership_db.GetAllGroups();
+            List<Membership> allGroups = Membership_db.GetAllGroups(new CommandParameters());
             Application.Current.Dispatcher.Invoke(() => {
 
             activationGroup = new Image[allGroups.Count];

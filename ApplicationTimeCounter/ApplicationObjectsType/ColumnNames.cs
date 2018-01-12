@@ -19,6 +19,9 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
         public static readonly string IdNameActivity = "IdNameActivity";
         public static readonly string IdMembership = "IdMembership";
         public static readonly string IfAutoGrouping = "IfAutoGrouping";
+        public static readonly string Filter = "Filter";
+        public static readonly string IfActiveConfiguration = "IfActiveConfiguration";
+        public static readonly string IfAsOneApplication = "IfAsOneApplication";
 
     }
 }

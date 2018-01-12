@@ -258,7 +258,9 @@ namespace ApplicationTimeCounter
                 `Date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 `Active` TINYINT(1) NOT NULL DEFAULT 1,
                 `Configuration` TINYINT(1) NOT NULL DEFAULT 0,
-                `Filter` varchar(40) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL)
+                `Filter` varchar(40) CHARACTER SET utf8 COLLATE utf8_polish_ci NULL,
+                `ActiveConfiguration` TINYINT(1) NOT NULL DEFAULT 0,
+                `AsOneApplication` TINYINT(1) NOT NULL DEFAULT 0)
                 CHARACTER SET utf8 COLLATE utf8_polish_ci";
             command = new MySqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);

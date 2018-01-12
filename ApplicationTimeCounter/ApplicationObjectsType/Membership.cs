@@ -14,6 +14,9 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
         public string Date { get; set; }
         public bool IfActive { get; set; }
         public bool IfConfiguration { get; set; }
+        public string Filter { get; set; }
+        public bool IfActiveConfiguration { get; set; }
+        public bool IfAsOneApplication { get; set; }
 
         public Membership()
         {
@@ -22,6 +25,9 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
             Date = string.Empty;
             IfActive = false;
             IfConfiguration = false;
+            Filter = string.Empty;
+            IfActiveConfiguration = false;
+            IfAsOneApplication = false;
         }
 
         public static Membership GetMembershipFromReader(MySqlDataReader reader)
@@ -45,6 +51,15 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
 
             if (namesField.Contains(ColumnNames.IfConfiguration))
                 membership.IfConfiguration = Convert.ToBoolean(reader[ColumnNames.IfConfiguration].ToString());
+
+            if (namesField.Contains(ColumnNames.Filter))
+                membership.Filter = reader[ColumnNames.Filter].ToString();
+
+            if (namesField.Contains(ColumnNames.IfActiveConfiguration))
+                membership.IfActiveConfiguration = Convert.ToBoolean(reader[ColumnNames.IfActiveConfiguration].ToString());
+
+            if (namesField.Contains(ColumnNames.IfAsOneApplication))
+                membership.IfAsOneApplication = Convert.ToBoolean(reader[ColumnNames.IfAsOneApplication].ToString());
 
             return membership;
         }

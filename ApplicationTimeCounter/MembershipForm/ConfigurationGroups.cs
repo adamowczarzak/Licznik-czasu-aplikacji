@@ -7,6 +7,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Linq;
 using ApplicationTimeCounter.Other;
+using ApplicationTimeCounter.ApplicationObjectsType;
 
 namespace ApplicationTimeCounter
 {
@@ -33,8 +34,11 @@ namespace ApplicationTimeCounter
         private MyLabel applicationInGroup;
         private MyLabel addingByFilter;
         private MyLabel effectivenessFilter;
+        private Label buttonChangeActivity;
+        private Label buttontreatAsOne;
+
         private int selectGroupId;
-        
+
 
         public delegate void CloseWindowDelegate();
         public event CloseWindowDelegate CloseWindowShowMembershipsDelegate;
@@ -47,18 +51,17 @@ namespace ApplicationTimeCounter
             new MyRectangle(mainCanvas, 600, 35, Color.FromArgb(255, 0, 125, 255), 0, 0);
             new MyLabel(mainCanvas, "Konfiguracje grup", 600, 40, 15, 0, 0, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
 
+            contentCanvas = new Canvas() { Width = 300, Height = 316 };
+            ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(mainCanvas, 300, 316, 0, 50, contentCanvas);
             LoadGroupName();
             CreateControlUser();
         }
 
         private void LoadGroupName()
-        {
-            contentCanvas = new Canvas() { Width = 300, Height = 316 };
-            ScrollViewer sv = ScrollViewerCreator.CreateScrollViewer(mainCanvas, 300, 316, 0, 50, contentCanvas);
-            sv.Background = new SolidColorBrush(Color.FromArgb(255, 20, 28, 75));
+        {          
             Dictionary<string, string> namesGroup = Membership_db.GetNameGroupsDictionaryWithConfiguration();
-
             int nextIndex = 0;
+            contentCanvas.Height = 0;
             foreach (KeyValuePair<string, string> name in namesGroup)
             {
                 Label group = ButtonCreator.CreateButton(contentCanvas, name.Value, 250, 29, 12, 20, 0 + (nextIndex * 32),
@@ -67,7 +70,7 @@ namespace ApplicationTimeCounter
                 group.Name = "ID_" + name.Key;
                 group.MouseEnter += buttonContent_MouseEnter;
                 group.MouseLeave += buttonContent_MouseLeave;
-                group.MouseLeftButtonDown += buttonAdd_MouseLeftButtonDown;
+                group.MouseLeftButtonDown += buttonEditGroup_MouseLeftButtonDown;
                 ButtonCreator.SetToolTip(group, "Edytuj");
 
                 contentCanvas.Height += 32;
@@ -75,11 +78,12 @@ namespace ApplicationTimeCounter
             }
             contentCanvas.Height = ((contentCanvas.Height - 316) < 316) ? 316 : contentCanvas.Height - 315;
 
-            if(!namesGroup.Any())
+            if (!namesGroup.Any())
             {
                 new MyLabel(contentCanvas, "Brak konfiguracji", 120, 40, 12, 90, 10, Color.FromArgb(200, 255, 255, 255), Color.FromArgb(255, 230, 0, 0));
             }
         }
+
         private void CreateControlUser()
         {
             Label buttonAdd = ButtonCreator.CreateButton(mainCanvas, "Dodaj nową", 150, 30, 14, 320, 50,
@@ -170,14 +174,14 @@ namespace ApplicationTimeCounter
         }
 
         private void CreateSaveDeleteConfigureButton()
-        {           
+        {
             saveConfigurationButton = ButtonCreator.CreateButton(addConfigurationCanvas, "Zapisz konfiguracje", 190, 30, 14, 20, 360,
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155));
             saveConfigurationButton.Background = new SolidColorBrush(Color.FromArgb(50, 0, 125, 255));
             saveConfigurationButton.MouseEnter += buttonContent_MouseEnter;
             saveConfigurationButton.MouseLeave += buttonContent_MouseLeave;
             saveConfigurationButton.MouseLeftButtonDown += saveConfigurationButton_MouseLeftButtonDown;
-            
+
             deleteConfigurationButton = ButtonCreator.CreateButton(addConfigurationCanvas, "Usuń konfiguracje", 190, 30, 14, 360, 360,
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155));
             deleteConfigurationButton.Background = new SolidColorBrush(Color.FromArgb(50, 0, 125, 255));
@@ -192,7 +196,7 @@ namespace ApplicationTimeCounter
             ifActivity = new MyLabel(addConfigurationCanvas, "x", 30, 50, 24, 400, 60, Color.FromArgb(255, 0, 155, 0),
                 Color.FromArgb(255, 70, 70, 70), 0);
             ifActivity.Visibility = System.Windows.Visibility.Hidden;
-            Label buttonChangeActivity = ButtonCreator.CreateButton(addConfigurationCanvas, "    Aktywna", 120, 30, 14, 400, 70,
+            buttonChangeActivity = ButtonCreator.CreateButton(addConfigurationCanvas, "    Aktywna", 120, 30, 14, 400, 70,
                 Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 155, 155, 155));
             buttonChangeActivity.MouseEnter += buttonChangeActivity_MouseEnter;
             buttonChangeActivity.MouseLeave += buttonChangeActivity_MouseLeave;
@@ -202,7 +206,7 @@ namespace ApplicationTimeCounter
             treatAsOne = new MyLabel(addConfigurationCanvas, "x", 30, 50, 24, 400, 120, Color.FromArgb(255, 0, 155, 0),
                 Color.FromArgb(255, 70, 70, 70), 0);
             treatAsOne.Visibility = System.Windows.Visibility.Hidden;
-            Label buttontreatAsOne = ButtonCreator.CreateButton(addConfigurationCanvas, "    Jako applikacja", 160, 30, 14, 400, 130,
+            buttontreatAsOne = ButtonCreator.CreateButton(addConfigurationCanvas, "    Jako applikacja", 160, 30, 14, 400, 130,
                 Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 155, 155, 155));
             buttontreatAsOne.MouseEnter += buttonChangeTreatAsOne_MouseEnter;
             buttontreatAsOne.MouseLeave += buttonChangeTreatAsOne_MouseLeave;
@@ -231,6 +235,16 @@ namespace ApplicationTimeCounter
         {
             addConfigurationCanvas = CanvasCreator.CreateCanvas(mainCanvas, 600, 390, Color.FromArgb(255, 30, 39, 93), 0, 0);
             SetConfigurationButton();
+        }
+
+        private void buttonEditGroup_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            selectGroupId = Convert.ToInt32((sender as Label).Name.Replace("ID_", ""));
+            addConfigurationCanvas = CanvasCreator.CreateCanvas(mainCanvas, 600, 390, Color.FromArgb(255, 30, 39, 93), 0, 0);
+            SetConfigurationButton();
+            chooseGroup.MouseLeftButtonDown -= buttonOpenChooseGroup;
+            chooseGroup.Content = (sender as Label).Content;
+            LoadGroup();
         }
 
         private void SetConfigurationButton()
@@ -276,23 +290,29 @@ namespace ApplicationTimeCounter
             Dictionary<string, string> namesGroup = Membership_db.GetNameGroupsDictionaryWithoutConfiguration();
             chooseGroup.MouseLeftButtonDown -= buttonOpenChooseGroup;
             chooseGroup.MouseLeftButtonDown += buttonCloseChooseGroup;
-            chooseGroup.Content = "Ukryj grupy";           
+            chooseGroup.Content = "Ukryj grupy";
             int nextIndex = 0;
             chooseGroupCanvas.Height = 126;
 
             contentsOfFilter.Visibility = System.Windows.Visibility.Hidden;
             addFiltrAccept.Visibility = System.Windows.Visibility.Hidden;
             applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
-            if (resultsApplyFilter != null)
-                resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
-            if (resultsDeleteApplication != null)
-                resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
+            resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
+            resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
+            ifActivity.Visibility = System.Windows.Visibility.Hidden;
+            buttonChangeActivity.Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+            treatAsOne.Visibility = System.Windows.Visibility.Hidden;
+            buttontreatAsOne.Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+            applicationInGroup.SetContent("0");
+            addingByFilter.SetContent("0");
+            effectivenessFilter.SetContent("0.00 %");
+
             foreach (KeyValuePair<string, string> name in namesGroup)
             {
-                Label group = ButtonCreator.CreateButton(chooseGroupCanvas, name.Value , 200, 29, 12, 0, 0 + (nextIndex * 32),
+                Label group = ButtonCreator.CreateButton(chooseGroupCanvas, name.Value, 200, 29, 12, 0, 0 + (nextIndex * 32),
                 Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155));
                 group.Background = new SolidColorBrush(Color.FromArgb((byte)(50 + (nextIndex % 2 * 30)), 0, 125, 255));
-                group.Name = "ID_"+ name.Key;
+                group.Name = "ID_" + name.Key;
                 group.MouseEnter += buttonContent_MouseEnter;
                 group.MouseLeave += buttonContent_MouseLeave;
                 group.MouseLeftButtonDown += buttonChooseGroup_MouseLeftButtonDown;
@@ -305,29 +325,47 @@ namespace ApplicationTimeCounter
 
         private void buttonChangeActivity_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (ifActivity.Visibility == System.Windows.Visibility.Hidden)
+            if (selectGroupId > 0)
             {
-                ifActivity.Visibility = System.Windows.Visibility.Visible;
-                (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
-            }
-            else
-            {
-                ifActivity.Visibility = System.Windows.Visibility.Hidden;
-                (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+                if (ifActivity.Visibility == System.Windows.Visibility.Hidden)
+                {
+                    if (Membership_db.SetActivityConfiguration(selectGroupId, true))
+                    {
+                        ifActivity.Visibility = System.Windows.Visibility.Visible;
+                        (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
+                    }
+                }
+                else
+                {
+                    if (Membership_db.SetActivityConfiguration(selectGroupId, false))
+                    {
+                        ifActivity.Visibility = System.Windows.Visibility.Hidden;
+                        (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+                    }
+                }
             }
         }
 
         private void buttonChangeTreatAsOne_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (treatAsOne.Visibility == System.Windows.Visibility.Hidden)
+            if (selectGroupId > 0)
             {
-                treatAsOne.Visibility = System.Windows.Visibility.Visible;
-                (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
-            }
-            else
-            {
-                treatAsOne.Visibility = System.Windows.Visibility.Hidden;
-                (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+                if (treatAsOne.Visibility == System.Windows.Visibility.Hidden)
+                {
+                    if (Membership_db.SetAsOneApplication(selectGroupId, true))
+                    {
+                        treatAsOne.Visibility = System.Windows.Visibility.Visible;
+                        (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
+                    }          
+                }
+                else
+                {
+                    if (Membership_db.SetAsOneApplication(selectGroupId, false))
+                    {
+                        treatAsOne.Visibility = System.Windows.Visibility.Hidden;
+                        (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+                    }
+                }
             }
         }
 
@@ -336,7 +374,7 @@ namespace ApplicationTimeCounter
             if (selectGroupId > 0)
             {
                 contentsOfFilter.Visibility = System.Windows.Visibility.Visible;
-                addFiltrAccept.Visibility = System.Windows.Visibility.Visible; 
+                addFiltrAccept.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
@@ -344,10 +382,8 @@ namespace ApplicationTimeCounter
         {
             addFiltrAccept.Visibility = System.Windows.Visibility.Visible;
             applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
-            if (resultsApplyFilter != null)
-                resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
-            if (resultsDeleteApplication != null)
-                resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
+            resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
+            resultsDeleteApplication.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void addFiltrButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -431,9 +467,13 @@ namespace ApplicationTimeCounter
             selectGroupId = Convert.ToInt32((sender as Label).Name.Replace("ID_", ""));
             CloseChooseGroup();
             chooseGroup.Content = (sender as Label).Content;
+            LoadGroup();
+        }
+
+        private void LoadGroup()
+        {
             addFiltrPlus.Visibility = System.Windows.Visibility.Visible;
             addFiltrButton.Visibility = System.Windows.Visibility.Visible;
-            string contentFilter = string.Empty;
             int allInGroup = Convert.ToInt32(Membership_db.GetNumberApplicationInGroup(selectGroupId));
             int inGroupWithFilter = Convert.ToInt32(Membership_db.GetNumberApplicationInGroupWithFilter(selectGroupId));
 
@@ -441,10 +481,24 @@ namespace ApplicationTimeCounter
             addingByFilter.SetContent(inGroupWithFilter.ToString());
             effectivenessFilter.SetContent((ActionOnNumbers.DivisionD(inGroupWithFilter, allInGroup) * 100).ToString("0.00") + " %");
 
-            if (!string.IsNullOrEmpty(contentFilter = Membership_db.GetContentFilter(selectGroupId)))
+            CommandParameters parameters = new CommandParameters();
+            parameters.ID.Add(selectGroupId);
+            List<Membership> groups = Membership_db.GetAllGroups(parameters);
+
+            if (!string.IsNullOrEmpty(groups[0].Filter))
             {
-                contentsOfFilter.Text = contentFilter;
+                contentsOfFilter.Text = groups[0].Filter;
                 contentsOfFilter.Visibility = System.Windows.Visibility.Visible;
+            }
+            if (groups[0].IfActiveConfiguration)
+            {
+                ifActivity.Visibility = System.Windows.Visibility.Visible;
+                buttonChangeActivity.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
+            }
+            if (groups[0].IfAsOneApplication)
+            {
+                treatAsOne.Visibility = System.Windows.Visibility.Visible;
+                buttontreatAsOne.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
             }
         }
 
@@ -463,12 +517,32 @@ namespace ApplicationTimeCounter
 
         private void saveConfigurationButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+            if (selectGroupId != 0)
+            {
+                if (Membership_db.SaveConfiguration(selectGroupId))
+                {
+                    (sender as Label).Background = new SolidColorBrush(Color.FromArgb(220, 0, 255, 0));
+                }
+                else
+                {
+                    (sender as Label).Background = new SolidColorBrush(Color.FromArgb(220, 255, 0, 0));
+                }
+            }
         }
 
         private void deleteConfigurationButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+            if (selectGroupId != 0)
+            {
+                if (Membership_db.DeleteConfiguration(selectGroupId))
+                {
+                    ExitConfigure();
+                }
+                else
+                {
+                    (sender as Label).Background = new SolidColorBrush(Color.FromArgb(220, 255, 0, 0));
+                }
+            }
         }
 
         private void buttonCloseChooseGroup(object sender, MouseButtonEventArgs e)
@@ -485,12 +559,18 @@ namespace ApplicationTimeCounter
             chooseGroup.MouseLeftButtonDown += buttonOpenChooseGroup;
         }
 
-        private void buttonExitConfigure_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ExitConfigure()
         {
             selectGroupId = 0;
             addConfigurationCanvas.Children.Clear();
             mainCanvas.Children.Remove(addConfigurationCanvas);
-            //TODO przeładowanie wyświetlanych grup.
+            contentCanvas.Children.Clear();
+            LoadGroupName();
+        }
+
+        private void buttonExitConfigure_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ExitConfigure();
         }
 
         private void buttonExit_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
