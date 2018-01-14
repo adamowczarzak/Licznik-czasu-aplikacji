@@ -46,6 +46,7 @@ namespace ApplicationTimeCounter
 
         private bool LoadConfigFileAndTryConnectMySql()
         {
+            string nameServer = string.Empty;
             string nameUser = string.Empty;
             string password = string.Empty;
             bool isLoadAndConnect = true;
@@ -54,6 +55,7 @@ namespace ApplicationTimeCounter
             {
                 using (System.IO.StreamReader file = new System.IO.StreamReader("Config.file"))
                 {
+                    nameServer = file.ReadLine();
                     nameUser = file.ReadLine();
                     password = file.ReadLine();
                 }
@@ -66,7 +68,7 @@ namespace ApplicationTimeCounter
                 isLoadAndConnect = false;
             }
             if(isLoadAndConnect)
-                isLoadAndConnect = DataBase.TryConnectToMySql(nameUser, password);
+                isLoadAndConnect = DataBase.TryConnectToMySql(nameServer, nameUser, password);
             return isLoadAndConnect;
         }
     }

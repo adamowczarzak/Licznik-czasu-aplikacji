@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ApplicationTimeCounter.GetDataBaseWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Wprowadz dane bazy" Height="300" Width="400" ResizeMode="NoResize" Icon="Pictures/icon64.ico" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="None">
+        Title="Wprowadz dane bazy" Height="341.791" Width="398.507" ResizeMode="NoResize" Icon="../Pictures/icon64.ico" WindowStartupLocation="CenterScreen" Topmost="True" WindowStyle="None">
     <Window.Resources>
         <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
             <Setter Property="Template">
@@ -80,8 +80,8 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid Background="#FF1E275D" Width="400" Height="300">
-        <Button x:Name="acceptButton" Content="OK" HorizontalAlignment="Left" Height="31" Margin="30,248,0,0" Style="{DynamicResource ButtonStyle1}" VerticalAlignment="Top" Width="97" FontFamily="Verdana" FontSize="18.667" Foreground="#FFE2E2E2" Cursor="Hand" Panel.ZIndex="1" Click="acceptButton_Click">
+    <Grid Background="#FF1E275D" Width="400" Margin="0,0,-1,0">
+        <Button x:Name="acceptButton" Content="OK" HorizontalAlignment="Left" Height="31" Margin="30,287,0,0" Style="{DynamicResource ButtonStyle1}" VerticalAlignment="Top" Width="97" FontFamily="Verdana" FontSize="18.667" Foreground="#FFE2E2E2" Cursor="Hand" Panel.ZIndex="1" Click="acceptButton_Click">
             <Button.OpacityMask>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -89,7 +89,7 @@
                 </LinearGradientBrush>
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="cancelButton" Content="Anuluj" Height="31" Margin="168,248,35,0" Style="{DynamicResource ButtonStyle1}" VerticalAlignment="Top" FontFamily="Verdana" FontSize="18.667" Foreground="#FFE2E2E2" Cursor="Hand" Panel.ZIndex="1" Click="cancelButton_Click">
+        <Button x:Name="cancelButton" Content="Anuluj" Height="31" Margin="169,287,39,0" Style="{DynamicResource ButtonStyle1}" VerticalAlignment="Top" FontFamily="Verdana" FontSize="18.667" Foreground="#FFE2E2E2" Cursor="Hand" Panel.ZIndex="1" Click="cancelButton_Click">
             <Button.OpacityMask>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -97,12 +97,13 @@
                 </LinearGradientBrush>
             </Button.OpacityMask>
         </Button>
-        <TextBox x:Name="nameUser" HorizontalAlignment="Left" Height="32" Margin="171,79,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="171" Background="#FF007BFF" FontSize="18" FontWeight="Bold" UndoLimit="1" MaxLines="1" MinLines="1" VerticalContentAlignment="Center" PreviewMouseLeftButtonDown="nameUser_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="nameUser_PreviewMouseRightButtonDown"/>
-        <PasswordBox x:Name="password" HorizontalAlignment="Left" Margin="171,142,0,0" VerticalAlignment="Top" Width="171" Height="32" Background="#FF007BFF" FontSize="20" PreviewMouseLeftButtonDown="password_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="password_PreviewMouseRightButtonDown"/>
-        <TextBlock HorizontalAlignment="Left" Margin="31,82,0,0" TextWrapping="Wrap" Text="Użytkownik" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
-        <TextBlock HorizontalAlignment="Left" Margin="31,146,0,0" TextWrapping="Wrap" Text="Hasło" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" Text="Dane logowania do połączenia z bazą" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="389"/>
-        <TextBlock x:Name="loginMessages" HorizontalAlignment="Left" Margin="31,184,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="335" Height="48" FontSize="16" FontWeight="Bold" Foreground="#FFFF7B7B" MaxWidth="335"/>
-
+        <TextBox x:Name="nameUser" HorizontalAlignment="Left" Height="32" Margin="180,121,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="181" Background="#FF007BFF" FontSize="18" FontWeight="Bold" UndoLimit="1" MaxLines="1" MinLines="1" VerticalContentAlignment="Center" PreviewMouseLeftButtonDown="nameUser_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="nameUser_PreviewMouseRightButtonDown"/>
+        <PasswordBox x:Name="password" HorizontalAlignment="Left" Margin="180,179,0,0" VerticalAlignment="Top" Width="181" Height="32" Background="#FF007BFF" FontSize="20" PreviewMouseRightButtonDown="password_PreviewMouseRightButtonDown" PreviewMouseLeftButtonDown="password_PreviewMouseLeftButtonDown"/>
+        <TextBlock HorizontalAlignment="Left" Margin="32,125,0,0" TextWrapping="Wrap" Text="Użytkownik" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="105"/>
+        <TextBlock HorizontalAlignment="Left" Margin="32,183,0,0" TextWrapping="Wrap" Text="Hasło" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="51"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,17,0,0" TextWrapping="Wrap" Text="Dane logowania do połączenia z bazą" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="389"/>
+        <TextBlock x:Name="loginMessages" HorizontalAlignment="Left" Margin="31,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="330" Height="48" FontSize="14" FontWeight="Bold" Foreground="#FFFF7B7B" MaxWidth="335"/>
+        <TextBox x:Name="nameServer" HorizontalAlignment="Left" Height="32" Margin="180,64,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="181" Background="#FF007BFF" FontSize="18" FontWeight="Bold" UndoLimit="1" MaxLines="1" MinLines="1" VerticalContentAlignment="Center" PreviewMouseLeftButtonDown="nameServer_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="nameServer_PreviewMouseRightButtonDown"/>
+        <TextBlock HorizontalAlignment="Left" Margin="32,68,0,0" TextWrapping="Wrap" Text="Serwer" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="White" Width="62"/>
     </Grid>
 </Window>

@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 using ApplicationTimeCounter.Other;
 using ApplicationTimeCounter.ApplicationObjectsType;
+using System.Data.SqlClient;
 
 namespace ApplicationTimeCounter
 {
     public class AllData_db
     {
 
-        private MySqlCommand command;
+        private SqlCommand command;
 
 
         public AllData_db()
         {
-            command = new MySqlCommand();
+            command = new SqlCommand();
         }
 
         /// <summary>
@@ -40,8 +40,8 @@ namespace ApplicationTimeCounter
                 if (DataBase.CheckIsOpenConnection())
                 {
                     command.Connection = DataBase.Connection;
-                    command.CommandText = "INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY " +
-                    " , " + idTitle + " , " + activityTime + ")";
+                    command.CommandText = "INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (DATEADD(day, " + (daysDifferenceFromToday*(-1)) + ", GETDATE()) , " 
+                        + idTitle + " , " + activityTime + ")";
                     if (DataBase.ExecuteNonQuery(command)) addRecord = true;
                 }
                 if (closingConnectionDataBase) DataBase.CloseConnection();
@@ -50,8 +50,8 @@ namespace ApplicationTimeCounter
             {
                 DataBase.AdditionalConnectToDataBase();
                 command.Connection = DataBase.AdditionalConnection;
-                command.CommandText = "INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (CURDATE() - INTERVAL " + daysDifferenceFromToday + " DAY " +
-                    " , " + idTitle + " , " + activityTime + ")";
+                command.CommandText = "INSERT INTO alldate (Date, IdTitle, ActivityTime) VALUES (DATEADD(day, " + (daysDifferenceFromToday * (-1)) + ", GETDATE()) , "
+                    + idTitle + " , " + activityTime + ")";
                 if (DataBase.ExecuteNonQuery(command)) addRecord = true;
                 DataBase.AdditionalConnection.Close();
             }
@@ -65,7 +65,7 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         public bool CheckIfIsNextDay()
         {
-            string contentCommand = "SELECT Id from alldate WHERE Date = CURDATE() - INTERVAL 1 DAY OR Date = CURDATE()";
+            string contentCommand = "SELECT Id from alldate WHERE Date = CONVERT(VARCHAR(10), DATEADD(day, -1, GETDATE()), 23) OR Date = GETDATE()";
             if (!DataBase.GetListStringFromExecuteReader(contentCommand, "Id").Any()) return true;
             else return false;
         }
@@ -81,7 +81,7 @@ namespace ApplicationTimeCounter
             {
                 for (int i = coutDay; i < 0; i++)
                 {
-                    if (CheckIfDateExistInBase((-i).ToString()) == false)
+                    if (CheckIfDateExistInBase((i).ToString()) == false)
                     {
                         if (Add(1, 60 * 24, -i, true, true))
                             ApplicationLog.LogService.AddRaportInformation("Tabela 'alldata' została uzupełniona o brakujące rekordy.");
@@ -107,7 +107,7 @@ namespace ApplicationTimeCounter
         /// <returns>Zwraca ilość dni jako string.</returns>
         public string GetDayWorkingApplication()
         {
-            string contentCommand = "SELECT DATEDIFF('" + GetDataRunApplication() + "', CURDATE()) as dateDifference";
+            string contentCommand = "SELECT DATEDIFF(DAY, GETDATE(), " + SqlValidator.Validate(GetDataRunApplication()) + ") as dateDifference";
             string dateDifference = DataBase.GetListStringFromExecuteReader(contentCommand, "dateDifference")[0];
             return dateDifference;
         }
@@ -156,14 +156,14 @@ namespace ApplicationTimeCounter
             {
                 command.Connection = DataBase.Connection;
                 command.CommandText = query;
-                MySqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     try
                     {
                         dailyActivity.Add(Activity.GetActivityFromReader(reader));
                     }
-                    catch (MySqlException message)
+                    catch (SqlException message)
                     {
                         ApplicationLog.LogService.AddRaportCatchException("Error!!!\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
@@ -192,7 +192,7 @@ namespace ApplicationTimeCounter
         private string GetDataRunApplication()
         {
             string dataRunApplication = string.Empty;
-            string contentCommand = "SELECT Date FROM alldate ORDER BY Date ASC LIMIT 1";
+            string contentCommand = "SELECT TOP 1 Date FROM alldate ORDER BY Date ASC";
             if (DataBase.GetListStringFromExecuteReader(contentCommand, "Date").Any())
                 dataRunApplication = DataBase.GetListStringFromExecuteReader(contentCommand, "Date")[0];
             else dataRunApplication = "0";
@@ -206,7 +206,7 @@ namespace ApplicationTimeCounter
         /// <returns></returns>
         private bool CheckIfDateExistInBase(string numberDayBack = "0")
         {
-            string contentCommand = "SELECT Date FROM alldate WHERE Date = CURDATE() - INTERVAL " + numberDayBack + " DAY LIMIT 1";
+            string contentCommand = "SELECT TOP 1 Date FROM alldate WHERE Date = CONVERT(VARCHAR(10), DATEADD(day, " + numberDayBack + ", GETDATE()), 23)";
             if (!DataBase.GetListStringFromExecuteReader(contentCommand, "Date").Any()) return false;
             else return true;
         }

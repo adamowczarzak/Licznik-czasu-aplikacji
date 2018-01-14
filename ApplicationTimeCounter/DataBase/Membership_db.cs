@@ -1,8 +1,8 @@
 ﻿using ApplicationTimeCounter.ApplicationObjectsType;
 using ApplicationTimeCounter.Other;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace ApplicationTimeCounter
@@ -59,17 +59,17 @@ namespace ApplicationTimeCounter
 
                  if (DataBase.ConnectToDataBase())
             {
-                MySqlCommand command = new MySqlCommand();
+                SqlCommand command = new SqlCommand();
                 command.Connection = DataBase.Connection;
                 command.CommandText = query;
-                MySqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     try
                     {
                         allGroups.Add(Membership.GetMembershipFromReader(reader));
                     }
-                    catch (MySqlException message)
+                    catch (SqlException message)
                     {
                         ApplicationLog.LogService.AddRaportCatchException("Error!!!\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
@@ -109,14 +109,14 @@ namespace ApplicationTimeCounter
 
         public static Dictionary<string, string> GetNameGroupsDictionaryWithConfiguration()
         {
-            string contentCommand = "SELECT Id, Title FROM membership WHERE Configuration = 1";
+            string contentCommand = "SELECT Id, Title FROM membership WHERE Configuration = 1 AND Active = 1";
             Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
             return nameGroups;
         }
 
         public static Dictionary<string, string> GetNameGroupsDictionaryWithoutConfiguration()
         {
-            string contentCommand = "SELECT Id, Title FROM membership WHERE Configuration = 0";
+            string contentCommand = "SELECT Id, Title FROM membership WHERE Configuration = 0 AND Active = 1";
             Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
             return nameGroups;
         }

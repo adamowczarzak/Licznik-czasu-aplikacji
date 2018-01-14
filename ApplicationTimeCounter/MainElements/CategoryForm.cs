@@ -173,7 +173,7 @@ namespace ApplicationTimeCounter
         private void GetDaysHistoryActivity()
         {
             AllData_db allData_db = new AllData_db();
-            daysHistoryActivity.SetContent(allData_db.GetDayWorkingApplication().Replace("-", string.Empty));
+            daysHistoryActivity.SetContent((Convert.ToInt32(allData_db.GetDayWorkingApplication()) + 1).ToString().Replace("-", string.Empty));
         }
 
         private void GetAllNotJoinedApplication()

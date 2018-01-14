@@ -1,7 +1,7 @@
-﻿using MySql.Data.MySqlClient;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ApplicationTimeCounter.ApplicationObjectsType;
 using System;
+using System.Data.SqlClient;
 
 namespace ApplicationTimeCounter
 {
@@ -36,7 +36,7 @@ namespace ApplicationTimeCounter
             Other = 3
         }
 
-        public static ActiveApplication GetActiveApplicationFromReader(MySqlDataReader reader)
+        public static ActiveApplication GetActiveApplicationFromReader(SqlDataReader reader)
         {
             List<string> namesField = new List<string>();
             for (int i = 0; i < reader.FieldCount; i++)
@@ -63,11 +63,7 @@ namespace ApplicationTimeCounter
             }
 
             if (namesField.Contains(ColumnNames.IfAutoGrouping))
-            {
-                bool IfAutoGrouping = false;
-                if (bool.TryParse(reader[ColumnNames.IfAutoGrouping].ToString(), out IfAutoGrouping))
-                    activeApplication.IfAutoGrouping = IfAutoGrouping;
-            }
+                activeApplication.IfAutoGrouping = reader[ColumnNames.IfAutoGrouping].ToString().Equals("1") ? true : false;
             return activeApplication;
         }
 

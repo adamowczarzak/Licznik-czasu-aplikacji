@@ -58,7 +58,7 @@ namespace ApplicationTimeCounter
                 Color.FromArgb(0, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
             nameActivity.SetFont("Verdana");
 
-            namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
+            namesActivity = NameActivity_db.GetNameActivityDictionary().Values.ToArray();
             CreateControlUser();
             CreateChart();
             CreateListOfAddedApps();
@@ -560,7 +560,7 @@ namespace ApplicationTimeCounter
                 if (!NameActivity_db.CheckIfExistName(nameEditActivity.Text))
                 {
                     NameActivity_db.AddNewActivity(nameEditActivity.Text);
-                    namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
+                    namesActivity = NameActivity_db.GetNameActivityDictionary().Values.ToArray();
                     nameActivity.SetContent(nameEditActivity.Text);
                     footerActivity[footerActivity.Count - 1].Content = nameEditActivity.Text;
                     index = footerActivity.Count - 1;
@@ -652,7 +652,7 @@ namespace ApplicationTimeCounter
             {
                 if (NameActivity_db.DeleteActivity(namesActivity[index]))
                 {
-                    namesActivity = NameActivity_db.GetNameActivityDictionary().Keys.ToArray();
+                    namesActivity = NameActivity_db.GetNameActivityDictionary().Values.ToArray();
                     contentCanvas.Children.Remove(footerActivity[index]);
                     footerActivity.RemoveAt(index);
                     for (int i = index; i < footerActivity.Count; i++)

@@ -43,7 +43,7 @@ namespace ApplicationTimeCounter
             List<int> numbers = new List<int>();
             numbers.Add(2);
             for (int i = 0; i < 4; i++) tableTime[i] = 0;
-            tableTime[0] = dailyUseOfApplication_db.GetTimeForTitle("'Wyl. komputer'");
+            tableTime[0] = dailyUseOfApplication_db.GetTimeForTitle("'Wył. komputer'");
             tableTime[1] = dailyUseOfApplication_db.GetTimeForTitle("'Brak Aktyw.'");
             tableTime[2] = dailyUseOfApplication_db.GetTimeForNumberActivity(numbers);
             numbers.Add(-2); numbers.Add(-1);

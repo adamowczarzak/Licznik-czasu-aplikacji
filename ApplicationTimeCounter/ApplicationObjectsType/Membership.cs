@@ -1,6 +1,6 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +30,7 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
             IfAsOneApplication = false;
         }
 
-        public static Membership GetMembershipFromReader(MySqlDataReader reader)
+        public static Membership GetMembershipFromReader(SqlDataReader reader)
         {
             List<string> namesField = new List<string>();
             for (int i = 0; i < reader.FieldCount; i++)
@@ -47,19 +47,19 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
                 membership.Date = reader[ColumnNames.Date].ToString();
 
             if (namesField.Contains(ColumnNames.IfActive))
-                membership.IfActive = Convert.ToBoolean(reader[ColumnNames.IfActive].ToString());
+                membership.IfActive = reader[ColumnNames.IfActive].ToString().Equals("1") ? true : false;
 
             if (namesField.Contains(ColumnNames.IfConfiguration))
-                membership.IfConfiguration = Convert.ToBoolean(reader[ColumnNames.IfConfiguration].ToString());
+                membership.IfConfiguration = reader[ColumnNames.IfConfiguration].ToString().Equals("1") ? true : false;
 
             if (namesField.Contains(ColumnNames.Filter))
                 membership.Filter = reader[ColumnNames.Filter].ToString();
 
             if (namesField.Contains(ColumnNames.IfActiveConfiguration))
-                membership.IfActiveConfiguration = Convert.ToBoolean(reader[ColumnNames.IfActiveConfiguration].ToString());
+                membership.IfActiveConfiguration = reader[ColumnNames.IfActiveConfiguration].ToString().Equals("1") ? true : false;
 
             if (namesField.Contains(ColumnNames.IfAsOneApplication))
-                membership.IfAsOneApplication = Convert.ToBoolean(reader[ColumnNames.IfAsOneApplication].ToString());
+                membership.IfAsOneApplication = reader[ColumnNames.IfAsOneApplication].ToString().Equals("1") ? true : false;
 
             return membership;
         }

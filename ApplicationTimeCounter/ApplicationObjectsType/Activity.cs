@@ -1,7 +1,7 @@
 ﻿using System;
-using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace ApplicationTimeCounter.ApplicationObjectsType
 {
@@ -20,7 +20,7 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
             Date = string.Empty;
         }
 
-        public static Activity GetActivityFromReader(MySqlDataReader reader)
+        public static Activity GetActivityFromReader(SqlDataReader reader)
         {
             List<string> namesField = new List<string>();
             for (int i = 0; i < reader.FieldCount; i++)

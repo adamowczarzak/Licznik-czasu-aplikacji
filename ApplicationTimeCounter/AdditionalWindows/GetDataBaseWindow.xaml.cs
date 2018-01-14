@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Data.Sql;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+
 
 namespace ApplicationTimeCounter
 {
@@ -17,18 +19,18 @@ namespace ApplicationTimeCounter
             CanRunApplication = false;
         }
 
-
         private void acceptButton_Click(object sender, RoutedEventArgs e)
         {
             if(CheckIfGiveDataIsCorrect())
             {
-                if (DataBase.TryConnectToMySql(nameUser.Text, password.Password))
+                if (DataBase.TryConnectToMySql(nameServer.Text, nameUser.Text, password.Password))
                 {
                     if (DataBase.ConnectToDataBase())
                     {
                         DataBase.CloseConnection();
                         using (System.IO.StreamWriter file = new System.IO.StreamWriter("Config.file", true))
                         {
+                            file.WriteLine(nameServer.Text);
                             file.WriteLine(nameUser.Text);
                             file.WriteLine(password.Password);
                         }
@@ -61,18 +63,11 @@ namespace ApplicationTimeCounter
         private bool CheckIfGiveDataIsCorrect()
         {
             bool dateCorrect = true;
-
-            if (string.IsNullOrEmpty(nameUser.Text))
+            if (string.IsNullOrEmpty(nameServer.Text))
             {
-                nameUser.Background = Brushes.Red;
+                nameServer.Background = Brushes.Red;
                 dateCorrect = false;
-            }
-
-            if (string.IsNullOrEmpty(password.Password))
-            {
-                password.Background = Brushes.Red;
-                dateCorrect = false;
-            }
+            }         
             BuildAndDisplayMessage();
             return dateCorrect;
         }
@@ -81,25 +76,21 @@ namespace ApplicationTimeCounter
         private void BuildAndDisplayMessage()
         {
             loginMessages.Foreground = Brushes.Coral;
-            if (nameUser.Background == Brushes.Red && password.Background == Brushes.Red)
-                loginMessages.Text = "Podaj Użytkownika oraz Hasło do połączenia.";
 
-            else if (nameUser.Background == Brushes.Red && password.Background != Brushes.Red)
-                loginMessages.Text = "Podaj Użytkownika do połączenia.";
+            if (nameUser.Background != Brushes.Red && nameServer.Background == Brushes.Red)
+                loginMessages.Text = "Podaj Server do połączenia.";
 
-            else if (nameUser.Background != Brushes.Red && password.Background == Brushes.Red)
-                loginMessages.Text = "Podaj Hasło do połączenia.";
-          
-            else if(nameUser.Background != Brushes.Red && password.Background != Brushes.Red)
+            else if (nameUser.Background != Brushes.Red && nameServer.Background != Brushes.Red)
                 loginMessages.Text = "";
                 
         }
 
         private void BuildAndDisplayMessageErrorConnectToMySql()
         {
-            loginMessages.Text = "Połączenie z MySql nie powiodło się, Nazwa Użytkownika lub Hasło jest nie prawidłowe.";
+            loginMessages.Text = "Połączenie z Sql nie powiodło się, Nazwa Serwera, Użytkownik lub Hasło jest nie prawidłowe.";
             loginMessages.Foreground = Brushes.Coral;
-            nameUser.Background =Brushes.Red;
+            nameServer.Background = Brushes.Red;
+            nameUser.Background = Brushes.Red;
             password.Background = Brushes.Red;
         }
 
@@ -111,35 +102,44 @@ namespace ApplicationTimeCounter
 
         private void nameUser_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            SetMessgesAndTextBox(nameTextBox:nameUser);
+            SetMessgesAndTextBox();
         }
 
         private void nameUser_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            SetMessgesAndTextBox(nameTextBox: nameUser);
+            SetMessgesAndTextBox();
         }
 
-        private void password_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void nameServer_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            SetMessgesAndTextBox(namePasswordBox: password);
+            SetMessgesAndTextBox(nameServerBox: nameServer);
+        }
+
+        private void nameServer_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SetMessgesAndTextBox(nameServerBox: nameServer);
         }
 
         private void password_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            SetMessgesAndTextBox(namePasswordBox:password);
+            SetMessgesAndTextBox();
         }
 
-        private void SetMessgesAndTextBox(TextBox nameTextBox = null, PasswordBox namePasswordBox = null)
+
+        private void password_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SetMessgesAndTextBox();
+        }
+
+        private void SetMessgesAndTextBox(TextBox nameServerBox = null)
         {
             BrushConverter bc = new BrushConverter();
-            if (nameTextBox != null)       
-                nameTextBox.Background = (Brush)bc.ConvertFrom("#007BFF");
+            if (nameServerBox != null)
+                nameServerBox.Background = (Brush)bc.ConvertFrom("#007BFF");
 
-            if(namePasswordBox != null)
-                namePasswordBox.Background = (Brush)bc.ConvertFrom("#007BFF");
-
-                BuildAndDisplayMessage();
-            
+            nameUser.Background = (Brush)bc.ConvertFrom("#007BFF");
+            password.Background = (Brush)bc.ConvertFrom("#007BFF");
+            BuildAndDisplayMessage();
         }
     }
 }

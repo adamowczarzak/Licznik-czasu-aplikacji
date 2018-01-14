@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
-using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using ApplicationTimeCounter.Other;
 using ApplicationTimeCounter.ApplicationObjectsType;
+using System.Data.SqlClient;
 
 namespace ApplicationTimeCounter
 {
     public static class ActiveApplication_db
     {
 
-        private static MySqlCommand command = new MySqlCommand();
+        private static SqlCommand command = new SqlCommand();
 
         public static string GetAllNotAssignedApplication()
         {
@@ -135,14 +135,14 @@ namespace ApplicationTimeCounter
             {
                 command.Connection = DataBase.Connection;
                 command.CommandText = query;
-                MySqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     try
                     {
                         activeApplications.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
                     }
-                    catch (MySqlException message)
+                    catch (SqlException message)
                     {
                         ApplicationLog.LogService.AddRaportCatchException("Error!!!\tZapytanie nie zwróciło żadnej wartości.", message);
                     }
