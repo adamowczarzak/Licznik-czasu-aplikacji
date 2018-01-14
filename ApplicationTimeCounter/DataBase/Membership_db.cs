@@ -86,9 +86,9 @@ namespace ApplicationTimeCounter
                  return allGroups;
         }
 
-        public static Dictionary<string, string> GetNameGroupsDictionary()
+        public static Dictionary<string, string> GetNameGroupsDictionaryIfIsActive()
         {
-            string contentCommand = "SELECT Id, Title FROM membership";
+            string contentCommand = "SELECT Id, Title FROM membership WHERE Active = 1";
             Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
             return nameGroups;
         }

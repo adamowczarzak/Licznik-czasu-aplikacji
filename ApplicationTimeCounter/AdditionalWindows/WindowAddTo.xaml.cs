@@ -69,7 +69,7 @@ namespace ApplicationTimeCounter
 
             Dictionary<string, string> names = new Dictionary<string,string>();
             if (addTo == AddTo.Activity) names = NameActivity_db.GetNameActivityDictionary();
-            else if (addTo == AddTo.Group) names = Membership_db.GetNameGroupsDictionary();
+            else if (addTo == AddTo.Group) names = Membership_db.GetNameGroupsDictionaryIfIsActive();
             
             int nextIndex = 0;
             foreach (KeyValuePair<string, string> name in names)

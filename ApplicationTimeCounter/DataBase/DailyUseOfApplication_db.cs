@@ -187,11 +187,6 @@ namespace ApplicationTimeCounter
                     }
                 }
             }
-
-            // sprawdzamy czy tytuł aplikacji pasuje do którego kolwiek z aktywnego filtru i aktywnej grupy
-            // - pobieramy aktywne grupy z aktywną konfiguracja filtra
-            // - sprawdzamy po każdym z filtrze
-            //
         }
 
         private void UpDateTimeThisTitle()
