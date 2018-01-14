@@ -44,6 +44,7 @@ namespace ApplicationTimeCounter
 
             GetAllNotJoinedApplication();
             GetAllGroups();
+            GetAllConfiguredGroups();
 
         }
 
@@ -191,6 +192,11 @@ namespace ApplicationTimeCounter
         private void GetAllGroups()
         {
             numberGroups.SetContent(Membership_db.GetNumberAllGroups());
+        }
+
+        private void GetAllConfiguredGroups()
+        {
+            numberOfConfiguredGroups.SetContent(Membership_db.GetNumberAllConfiguredGroups());
         }
 
         private void SetColorLabel(int value, MyLabel label)

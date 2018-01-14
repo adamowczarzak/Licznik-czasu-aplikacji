@@ -42,6 +42,12 @@ namespace ApplicationTimeCounter
             return DataBase.GetListStringFromExecuteReader(contentCommand, "numberGroups")[0];
         }
 
+        public static string GetNumberAllConfiguredGroups()
+        {
+            string contentCommand = "SELECT COUNT(*) AS numberGroups FROM membership WHERE Configuration = 1";
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "numberGroups")[0];
+        }
+
         public static List<Membership> GetAllGroups(CommandParameters parameters)
         {
             List<Membership> allGroups = new List<Membership>();
