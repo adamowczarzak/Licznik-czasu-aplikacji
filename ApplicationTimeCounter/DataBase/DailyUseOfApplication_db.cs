@@ -1,6 +1,9 @@
-﻿using System;
+﻿using ApplicationTimeCounter.ApplicationObjectsType;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace ApplicationTimeCounter
 {
@@ -168,6 +171,22 @@ namespace ApplicationTimeCounter
                 "SELECT activeapplications.ID, 1 " +
                 "FROM activeapplications WHERE activeapplications.Title = " + nameTitle;
             DataBase.ExecuteNonQuery(contentCommand);
+
+            Dictionary<string, string> filters = Membership_db.GetFilterDictionaryIfIsFullConfiguration();
+            if (filters.Any())
+            {
+                Regex regex;
+                List<int> idNameTitle = new List<int>();
+                foreach (KeyValuePair<string, string> filter in filters)
+                {
+                    regex = new Regex(filter.Value, RegexOptions.IgnoreCase);
+                    if (regex.Matches(nameTitle).Count > 0)
+                    {
+                        idNameTitle.Add(Convert.ToInt32(ActiveApplication_db.GetIdActivityByName(nameTitle)));
+                        ActiveApplication_db.AddGroupToApplications(idNameTitle, (filter.Key).ToString());
+                    }
+                }
+            }
 
             // sprawdzamy czy tytuł aplikacji pasuje do którego kolwiek z aktywnego filtru i aktywnej grupy
             // - pobieramy aktywne grupy z aktywną konfiguracja filtra

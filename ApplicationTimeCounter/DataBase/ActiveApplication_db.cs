@@ -206,5 +206,16 @@ namespace ApplicationTimeCounter
                 + idGroup + " AND AutoGrouping = 1";
             return DataBase.GetListStringFromExecuteReader(contentCommand, "AutoGroupingApplication")[0];
         }
+
+        /// <summary>
+        /// Metoda tylko dla szukania id aktywności dopiero co dodanej.
+        /// </summary>
+        /// <param name="name">Tytuł szukaniej aktywności.</param>
+        /// <returns></returns>
+        public static string GetIdActivityByName(string name)
+        {
+            string contentCommand = "SELECT Id from activeapplications WHERE Title = " + name;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "Id")[0];
+        }
     }
 }

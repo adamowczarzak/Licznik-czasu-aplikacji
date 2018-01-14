@@ -13,6 +13,9 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
         public string ActivityTimeTo { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        public string IfActive { get; set; }
+        public string IfConfiguration { get; set; }
+        public string IfActiveConfiguration { get; set; }
 
         public CommandParameters()
         {
@@ -22,6 +25,9 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
             ActivityTimeTo = string.Empty;
             StartDate = string.Empty;
             EndDate = string.Empty;
+            IfActive = string.Empty;
+            IfConfiguration = string.Empty;
+            IfActiveConfiguration = string.Empty;
         }
 
         public static string CheckParameters(CommandParameters parameters)
@@ -43,6 +49,13 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
                 query += SqlValidator.AND + ColumnNames.Date + SqlValidator.FromValue + parameters.StartDate;
             if (string.IsNullOrEmpty(parameters.StartDate) && !string.IsNullOrEmpty(parameters.EndDate))
                 query += SqlValidator.AND + ColumnNames.Date + SqlValidator.ToValue + parameters.EndDate;
+
+            if (!string.IsNullOrEmpty(parameters.IfActive))
+                query += SqlValidator.AND + ColumnNames.IfActive + SqlValidator.ToValue + parameters.IfActive;
+            if (!string.IsNullOrEmpty(parameters.IfConfiguration))
+                query += SqlValidator.AND + ColumnNames.IfConfiguration + SqlValidator.ToValue + parameters.IfConfiguration;
+            if (!string.IsNullOrEmpty(parameters.IfActiveConfiguration))
+                query += SqlValidator.AND + ColumnNames.IfActiveConfiguration + SqlValidator.ToValue + parameters.IfActiveConfiguration;
 
             return query;
         }

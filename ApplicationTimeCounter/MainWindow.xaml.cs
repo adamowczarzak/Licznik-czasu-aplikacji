@@ -41,11 +41,10 @@ namespace ApplicationTimeCounter
                 interfaceApplication = new InterfaceApplication();
                 counter = new Counter();
                 viewContent = new ViewContent();
-                homeForm = new HomeForm(contentPage, ref viewContent);
                 categoryForm = new CategoryForm(contentPage, ref viewContent);
+                homeForm = new HomeForm(contentPage, ref viewContent);               
                 notifyIcon = new IconInTaskbar(ref mainWindow, ref homeForm);
                 activity = new ActivityUser();
-
 
                 if (activity.CheckIfIsNextDay() == true)
                 {

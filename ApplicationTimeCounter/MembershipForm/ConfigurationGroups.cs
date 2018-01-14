@@ -61,7 +61,7 @@ namespace ApplicationTimeCounter
         {          
             Dictionary<string, string> namesGroup = Membership_db.GetNameGroupsDictionaryWithConfiguration();
             int nextIndex = 0;
-            contentCanvas.Height = 0;
+            contentCanvas.Height = 316;
             foreach (KeyValuePair<string, string> name in namesGroup)
             {
                 Label group = ButtonCreator.CreateButton(contentCanvas, name.Value, 250, 29, 12, 20, 0 + (nextIndex * 32),
@@ -295,6 +295,7 @@ namespace ApplicationTimeCounter
             chooseGroupCanvas.Height = 126;
 
             contentsOfFilter.Visibility = System.Windows.Visibility.Hidden;
+            contentsOfFilter.Text = string.Empty;
             addFiltrAccept.Visibility = System.Windows.Visibility.Hidden;
             applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
             resultsApplyFilter.Visibility = System.Windows.Visibility.Hidden;
@@ -406,6 +407,7 @@ namespace ApplicationTimeCounter
             {
                 Membership_db.DeleteFilterToConfiguration(selectGroupId);
                 contentsOfFilter.Visibility = System.Windows.Visibility.Hidden;
+                contentsOfFilter.Text = string.Empty;
                 addFiltrAccept.Visibility = System.Windows.Visibility.Hidden;
             }
         }
@@ -456,6 +458,7 @@ namespace ApplicationTimeCounter
                     addFiltrPlus.Visibility = System.Windows.Visibility.Visible;
                     addFiltrButton.Visibility = System.Windows.Visibility.Visible;
                     contentsOfFilter.Visibility = System.Windows.Visibility.Hidden;
+                    contentsOfFilter.Text = string.Empty;
                     addFiltrAccept.Visibility = System.Windows.Visibility.Hidden;
                     applyFilterButton.Visibility = System.Windows.Visibility.Hidden;
                 }

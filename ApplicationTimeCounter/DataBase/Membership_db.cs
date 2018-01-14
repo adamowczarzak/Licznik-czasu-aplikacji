@@ -127,6 +127,13 @@ namespace ApplicationTimeCounter
             return nameGroups;
         }
 
+        public static Dictionary<string, string> GetFilterDictionaryIfIsFullConfiguration()
+        {
+            string contentCommand = "SELECT Id, Filter FROM membership WHERE Configuration = 1 AND Active = 1 AND ActiveConfiguration = 1 AND Filter IS NOT NULL";
+            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Filter");
+            return nameGroups;
+        }
+
         public static bool AddFilterToConfiguration(int idGroup, string filter)
         {
             string contentCommand = "UPDATE membership SET Filter = " + SqlValidator.Validate(filter)

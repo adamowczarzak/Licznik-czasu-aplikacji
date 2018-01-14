@@ -89,7 +89,7 @@ namespace ApplicationTimeCounter
             Application.Current.Dispatcher.Invoke(() => {
 
             activationGroup = new Image[allGroups.Count];
-
+            contentCanvas.Height = 310;
             for (int i = 0; i < allGroups.Count; i++)
             {
                 new MyRectangle(contentCanvas, 600, 40, Color.FromArgb((byte)(50 + (i % 2 * 30)), 0, 125, 255), 0, i * 39, 2).SetStroke(Color.FromArgb(255, 30, 39, 93));
