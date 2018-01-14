@@ -208,7 +208,7 @@ namespace ApplicationTimeCounter
         }
 
         /// <summary>
-        /// Metoda tylko dla szukania id aktywności dopiero co dodanej.
+        /// Metoda tylko dla szukania id aktywności, brak w metodzie walidacji SQL.
         /// </summary>
         /// <param name="name">Tytuł szukaniej aktywności.</param>
         /// <returns></returns>
@@ -216,6 +216,24 @@ namespace ApplicationTimeCounter
         {
             string contentCommand = "SELECT Id from activeapplications WHERE Title = " + name;
             return DataBase.GetListStringFromExecuteReader(contentCommand, "Id")[0];
+        }
+
+        public static string GetNameGroupByIdTitle(int idTitle)
+        {
+            string contentCommand = "SELECT membership.Title as nameGroup from activeapplications " +
+                " INNER JOIN membership ON membership.Id = activeapplications.IdMembership " +
+                " WHERE activeapplications.Id = " + idTitle;
+            if (DataBase.GetListStringFromExecuteReader(contentCommand, "nameGroup").Any())
+                return DataBase.GetListStringFromExecuteReader(contentCommand, "nameGroup")[0];
+            else return "Brak";
+        }
+
+        public static string GetNameActivityByIdTitle(int idTitle)
+        {
+            string contentCommand = "SELECT nameactivity.NameActivity as nameActivity from activeapplications " +
+                " INNER JOIN nameactivity ON nameactivity.Id = activeapplications.IdNameActivity " +
+                " WHERE activeapplications.Id = " + idTitle;
+            return DataBase.GetListStringFromExecuteReader(contentCommand, "nameActivity")[0];
         }
     }
 }
