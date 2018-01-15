@@ -40,6 +40,7 @@ namespace ApplicationTimeCounter
         public void Update()
         {
             int[] tableTime = new int[4];
+            int[] tableTime_copy = new int[4];
             List<int> numbers = new List<int>();
             numbers.Add(2);
             for (int i = 0; i < 4; i++) tableTime[i] = 0;
@@ -52,10 +53,20 @@ namespace ApplicationTimeCounter
             int sum = 0;
             for (int i = 0; i < 4; i++) sum += tableTime[i];
             for (int i = 0; i < 4; i++)
-            {               
+            {
+                tableTime_copy[i] = tableTime[i];
                 if(sum > 0)tableTime[i] = Convert.ToInt32(Math.Round(ActionOnNumbers.DivisionD(tableTime[i], sum)* 100));
                 UpdateSegment(i, tableTime[i]);
-            }         
+            }  
+            if(tableTime[0] + tableTime[1] + tableTime[2] + tableTime[3] != 100)
+            {
+                string s = "Dzienna aktywność" + Environment.NewLine + tableTime[0] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[0], sum) * 100 + Environment.NewLine
+                    + tableTime[1] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[1], sum) * 100 + Environment.NewLine
+                    + tableTime[2] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[2], sum) * 100 + Environment.NewLine
+                    + tableTime[3] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[3], sum) * 100 + Environment.NewLine
+                    + "---------------------------- " + sum + Environment.NewLine + Environment.NewLine;
+                ApplicationLog.LogService.AddRaportInformation(s);
+            }
         }
 
         private void CreateSegmentSpendingTime(Canvas canvas , Color color, int indexNameBarsGraph,

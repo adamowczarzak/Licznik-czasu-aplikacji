@@ -16,7 +16,7 @@ namespace ApplicationTimeCounter
             }
             else
             {
-                if (LoadConfigFileAndTryConnectMySql())
+                if (LoadConfigFileAndTryConnectSql())
                 {
                     if (DataBase.ConnectToDataBase())
                     {
@@ -33,7 +33,7 @@ namespace ApplicationTimeCounter
                 else
                 {
                     ErrorWindow errorWindow = new ErrorWindow();
-                    errorWindow.DisplayErrorConnectToMySql();
+                    errorWindow.DisplayErrorConnectToSql();
                     errorWindow.ShowDialog();
                 }
             }   
@@ -44,7 +44,7 @@ namespace ApplicationTimeCounter
             return runApllication;
         }
 
-        private bool LoadConfigFileAndTryConnectMySql()
+        private bool LoadConfigFileAndTryConnectSql()
         {
             string nameServer = string.Empty;
             string nameUser = string.Empty;
@@ -68,7 +68,7 @@ namespace ApplicationTimeCounter
                 isLoadAndConnect = false;
             }
             if(isLoadAndConnect)
-                isLoadAndConnect = DataBase.TryConnectToMySql(nameServer, nameUser, password);
+                isLoadAndConnect = DataBase.TryConnectToSql(nameServer, nameUser, password);
             return isLoadAndConnect;
         }
     }

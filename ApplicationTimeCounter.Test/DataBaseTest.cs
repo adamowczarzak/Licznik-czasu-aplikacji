@@ -1,9 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using System.Data;
-using MySql.Data;
-using MySql.Data.MySqlClient;
 using System.Linq;
 
 using System.Runtime.CompilerServices;
@@ -17,9 +14,9 @@ namespace ApplicationTimeCounter.Test
 
 
         [TestMethod]
-        public void Test_GetMySqlConnection()
+        public void Test_GetSqlConnection()
         {           
-            //DataBase.GetMySqlConnection();
+            //DataBase.GetSqlConnection();
             Assert.IsNotNull(DataBase.Connection);
         }
 
@@ -40,11 +37,11 @@ namespace ApplicationTimeCounter.Test
         {
             int addTime = 30;
             dataBase.NameTitle = "'Brak aktywnego okna'";
-            dataBase.command = new MySqlCommand();
+            dataBase.command = new SqlCommand();
             dataBase.command.Connection = dataBase.connection;
             dataBase.ConnectToDataBase();
             dataBase.command.CommandText = "SELECT ActivityTime from dailyuseofapplication WHERE Title = " + dataBase.NameTitle;
-            MySqlDataReader reader = dataBase.command.ExecuteReader();
+            SqlDataReader reader = dataBase.command.ExecuteReader();
             int actual = 0;
             int expected = 0;
             while (reader.Read())
@@ -78,14 +75,14 @@ namespace ApplicationTimeCounter.Test
                             .ToArray());
 
             dataBase.NameTitle = "'" + result.ToString() + "'";
-            dataBase.command = new MySqlCommand();
+            dataBase.command = new SqlCommand();
             dataBase.command.Connection = dataBase.connection;
             dataBase.ConnectToDataBase();
             dataBase.AddNameTitleToTableTitles();
 
             string actual = "";
             dataBase.command.CommandText = "SELECT Title from dailyuseofapplication WHERE Title = " + dataBase.NameTitle;
-            MySqlDataReader reader = dataBase.command.ExecuteReader();
+            SqlDataReader reader = dataBase.command.ExecuteReader();
             while (reader.Read())
             {
                 actual = reader[0].ToString();

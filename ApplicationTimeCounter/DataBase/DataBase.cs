@@ -128,7 +128,7 @@ namespace ApplicationTimeCounter
             return dictionary;
         }
 
-        static private void GetMySqlConnection()
+        static private void GetSqlConnection()
         {
             string myConnectionString = "user id= " + DataBase.userName + ";password=" + DataBase.password + ";" +
                                         "server=" + DataBase.serverName + ";database= applicationtimecounter;Trusted_Connection=yes;";
@@ -152,13 +152,13 @@ namespace ApplicationTimeCounter
         }
 
         /// <summary>
-        /// Metoda sprawdza czy nazwa użytkownika i hasło poznawają połączyć się z mysql.
+        /// Metoda sprawdza czy nazwa użytkownika i hasło poznawają połączyć się z sql.
         /// </summary>
         /// <param name="serverName"> Nazwa servera.</param>
         /// <param name="userName"> Nazwa użytkownika.</param>
         /// <param name="password"> Hasło użytkownika.</param>
         /// <returns></returns>
-        static public bool TryConnectToMySql(string serverName, string userName, string password)
+        static public bool TryConnectToSql(string serverName, string userName, string password)
         {
             DataBase.serverName = serverName;
             DataBase.userName = userName;
@@ -174,7 +174,7 @@ namespace ApplicationTimeCounter
             {
                 testConnection.Close();
                 isOpenConnection = false;
-                GetMySqlConnectionAndTryCreateDataBaseAndTableIfNotExist();
+                GetSqlConnectionAndTryCreateDataBaseAndTableIfNotExist();
             }
 
             return isConnection;
@@ -201,9 +201,9 @@ namespace ApplicationTimeCounter
         }
 
         /// <summary>
-        /// Pobieranie połącznienia do bazy MySql oraz tworzenie tabel jeśli nie istnieją.
+        /// Pobieranie połącznienia do bazy Sql oraz tworzenie tabel jeśli nie istnieją.
         /// </summary>
-        static private void GetMySqlConnectionAndTryCreateDataBaseAndTableIfNotExist()
+        static private void GetSqlConnectionAndTryCreateDataBaseAndTableIfNotExist()
         {
             string myConnectionString = "user id= " + DataBase.userName + ";password=" + DataBase.password + ";" +
                                         "server=" + DataBase.serverName + ";Trusted_Connection=yes;";
@@ -218,7 +218,7 @@ namespace ApplicationTimeCounter
             ExecuteNonQuery(command);
             testConnection.Close();
 
-            GetMySqlConnection();
+            GetSqlConnection();
             ConnectToDataBase();
 
             addDateFirstStartApplication = CheckIfExistTable("alldate", command);

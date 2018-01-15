@@ -23,7 +23,7 @@ namespace ApplicationTimeCounter
         {
             if(CheckIfGiveDataIsCorrect())
             {
-                if (DataBase.TryConnectToMySql(nameServer.Text, nameUser.Text, password.Password))
+                if (DataBase.TryConnectToSql(nameServer.Text, nameUser.Text, password.Password))
                 {
                     if (DataBase.ConnectToDataBase())
                     {
@@ -46,7 +46,7 @@ namespace ApplicationTimeCounter
                 else
                 {
                     CanRunApplication = false;
-                    BuildAndDisplayMessageErrorConnectToMySql();
+                    BuildAndDisplayMessageErrorConnectToSql();
                 }
             }
         }
@@ -85,7 +85,7 @@ namespace ApplicationTimeCounter
                 
         }
 
-        private void BuildAndDisplayMessageErrorConnectToMySql()
+        private void BuildAndDisplayMessageErrorConnectToSql()
         {
             loginMessages.Text = "Połączenie z Sql nie powiodło się, Nazwa Serwera, Użytkownik lub Hasło jest nie prawidłowe.";
             loginMessages.Foreground = Brushes.Coral;

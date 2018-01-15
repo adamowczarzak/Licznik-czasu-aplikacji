@@ -18,9 +18,9 @@ namespace ApplicationTimeCounter
             System.Windows.Application.Current.Shutdown();
         }
 
-        public void DisplayErrorConnectToMySql()
+        public void DisplayErrorConnectToSql()
         {
-            errorMessages.Text = "Błąd!!!\n\nNie udało się otworzyć połączenia MySql. Spróbuj zresetować ponownie  i wprowadzić Nazwę użytkownika i Hasło.";
+            errorMessages.Text = "Błąd!!!\n\nNie udało się otworzyć połączenia Sql. Spróbuj zresetować ponownie  i wprowadzić Nazwę użytkownika i Hasło.";
             resetButton.Visibility = System.Windows.Visibility.Visible;
         }
 
