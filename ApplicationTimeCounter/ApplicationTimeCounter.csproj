@@ -88,6 +88,8 @@
     <Compile Include="AdditionalWindows\WindowAddTo.xaml.cs">
       <DependentUpon>WindowAddTo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainElements\SettingsForm.cs" />
+    <Compile Include="MainElements\StatisticsForm.cs" />
     <Compile Include="MembershipForm\ConfigurationGroups.cs" />
     <Compile Include="MembershipForm\JoinApplications.cs" />
     <Compile Include="MembershipForm\ShowMemberships.cs" />

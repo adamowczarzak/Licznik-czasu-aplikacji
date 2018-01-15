@@ -56,15 +56,16 @@ namespace ApplicationTimeCounter
             int[] valueTable = new int[4];
             for (int i = 0; i < 4; i++)
             {
-                sum =+ Convert.ToInt32(biggestResults[i, 1]);
+                sum += Convert.ToInt32(biggestResults[i, 1]);
                 valueTable[i] = Convert.ToInt32(biggestResults[i, 1]);
             }
-            if (partOfResults[0] + partOfResults[1] + partOfResults[2] + partOfResults[3] != 1.00 && sum > 0)
+            double allPercent = partOfResults[0] + partOfResults[1] + partOfResults[2] + partOfResults[3];
+            if ((1.00 < allPercent || allPercent < 0.99) && sum > 0)
             {
                 int[] partOfResultsTableInt = ActionOnNumbers.EqualizePercentages(valueTable, sum);
                 for (int i = 0; i < 4; i++)
                 {
-                    UpdateSegment(ActionOnNumbers.DivisionD(partOfResultsTableInt[i], 100), sumpartOfResults, i, biggestResults[i, 0]);
+                    labels[i].SetContent(partOfResultsTableInt[i] + " %");
                 }
 
                 string s = "Największe użycie" + Environment.NewLine + partOfResultsTableInt[0] + " : " + ActionOnNumbers.DivisionD(valueTable[0], sum) * 100 + Environment.NewLine

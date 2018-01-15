@@ -20,6 +20,8 @@ namespace ApplicationTimeCounter
         private ViewContent viewContent;
         private HomeForm homeForm;
         private CategoryForm categoryForm;
+        private StatisticsForm statisticsForm;
+        private SettingsForm settingsForm;
         private ActivityUser activity;
         private RunApplication runApplication;
 
@@ -41,6 +43,8 @@ namespace ApplicationTimeCounter
                 interfaceApplication = new InterfaceApplication();
                 counter = new Counter();
                 viewContent = new ViewContent();
+                settingsForm = new SettingsForm(contentPage, ref viewContent);
+                statisticsForm = new StatisticsForm(contentPage, ref viewContent);
                 categoryForm = new CategoryForm(contentPage, ref viewContent);
                 homeForm = new HomeForm(contentPage, ref viewContent);               
                 notifyIcon = new IconInTaskbar(ref mainWindow, ref homeForm);
@@ -135,6 +139,16 @@ namespace ApplicationTimeCounter
         private void categoryButton_Click(object sender, RoutedEventArgs e)
         {        
             categoryForm.ShowCategoryForm();  
+        }
+
+        private void statisticsButton_Click(object sender, RoutedEventArgs e)
+        {
+            statisticsForm.ShowStatisticsForm();
+        }
+
+        private void settingButton_Click(object sender, RoutedEventArgs e)
+        {
+            settingsForm.ShowSettingsForm();
         }        
     }
 }
