@@ -57,9 +57,16 @@ namespace ApplicationTimeCounter
                 tableTime_copy[i] = tableTime[i];
                 if(sum > 0)tableTime[i] = Convert.ToInt32(Math.Round(ActionOnNumbers.DivisionD(tableTime[i], sum)* 100));
                 UpdateSegment(i, tableTime[i]);
-            }  
-            if(tableTime[0] + tableTime[1] + tableTime[2] + tableTime[3] != 100)
+            }
+
+            if (tableTime[0] + tableTime[1] + tableTime[2] + tableTime[3] != 100 && sum > 0)
             {
+                tableTime = ActionOnNumbers.EqualizePercentages(tableTime_copy, sum);
+                for (int i = 0; i < 4; i++)
+                {
+                    UpdateSegment(i, tableTime[i]);
+                }  
+
                 string s = "Dzienna aktywność" + Environment.NewLine + tableTime[0] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[0], sum) * 100 + Environment.NewLine
                     + tableTime[1] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[1], sum) * 100 + Environment.NewLine
                     + tableTime[2] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[2], sum) * 100 + Environment.NewLine

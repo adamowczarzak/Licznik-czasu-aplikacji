@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ApplicationTimeCounter.Controls;
+using ApplicationTimeCounter.Other;
 
 namespace ApplicationTimeCounter
 {
@@ -50,6 +51,29 @@ namespace ApplicationTimeCounter
                     UpdateSegment(partOfResults[i], sumpartOfResults, i, biggestResults[i, 0]);
                 else labels[i].Opacity(0);
             }
+
+            int sum = 0;
+            int[] valueTable = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                sum =+ Convert.ToInt32(biggestResults[i, 1]);
+                valueTable[i] = Convert.ToInt32(biggestResults[i, 1]);
+            }
+            if (partOfResults[0] + partOfResults[1] + partOfResults[2] + partOfResults[3] != 1.00 && sum > 0)
+            {
+                int[] partOfResultsTableInt = ActionOnNumbers.EqualizePercentages(valueTable, sum);
+                for (int i = 0; i < 4; i++)
+                {
+                    UpdateSegment(ActionOnNumbers.DivisionD(partOfResultsTableInt[i], 100), sumpartOfResults, i, biggestResults[i, 0]);
+                }
+
+                string s = "Największe użycie" + Environment.NewLine + partOfResultsTableInt[0] + " : " + ActionOnNumbers.DivisionD(valueTable[0], sum) * 100 + Environment.NewLine
+                    + partOfResultsTableInt[1] + " : " + ActionOnNumbers.DivisionD(valueTable[1], sum) * 100 + Environment.NewLine
+                    + partOfResultsTableInt[2] + " : " + ActionOnNumbers.DivisionD(valueTable[2], sum) * 100 + Environment.NewLine
+                    + partOfResultsTableInt[3] + " : " + ActionOnNumbers.DivisionD(valueTable[3], sum) * 100 + Environment.NewLine
+                    + "---------------------------- " + sum + Environment.NewLine + Environment.NewLine;
+                ApplicationLog.LogService.AddRaportInformation(s);
+            }
         }
 
         public void Reset()
@@ -76,7 +100,7 @@ namespace ApplicationTimeCounter
         private void CreateSegmentRecordDay(int xLabelLegend, int yLabelLegend, int index)
         {
             MyRectangle colorLegend = new MyRectangle(canvas, 10, 10, nameColor[index], xLabelLegend, yLabelLegend);
-            labelLegend[index] = new MyLabel(canvas, " - ", 65, 25, 10, xLabelLegend + 8, yLabelLegend - 7, Color.FromArgb(255, 47, 79, 79),Color.FromArgb(0, 0, 0, 0),
+            labelLegend[index] = new MyLabel(canvas, " - ", 65, 25, 10, xLabelLegend + 8, yLabelLegend - 7, Color.FromArgb(255, 47, 79, 79), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
             labels[index] = new MyLabel(canvas, "", 40, 25, 10, 0, 0, Color.FromArgb(255, 47, 79, 79), Color.FromArgb(0, 0, 0, 0), horizontalAlignment: HorizontalAlignment.Center);
         }
