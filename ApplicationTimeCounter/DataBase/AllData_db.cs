@@ -150,7 +150,7 @@ namespace ApplicationTimeCounter
                 "INNER JOIN alldate ON alldate.IdTitle = activeapplications.Id " +
                 "WHERE 1 = 1 ";
             query += CommandParameters.CheckParameters(parameters);
-            query += " GROUP BY nameactivity.Id ";
+            query += " GROUP BY nameactivity.Id, nameactivity.NameActivity, alldate.Date ";
             
             if (DataBase.ConnectToDataBase())
             {

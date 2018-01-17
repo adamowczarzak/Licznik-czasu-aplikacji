@@ -50,7 +50,7 @@ namespace ApplicationTimeCounter
 
         private void viewContent_Delegate(System.Windows.Visibility visibility)
         {
-            HiddenOrVisiibleElements(visibility);
+            MainCanvasCategory.Children.RemoveRange(2, MainCanvasCategory.Children.Count - 2);
         }
 
         private void CreateCategoryForm()
@@ -206,20 +206,6 @@ namespace ApplicationTimeCounter
             red = (red > 255) ? 255 : red;
             green = (green < 0) ? 0 : green;
             label.SetFontColor(Color.FromArgb(255, (byte)red, (byte)green, 0));
-        }
-
-        private void HiddenOrVisiibleElements(Visibility visibility)
-        {
-            if (MainCanvasCategory.Children.Count > 2)
-            {
-                foreach(Canvas s in MainCanvasCategory.Children)
-                {
-                    for(int i = 0; i < s.Children.Count; i++)
-                    {
-                        s.Children[i].Visibility = visibility;
-                    }
-                }
-            }
         }
 
         private void buttonConfigurationGroups_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
