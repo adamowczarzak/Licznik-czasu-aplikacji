@@ -66,13 +66,6 @@ namespace ApplicationTimeCounter
                 {
                     UpdateSegment(i, tableTime[i]);
                 }  
-
-                string s = "Dzienna aktywność" + Environment.NewLine + tableTime[0] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[0], sum) * 100 + Environment.NewLine
-                    + tableTime[1] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[1], sum) * 100 + Environment.NewLine
-                    + tableTime[2] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[2], sum) * 100 + Environment.NewLine
-                    + tableTime[3] + " : " + ActionOnNumbers.DivisionD(tableTime_copy[3], sum) * 100 + Environment.NewLine
-                    + "---------------------------- " + sum + Environment.NewLine + Environment.NewLine;
-                ApplicationLog.LogService.AddRaportInformation(s);
             }
         }
 

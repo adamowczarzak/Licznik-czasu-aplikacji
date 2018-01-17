@@ -67,13 +67,6 @@ namespace ApplicationTimeCounter
                 {
                     labels[i].SetContent(partOfResultsTableInt[i] + " %");
                 }
-
-                string s = "Największe użycie" + Environment.NewLine + partOfResultsTableInt[0] + " : " + ActionOnNumbers.DivisionD(valueTable[0], sum) * 100 + Environment.NewLine
-                    + partOfResultsTableInt[1] + " : " + ActionOnNumbers.DivisionD(valueTable[1], sum) * 100 + Environment.NewLine
-                    + partOfResultsTableInt[2] + " : " + ActionOnNumbers.DivisionD(valueTable[2], sum) * 100 + Environment.NewLine
-                    + partOfResultsTableInt[3] + " : " + ActionOnNumbers.DivisionD(valueTable[3], sum) * 100 + Environment.NewLine
-                    + "---------------------------- " + sum + Environment.NewLine + Environment.NewLine;
-                ApplicationLog.LogService.AddRaportInformation(s);
             }
         }
 
