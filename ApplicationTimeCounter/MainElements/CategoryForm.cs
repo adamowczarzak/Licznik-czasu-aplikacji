@@ -33,6 +33,7 @@ namespace ApplicationTimeCounter
         public void ShowCategoryForm()
         {
             viewContent.ChangeContent(MainCanvasCategory);
+            Canvas.SetZIndex(MainCanvasCategory, 1);
             UpdateView();
         }
 
@@ -57,7 +58,6 @@ namespace ApplicationTimeCounter
         {
             MainCanvasCategory = CanvasCreator.CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
             MainCanvasCategory.Opacity = 0;
-            Canvas.SetZIndex(MainCanvasCategory, 0);
 
             CreateCanvasMembershipWithElements();
             CreateCanvasActivityWithElements();

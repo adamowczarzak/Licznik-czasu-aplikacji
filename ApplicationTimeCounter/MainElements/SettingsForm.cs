@@ -24,6 +24,7 @@ namespace ApplicationTimeCounter
         public void ShowSettingsForm()
         {
             viewContent.ChangeContent(MainCanvasSettings);
+            Canvas.SetZIndex(MainCanvasSettings, 1);
             UpdateView();
         }
 
@@ -41,7 +42,6 @@ namespace ApplicationTimeCounter
         {
             MainCanvasSettings = CanvasCreator.CreateCanvas(contentPage, 620, 410, Color.FromArgb(255, 30, 39, 93), 0, 0);
             MainCanvasSettings.Opacity = 0;
-            Canvas.SetZIndex(MainCanvasSettings, 0);
         }
     }
 }

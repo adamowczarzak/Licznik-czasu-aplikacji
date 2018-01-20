@@ -42,7 +42,8 @@ namespace ApplicationTimeCounter
    
         public void ShowHomeForm()
         {                       
-            viewContent.ChangeContent(MainCanvasHome);          
+            viewContent.ChangeContent(MainCanvasHome);
+            Canvas.SetZIndex(MainCanvasHome, 1);
         }
 
         public void UpdateView()
