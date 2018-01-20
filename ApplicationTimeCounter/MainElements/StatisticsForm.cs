@@ -1,9 +1,13 @@
 ﻿using ApplicationTimeCounter.Controls;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
+using System.Diagnostics;
 
 namespace ApplicationTimeCounter
 {
@@ -24,6 +28,13 @@ namespace ApplicationTimeCounter
         private Label buttonChooseTimeInterval;
         private Label buttonGoFilter;
         private TextBox searchingNames;
+        private bool isFilter;
+        private int indexResultFilter;
+        private Stopwatch stopwatch;
+
+        private Dictionary<string, string> titleApplication;
+        private Dictionary<string, string> namesActivity;
+        private Dictionary<string, string> foundList;
 
         private ViewContent viewContent;
         private AllData_db allData_db;
@@ -52,7 +63,8 @@ namespace ApplicationTimeCounter
 
         private void viewContent_Delegate(Visibility visibility)
         {
-
+            filterCanvas.Visibility = Visibility.Hidden;
+            buttonShowFilter.Content = "        Pokaż filtry";
         }
 
         private void CreateStatisticsForm()
@@ -62,7 +74,7 @@ namespace ApplicationTimeCounter
             MainCanvasStatistics.Opacity = 0;
 
             CreateBackground();
-            CreateControlPanel();           
+            CreateControlPanel();
         }
 
         private void CreateControlPanel()
@@ -192,11 +204,77 @@ namespace ApplicationTimeCounter
             filterCanvas.Children.Add(searchingNames);
             searchingNames.PreviewMouseLeftButtonDown += searchingNames_MouseLeftButtonDown;
             searchingNames.LostFocus += searchingNames_LostFocus;
+            searchingNames.PreviewKeyDown += searchingNames_KeyDown;
+            searchingNames.TextChanged += searchingNames_TextChanged;
+        }
+
+        private void GetNameActivityAndTitleApplication()
+        {
+            foundList = new Dictionary<string, string>();
+            stopwatch = new Stopwatch();
+            titleApplication = ActiveApplication_db.GetNameApplicationDictionary();
+            namesActivity = NameActivity_db.GetNameActivityDictionary();
+        }
+
+        private void searchingNames_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (stopwatch.ElapsedMilliseconds > 1000)
+            {
+                if (isFilter)
+                {
+                    if (searchingNames.Text.Length > 3)
+                    {
+                        if (stopwatch.IsRunning)
+                        {
+                            foundList.Clear();
+                            string regexString = searchingNames.Text.Trim();
+                            Regex regex = new Regex(regexString, RegexOptions.IgnoreCase);
+                            Dictionary<string, string> tempDictionary;
+                            if (ifActivity.Visibility == Visibility.Visible)
+                                tempDictionary = namesActivity;
+                            else tempDictionary = titleApplication;
+
+                            foreach (KeyValuePair<string, string> name in tempDictionary)
+                            {
+                                if (regex.Matches(name.Value).Count > 0)
+                                {
+                                    if (!foundList.Any()) searchingNames.Text = name.Value;
+                                    if (!foundList.ContainsKey(name.Key))
+                                        foundList.Add(name.Key, name.Value); ;
+                                }
+                            }
+                        }
+                        indexResultFilter = 0;
+                    }
+                }
+            }
+            stopwatch.Restart();
+        }
+
+        private void searchingNames_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Down)
+            {
+                if (indexResultFilter < foundList.Count - 1) indexResultFilter++;
+                isFilter = false;
+                searchingNames.Text = foundList.ElementAt(indexResultFilter).Value;
+            }
+            else if (e.Key == Key.Up)
+            {
+                if (indexResultFilter > 0) indexResultFilter--;
+                isFilter = false;
+                searchingNames.Text = foundList.ElementAt(indexResultFilter).Value;
+            }
+            else
+            {
+                isFilter = true;
+            }
         }
 
         private void GoFilter(object sender, MouseButtonEventArgs e)
         {
-
+            stopwatch.Reset();
         }
 
         private void ChooseTimeInterval(object sender, MouseButtonEventArgs e)
@@ -229,6 +307,7 @@ namespace ApplicationTimeCounter
             {
                 (sender as Label).Content = "       Ukryj Filtr";
                 ShowHideFilter(Visibility.Visible);
+                GetNameActivityAndTitleApplication();
             }
         }
 
@@ -256,7 +335,7 @@ namespace ApplicationTimeCounter
                 ifTitleApplication.Visibility = System.Windows.Visibility.Hidden;
                 (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
                 buttonChooseTitleApplication.Foreground = new SolidColorBrush(Color.FromArgb(255, 205, 205, 205));
-                
+
             }
             else
             {
@@ -316,6 +395,7 @@ namespace ApplicationTimeCounter
         {
             MainCanvasStatistics.Focusable = true;
             MainCanvasStatistics.Focus();
+            stopwatch.Reset();
         }
     }
 }

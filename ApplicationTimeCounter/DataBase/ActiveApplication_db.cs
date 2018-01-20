@@ -188,6 +188,12 @@ namespace ApplicationTimeCounter
             return activeApplication.OrderBy(x => x.Date).Reverse().ToList();
         }
 
+        public static Dictionary<string, string> GetNameApplicationDictionary()
+        {
+            string contentCommand = "SELECT Id, Title FROM activeapplications";
+            return DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
+        }
+
         public static Dictionary<string, string> GetNameApplicationDictionaryWithoutGroup()
         {
             string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership IS NULL";
