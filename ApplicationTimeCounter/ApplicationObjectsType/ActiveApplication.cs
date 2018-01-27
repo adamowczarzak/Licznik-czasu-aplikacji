@@ -12,7 +12,7 @@ namespace ApplicationTimeCounter
         public int ActivityTime { get; set; }
         public string Date { get; set; }
         public string NameActivity { get; set; }
-        public IdNameActivityEnum IdNameActivity { get; set; }
+        public int IdNameActivity { get; set; }
         public int IdMembership { get; set; }
         public bool IfAutoGrouping { get; set; }
 
@@ -23,17 +23,9 @@ namespace ApplicationTimeCounter
             ActivityTime = 0;
             Date = string.Empty;
             NameActivity = string.Empty;
-            IdNameActivity = IdNameActivityEnum.NonActive;
+            IdNameActivity = (int)IdNameActivityEnum.NonActive;
             IdMembership = 0;
             IfAutoGrouping = false;
-        }
-
-        public enum IdNameActivityEnum : int
-        {
-            NonActive = 0,
-            Lack = 1,
-            Programming = 2,
-            Other = 3
         }
 
         public static ActiveApplication GetActiveApplicationFromReader(SqlDataReader reader)
@@ -49,11 +41,17 @@ namespace ApplicationTimeCounter
             if (namesField.Contains(ColumnNames.Title))
                 activeApplication.Title = reader[ColumnNames.Title].ToString();
 
+            if (namesField.Contains(ColumnNames.ActivityTime))
+                activeApplication.ActivityTime = Int32.Parse(reader[ColumnNames.ActivityTime].ToString());
+
+            if (namesField.Contains(ColumnNames.Date))
+                activeApplication.Date = reader[ColumnNames.Date].ToString();
+
             if (namesField.Contains(ColumnNames.NameActivity))
                 activeApplication.NameActivity = reader[ColumnNames.NameActivity].ToString();
 
             if (namesField.Contains(ColumnNames.IdNameActivity))
-                activeApplication.IdNameActivity = (ActiveApplication.IdNameActivityEnum)(Int32.Parse((reader[ColumnNames.IdNameActivity]).ToString()));
+                activeApplication.IdNameActivity = (Int32.Parse((reader[ColumnNames.IdNameActivity]).ToString()));
             
             if (namesField.Contains(ColumnNames.IdMembership))
             {

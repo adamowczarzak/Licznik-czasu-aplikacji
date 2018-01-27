@@ -70,5 +70,38 @@ namespace ApplicationTimeCounter.Other
             else returnValue = wynik.Days.ToString() + " dni temu";
             return returnValue;
         }
+
+        public static string[] GetTimeInterwal(int index)
+        {
+            string[] date = new string[2];
+
+            if (index == 0)
+            {
+                date[0] = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+                date[1] = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else if (index == 1)
+            {
+                date[0] = DateTime.Now.AddDays(-3).ToString("yyyy-MM-dd");
+                date[1] = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else if (index == 2)
+            {
+                date[0] = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
+                date[1] = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else if (index == 3)
+            {
+                date[0] = DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd");
+                date[1] = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            else if (index == 4)
+            {
+                date[0] = DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd");
+                date[1] = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+
+            return date;
+        }
     }
 }

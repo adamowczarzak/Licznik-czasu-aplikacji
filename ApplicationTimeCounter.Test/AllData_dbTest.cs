@@ -15,8 +15,8 @@ namespace ApplicationTimeCounter.Test
             RunApplication runApplication = new RunApplication();
             AllData_db allData_db = new AllData_db();
             CommandParameters commandParameters = new CommandParameters();
-            commandParameters.StartDate = "2017-07-15";
-            commandParameters.EndDate= "2017-11-26";
+            commandParameters.StartDate = "2018-01-13";
+            commandParameters.EndDate= "2018-01-10";
 
             List<Activity> dailyActivity = allData_db.GetDailyActivity(commandParameters);
             Assert.IsNotNull(dailyActivity);

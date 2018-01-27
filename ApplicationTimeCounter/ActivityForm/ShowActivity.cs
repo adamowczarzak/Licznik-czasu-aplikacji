@@ -10,6 +10,7 @@ using System.Linq;
 using ApplicationTimeCounter.Controls;
 using ApplicationTimeCounter.Other;
 using ApplicationTimeCounter.AdditionalWindows;
+using ApplicationTimeCounter.ApplicationObjectsType;
 
 namespace ApplicationTimeCounter
 {
@@ -272,8 +273,8 @@ namespace ApplicationTimeCounter
 
         private void UpdateListOfAddedApps()
         {
-            ActiveApplication parameters = new ActiveApplication();
-            parameters.NameActivity = namesActivity[index];
+            CommandParameters parameters = new CommandParameters();
+            parameters.Name.Add(namesActivity[index]);
             List<ActiveApplication> activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
             if (activeApplication.Count > 100)
                 activeApplication.RemoveRange(0, activeApplication.Count - 100);
@@ -477,7 +478,7 @@ namespace ApplicationTimeCounter
         {
             if (nameActivity.Visibility == Visibility.Visible)
             {
-                if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+                if (viewActivityID != (int)IdNameActivityEnum.Programming)
                 {
                     isOnlyEditMode = true;
                     SetEditModeActivity();
@@ -618,7 +619,7 @@ namespace ApplicationTimeCounter
         {
             if (nameActivity.Visibility == Visibility.Visible)
             {
-                if (viewActivityID != (int)ActiveApplication.IdNameActivityEnum.Programming)
+                if (viewActivityID != (int)IdNameActivityEnum.Programming)
                 {
                     DialogWindow dialogWindow = new DialogWindow(DialogWindowsState.YesCancel, DialogWindowsMessage.DeleteAcitivty);
                     dialogWindow.CloseWindowCancelButtonDelegate += dialogWindow_CloseWindowCancelButtonDelegate;

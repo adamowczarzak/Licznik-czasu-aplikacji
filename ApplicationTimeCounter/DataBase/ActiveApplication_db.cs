@@ -40,7 +40,7 @@ namespace ApplicationTimeCounter
         public static bool DeleteAllApplicationsWithActivity(int idActivity)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
-                + ((int)ActiveApplication.IdNameActivityEnum.Lack).ToString()
+                + ((int)IdNameActivityEnum.Lack).ToString()
                 + " WHERE IdNameActivity  = " + idActivity;
 
             if (!DataBase.ExecuteNonQuery(contentCommand))
@@ -56,7 +56,7 @@ namespace ApplicationTimeCounter
         public static bool DeleteOneApplicationWithActivity(int idActivity, int idApplication)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
-                + ((int)ActiveApplication.IdNameActivityEnum.Lack).ToString()
+                + ((int)IdNameActivityEnum.Lack).ToString()
                 + " WHERE IdNameActivity  = " + idActivity + " AND ID = " + idApplication;
 
             if (!DataBase.ExecuteNonQuery(contentCommand))
@@ -100,8 +100,8 @@ namespace ApplicationTimeCounter
 
         internal static List<ActiveApplication> GetNonAssignedApplication()
         {
-            ActiveApplication parameters = new ActiveApplication();
-            parameters.IdNameActivity = ActiveApplication.IdNameActivityEnum.Lack;
+            CommandParameters parameters = new CommandParameters();
+            parameters.IdNameActivity = IdNameActivityEnum.Lack;
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
             return GetDateForActiveApplication(activeApplication);
         }
@@ -113,23 +113,20 @@ namespace ApplicationTimeCounter
             else return false;
         }
 
-        internal static List<ActiveApplication> GetActiveApplication(ActiveApplication parameters)
+        internal static List<ActiveApplication> GetActiveApplication(CommandParameters parameters)
         {
             List<ActiveApplication> activeApplications = new List<ActiveApplication>();
-            string query = "SELECT activeapplications.Id AS " + ColumnNames.ID + 
-                ", activeapplications.Title AS " + ColumnNames.Title + 
-                ", nameactivity.NameActivity AS " + ColumnNames.NameActivity + 
-                ", nameactivity.Id AS " + ColumnNames.IdNameActivity + 
-                ", activeapplications.IdMembership AS " + ColumnNames.IdMembership + 
-                ", activeapplications.AutoGrouping AS " + ColumnNames.IfAutoGrouping + 
-                " FROM activeapplications LEFT OUTER JOIN " +
-                "nameactivity ON activeapplications.IdNameActivity = nameactivity.Id WHERE activeapplications.Id > 2 ";
-            if (parameters.ID > 0) query += " AND Id = " + parameters.ID;
-            if (!string.IsNullOrEmpty(parameters.Title)) query += " AND Title = " + SqlValidator.Validate(parameters.Title);
-            if (!string.IsNullOrEmpty(parameters.NameActivity)) query += " AND NameActivity = " + SqlValidator.Validate(parameters.NameActivity);
-            if (parameters.IdNameActivity > 0) query += " AND IdNameActivity = " + (int)parameters.IdNameActivity;
-            if (parameters.IdMembership > 0) query += " AND IdMembership = " + parameters.IdMembership;
-            if (parameters.IdMembership == -1) query += " AND IdMembership IS NULL ";
+            string query = "SELECT activeapplications.Id AS " + ColumnNames.ID +
+                ", activeapplications.Title AS " + ColumnNames.Title +
+                ", nameactivity.NameActivity AS " + ColumnNames.NameActivity +
+                ", nameactivity.Id AS " + ColumnNames.IdNameActivity +
+                ", activeapplications.IdMembership AS " + ColumnNames.IdMembership +
+                ", activeapplications.AutoGrouping AS " + ColumnNames.IfAutoGrouping +
+                " FROM activeapplications " +
+                " LEFT JOIN nameactivity ON activeapplications.IdNameActivity = nameactivity.Id " +
+                " WHERE activeapplications.Id > 2 ";
+            query += CommandParameters.CheckParameters(parameters);
+            
 
             if (DataBase.ConnectToDataBase())
             {
@@ -162,7 +159,7 @@ namespace ApplicationTimeCounter
 
         internal static List<ActiveApplication> GetNonJoinedApplication()
         {
-            ActiveApplication parameters = new ActiveApplication();
+            CommandParameters parameters = new CommandParameters();
             parameters.IdMembership = -1;
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
             return GetDateForActiveApplication(activeApplication);

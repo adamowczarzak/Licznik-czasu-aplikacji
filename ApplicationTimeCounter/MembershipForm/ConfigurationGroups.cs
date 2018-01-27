@@ -400,7 +400,6 @@ namespace ApplicationTimeCounter
                     addFiltrButton.Visibility = System.Windows.Visibility.Hidden;
                     addFiltrAccept.Visibility = System.Windows.Visibility.Hidden;
                     applyFilterButton.Visibility = System.Windows.Visibility.Visible;
-
                 }
             }
             else

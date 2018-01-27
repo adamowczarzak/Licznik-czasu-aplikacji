@@ -186,7 +186,7 @@ namespace ApplicationTimeCounter
 
         private void LoadContent(object sender, DoWorkEventArgs e)
         {
-            ActiveApplication parameters = new ActiveApplication();
+            CommandParameters parameters = new CommandParameters();
             parameters.IdMembership = activeGroupId;
             List<ActiveApplication> activeApplication = ActiveApplication_db.GetActiveApplication(parameters);
             activeApplication = activeApplication.OrderBy(x => x.ID).Reverse().ToList();

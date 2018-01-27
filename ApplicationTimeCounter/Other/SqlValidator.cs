@@ -10,6 +10,7 @@ namespace ApplicationTimeCounter.Other
         readonly static public string ToValueEqual = " >= ";
         readonly static public string FromValue = " < ";
         readonly static public string ToValue = " = ";
+        readonly static public string ISNULL= " IS NULL ";
 
         /// <summary>
         /// Metoda waliduje zmienne typu string w zapytaniu sql.

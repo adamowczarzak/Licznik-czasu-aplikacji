@@ -22,4 +22,12 @@
         Activity = 1,
         Group = 2
     }
+
+    public enum IdNameActivityEnum : int
+    {
+        NonActive = 0,
+        Lack = 1,
+        Programming = 2,
+        Other = 3
+    }
 }

@@ -210,5 +210,86 @@ namespace ApplicationTimeCounter
             if (!DataBase.GetListStringFromExecuteReader(contentCommand, "Date").Any()) return false;
             else return true;
         }
+
+        /// <summary>
+        /// Pobiera każdą pozycje tytułu aktywności.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        internal List<ActiveApplication> GetActiveApplication(CommandParameters parameters)
+        {
+            List<ActiveApplication> activeApplication = new List<ActiveApplication>();
+            string query = "SELECT alldate.Id AS " + ColumnNames.ID +
+                ", activeapplications.Title AS " + ColumnNames.Title +
+                ", alldate.ActivityTime AS " + ColumnNames.ActivityTime +
+                ", activeapplications.IdNameActivity AS " + ColumnNames.IdNameActivity +
+                ", alldate.Date AS " + ColumnNames.Date +
+                " FROM alldate " +
+                " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
+                "WHERE activeapplications.Id > 2 ";
+            query += CommandParameters.CheckParameters(parameters);
+
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = query;
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        activeApplication.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
+                    }
+                    catch (SqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error!!!\tNie udało się pobrać ActiveApplication.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return activeApplication;
+        }
+
+
+        /// <summary>
+        /// Pobiera pozycji połączone w grupy.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        internal List<ActiveApplication> GetActiveApplicationGrouping(CommandParameters parameters)
+        {
+            List<ActiveApplication> activeApplication = new List<ActiveApplication>();
+            string query = "SELECT membership.Title AS " + ColumnNames.Title +
+                ", sum(alldate.ActivityTime) AS " + ColumnNames.ActivityTime+
+                ", alldate.Date AS " + ColumnNames.Date +
+                " FROM alldate " +
+                " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
+                " INNER JOIN membership ON membership.Id = activeapplications.IdMembership " +
+                "WHERE activeapplications.Id > 2 ";
+            query += CommandParameters.CheckParameters(parameters).Replace("Date", "alldate.Date");
+            query += " GROUP BY membership.Title, alldate.Date ";
+
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = query;
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        activeApplication.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
+                    }
+                    catch (SqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error!!!\tNie udało się pobrać zgrupowanych ActiveApplication.)", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return activeApplication;
+        }
     }
 }
