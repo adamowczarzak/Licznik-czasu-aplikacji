@@ -148,7 +148,7 @@ namespace ApplicationTimeCounter
                 " FROM nameactivity " +
                 "INNER JOIN activeapplications ON nameactivity.Id = activeapplications.IdNameActivity " +
                 "INNER JOIN alldate ON alldate.IdTitle = activeapplications.Id " +
-                "WHERE 1 = 1 ";
+                "WHERE " + ColumnNames.ActivityTime + " > 0 ";
             query += CommandParameters.CheckParameters(parameters);
             query += " GROUP BY nameactivity.Id, nameactivity.NameActivity, alldate.Date ";
             
@@ -219,7 +219,7 @@ namespace ApplicationTimeCounter
         internal List<ActiveApplication> GetActiveApplication(CommandParameters parameters)
         {
             List<ActiveApplication> activeApplication = new List<ActiveApplication>();
-            string query = "SELECT alldate.Id AS " + ColumnNames.ID +
+            string query = "SELECT activeapplications.Id AS " + ColumnNames.ID +
                 ", activeapplications.Title AS " + ColumnNames.Title +
                 ", alldate.ActivityTime AS " + ColumnNames.ActivityTime +
                 ", activeapplications.IdNameActivity AS " + ColumnNames.IdNameActivity +
@@ -227,7 +227,7 @@ namespace ApplicationTimeCounter
                 " FROM alldate " +
                 " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
                 "WHERE activeapplications.Id > 2 ";
-            query += CommandParameters.CheckParameters(parameters);
+            query += CommandParameters.CheckParameters(parameters).Replace("ID", "activeapplications.ID");
 
             if (DataBase.ConnectToDataBase())
             {
@@ -263,12 +263,13 @@ namespace ApplicationTimeCounter
             string query = "SELECT membership.Title AS " + ColumnNames.Title +
                 ", sum(alldate.ActivityTime) AS " + ColumnNames.ActivityTime+
                 ", alldate.Date AS " + ColumnNames.Date +
+                ", activeapplications.Id AS " + ColumnNames.ID +
                 " FROM alldate " +
                 " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
                 " INNER JOIN membership ON membership.Id = activeapplications.IdMembership " +
                 "WHERE activeapplications.Id > 2 ";
-            query += CommandParameters.CheckParameters(parameters).Replace("Date", "alldate.Date");
-            query += " GROUP BY membership.Title, alldate.Date ";
+            query += CommandParameters.CheckParameters(parameters).Replace("Date", "alldate.Date").Replace("ID", "activeapplications.ID");
+            query += " GROUP BY membership.Title, alldate.Date, activeapplications.Id ";
 
             if (DataBase.ConnectToDataBase())
             {

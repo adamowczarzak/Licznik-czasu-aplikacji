@@ -62,12 +62,6 @@ namespace ApplicationTimeCounter
         {
             viewContent.ChangeContent(MainCanvasStatistics);
             Canvas.SetZIndex(MainCanvasStatistics, 1);
-            UpdateView();
-        }
-
-        public void UpdateView()
-        {
-
         }
 
         private void viewContent_Delegate(Visibility visibility)
@@ -93,6 +87,7 @@ namespace ApplicationTimeCounter
             colorTable[2] = Color.FromArgb(255, 2, 53, 101);
             colorTable[3] = Color.FromArgb(255, 21, 66, 144);
             indexIntervalTime = -1;
+            indexResultFilter = -1;
 
             CreateBackground();
             CreateControlPanel();
@@ -129,6 +124,11 @@ namespace ApplicationTimeCounter
             scalePercent[1] = new MyLabel(chartCanvas, "", 40, 30, 11, -20, 145, Color.FromArgb(160, 255, 255, 255), Color.FromArgb(0, 0, 0, 0));
             scalePercent[2] = new MyLabel(chartCanvas, "", 40, 30, 11, -20, 65, Color.FromArgb(160, 255, 255, 255), Color.FromArgb(0, 0, 0, 0));
 
+            CommandParameters parameters = new CommandParameters();
+            parameters.StartDate = DateTime.Now.AddDays(-5).ToShortDateString();
+            parameters.EndDate = DateTime.Now.ToShortDateString();
+            List<Activity> activity = allData_db.GetDailyActivity(parameters);
+            CreateChartActivity(activity);
         }
 
         private void CreateButtonShowFilter()
@@ -301,7 +301,6 @@ namespace ApplicationTimeCounter
 
         private void searchingNames_KeyDown(object sender, KeyEventArgs e)
         {
-
             if (e.Key == Key.Down)
             {
                 if (indexResultFilter < foundList.Count - 1) indexResultFilter++;
@@ -337,21 +336,36 @@ namespace ApplicationTimeCounter
             else if (!string.IsNullOrEmpty(datePickerFrom.SelectedDate.ToString())
                 || !string.IsNullOrEmpty(datePickerTo.SelectedDate.ToString()))
             {
-
+                parameters.StartDate = datePickerFrom.SelectedDate.ToString();
+                parameters.EndDate = datePickerTo.SelectedDate.ToString();
+            }
+            else
+            {
+                parameters.StartDate = DateTime.Now.AddDays(-5).ToShortDateString();
+                parameters.EndDate = DateTime.Now.ToShortDateString();
             }
 
             if (ifActivity.Visibility == Visibility.Visible)
             {
-                List<Activity> activity = allData_db.GetDailyActivity(parameters);
+                List<Activity> activity;
+                //if (!string.IsNullOrEmpty(searchingNames.Text) && !searchingNames.Text.Equals("Wpisz nazwę aktywności") && indexResultFilter > -1)
+                    //parameters.ID.Add(Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key));
+
+                activity = allData_db.GetDailyActivity(parameters);
                 CreateChartActivity(activity);
             }
             else if (ifTitleApplication.Visibility == Visibility.Visible)
             {
-                List<ActiveApplication> activeApplication = allData_db.GetActiveApplicationGrouping(parameters);
+                List<ActiveApplication> activeApplication;
+                //if (!string.IsNullOrEmpty(searchingNames.Text) && !searchingNames.Text.Equals("Wpisz nazwę aktywności") && indexResultFilter > -1)
+                    //parameters.ID.Add(Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key));
+
+                activeApplication = allData_db.GetActiveApplicationGrouping(parameters);
                 parameters.IdMembership = -1;
                 activeApplication.AddRange(allData_db.GetActiveApplication(parameters));
                 CreateChartActiveApplication(activeApplication);
             }
+            
         }
 
         private void CreateChartActiveApplication(List<ActiveApplication> activeApplication)
@@ -367,6 +381,7 @@ namespace ApplicationTimeCounter
                 int space = 0;
                 int lenghtLabelDate = 0;
                 int positionXLabelDate = 16;
+                int numberElement = 0;
                 chartContentCanvas.Width = 0;
                 for (int i = 0; i < activeApplication.Count; i++)
                 {
@@ -379,12 +394,27 @@ namespace ApplicationTimeCounter
                             positionXLabelDate += lenghtLabelDate - 1;
                             lenghtLabelDate = 0;
                         }
-
-                    MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activeApplication[i].ActivityTime * scaleMultiplier), 
-                        colorTable[i % 4], 20 + space + ((width + 2) * i) + 2, 320 - activeApplication[i].ActivityTime * scaleMultiplier, 1);
-                    r.SetStroke(Color.FromArgb(100, 255, 255, 255));
-                    chartContentCanvas.Width += (width + 2);
-                    lenghtLabelDate += width + 2;
+                    if (!string.IsNullOrEmpty(searchingNames.Text) && !searchingNames.Text.Equals("Wpisz nazwę aktywności") && indexResultFilter > -1)
+                    {
+                        if(activeApplication[i].ID == Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key))
+                        {
+                            MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activeApplication[i].ActivityTime * scaleMultiplier),
+                                colorTable[i % 4], 40 + space + ((width + 40) * numberElement) + 2, 320 - activeApplication[i].ActivityTime * scaleMultiplier, 1);
+                            r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                            chartContentCanvas.Width += width * 5;
+                            lenghtLabelDate += width * 5;
+                            numberElement++;
+                        }
+                    }
+                    else
+                    {
+                        MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activeApplication[i].ActivityTime * scaleMultiplier),
+                            colorTable[i % 4], 20 + space + ((width + 2) * i) + 2, 320 - activeApplication[i].ActivityTime * scaleMultiplier, 1);
+                        r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                        chartContentCanvas.Width += (width + 2);
+                        lenghtLabelDate += width + 2;
+                    }
+                    
                 }
                 lenghtLabelDate += 21;
                 DrawDateLabel(activeApplication[activeApplication.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
@@ -406,6 +436,7 @@ namespace ApplicationTimeCounter
                 int space = 0;
                 int lenghtLabelDate = 0;
                 int positionXLabelDate = 12;
+                int numberElement = 0;
                 chartContentCanvas.Width = 0;
                 for (int i = 0; i < activity.Count; i++)
                 {
@@ -418,12 +449,27 @@ namespace ApplicationTimeCounter
                             positionXLabelDate += lenghtLabelDate - 1;
                             lenghtLabelDate = 0;
                         }
-
-                    MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activity[i].ActivityTime * scaleMultiplier), 
-                        colorTable[i % 4], 20 + space + ((width + 4) * i) + 4, 320 - activity[i].ActivityTime * scaleMultiplier, 1);
-                    r.SetStroke(Color.FromArgb(100, 255, 255, 255));
-                    chartContentCanvas.Width += (width + 4);
-                    lenghtLabelDate += width + 4;
+                    if (((searchingNames != null) ? !string.IsNullOrEmpty(searchingNames.Text) : true) 
+                        && ((searchingNames != null) ? !searchingNames.Text.Equals("Wpisz nazwę aktywności") : true) && indexResultFilter > -1)
+                    {
+                        if (activity[i].ID == Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key))
+                        {
+                            MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activity[i].ActivityTime * scaleMultiplier),
+                                colorTable[i % 4], 40 + space + ((width + 36) * numberElement) + 2, 320 - activity[i].ActivityTime * scaleMultiplier, 1);
+                            r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                            chartContentCanvas.Width += width * 3;
+                            lenghtLabelDate += width * 3;
+                            numberElement++;
+                        }
+                    }
+                    else
+                    {
+                        MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activity[i].ActivityTime * scaleMultiplier),
+                            colorTable[i % 4], 20 + space + ((width + 4) * i) + 4, 320 - activity[i].ActivityTime * scaleMultiplier, 1);
+                        r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                        chartContentCanvas.Width += (width + 4);
+                        lenghtLabelDate += width + 4;
+                    }
                 }
                 lenghtLabelDate += 21;
                 DrawDateLabel(activity[activity.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
@@ -631,9 +677,12 @@ namespace ApplicationTimeCounter
 
         private void MainCanvasStatistics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MainCanvasStatistics.Focusable = true;
-            MainCanvasStatistics.Focus();
-            if (stopwatch != null) stopwatch.Reset();
+            if (indexResultFilter == -1)
+            {
+                MainCanvasStatistics.Focusable = true;
+                MainCanvasStatistics.Focus();
+                if (stopwatch != null) stopwatch.Reset();
+            }
 
         }
     }

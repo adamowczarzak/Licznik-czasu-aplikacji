@@ -167,19 +167,22 @@ namespace ApplicationTimeCounter
 
         private static List<ActiveApplication> GetDateForActiveApplication(List<ActiveApplication> activeApplication)
         {
-            string contentCommand = string.Empty;
-            Dictionary<string, string> dateIdTitileList = new Dictionary<string, string>();
-
-            contentCommand = "SELECT IdTitle, Date FROM alldate WHERE IdTitle IN(";
-            for (int i = 0; i < activeApplication.Count; i++)
-                contentCommand += activeApplication[i].ID + ((i < activeApplication.Count-1) ? ", " : "");
-            contentCommand += ")";
-            dateIdTitileList = DataBase.GetDictionaryFromExecuteReader(contentCommand, "IdTitle", "Date");
-            for (int i = 0; i < activeApplication.Count; i++)
+            if (activeApplication.Any())
             {
-                activeApplication[i].Date = dateIdTitileList.FirstOrDefault(x => string.Equals(x.Key.ToString(), activeApplication[i].ID.ToString())).Value;
-                if (String.IsNullOrEmpty(activeApplication[i].Date)) 
-                    activeApplication[i].Date = DateTime.Now.ToString();
+                string contentCommand = string.Empty;
+                Dictionary<string, string> dateIdTitileList = new Dictionary<string, string>();
+
+                contentCommand = "SELECT IdTitle, Date FROM alldate WHERE IdTitle IN(";
+                for (int i = 0; i < activeApplication.Count; i++)
+                    contentCommand += activeApplication[i].ID + ((i < activeApplication.Count - 1) ? ", " : "");
+                contentCommand += ")";
+                dateIdTitileList = DataBase.GetDictionaryFromExecuteReader(contentCommand, "IdTitle", "Date");
+                for (int i = 0; i < activeApplication.Count; i++)
+                {
+                    activeApplication[i].Date = dateIdTitileList.FirstOrDefault(x => string.Equals(x.Key.ToString(), activeApplication[i].ID.ToString())).Value;
+                    if (String.IsNullOrEmpty(activeApplication[i].Date))
+                        activeApplication[i].Date = DateTime.Now.ToString();
+                }
             }
 
             return activeApplication.OrderBy(x => x.Date).Reverse().ToList();

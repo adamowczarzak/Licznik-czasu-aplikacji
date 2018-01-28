@@ -221,36 +221,6 @@ namespace ApplicationTimeCounter
             GetSqlConnection();
             ConnectToDataBase();
 
-            addDateFirstStartApplication = CheckIfExistTable("alldate", command);
-
-            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'alldate') 
-                            CREATE TABLE alldate (
-                                Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                                Date DATE NULL,
-                                IdTitle INT NOT NULL,
-                                ActivityTime INT)";
-            command = new SqlCommand(stringCommand, Connection);
-            ExecuteNonQuery(command);
-
-            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'dailyuseofapplication') 
-                            CREATE TABLE dailyuseofapplication (
-                                Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                                IdTitle INT NOT NULL,
-                                ActivityTime INT)";
-            command = new SqlCommand(stringCommand, Connection);
-            ExecuteNonQuery(command);
-
-            addDefaultActivityApplication = CheckIfExistTable("activeapplications", command);
-
-            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'activeapplications') 
-                            CREATE TABLE activeapplications (
-                                Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-                                Title VARCHAR(256) COLLATE Polish_CI_AS NULL,
-                                IdNameActivity INT, IdMembership INT,
-                                AutoGrouping TINYINT DEFAULT NULL)";
-            command = new SqlCommand(stringCommand, Connection);
-            ExecuteNonQuery(command);
-
             addnameActivity = CheckIfExistTable("nameactivity", command);
 
             stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'nameactivity') 
@@ -273,6 +243,37 @@ namespace ApplicationTimeCounter
             command = new SqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
+            addDefaultActivityApplication = CheckIfExistTable("activeapplications", command);
+
+            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'activeapplications') 
+                            CREATE TABLE activeapplications (
+                                Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                                Title VARCHAR(256) COLLATE Polish_CI_AS NULL,
+                                IdNameActivity INT,
+                                IdMembership INT FOREIGN KEY REFERENCES membership(Id),
+                                AutoGrouping TINYINT DEFAULT NULL)";
+            command = new SqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
+            addDateFirstStartApplication = CheckIfExistTable("alldate", command);
+
+            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'alldate') 
+                            CREATE TABLE alldate (
+                                Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                                Date DATE NULL,
+                                IdTitle INT NOT NULL,
+                                ActivityTime INT)";
+            command = new SqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
+            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'dailyuseofapplication') 
+                            CREATE TABLE dailyuseofapplication (
+                                Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+                                IdTitle INT NOT NULL FOREIGN KEY REFERENCES activeapplications(Id),
+                                ActivityTime INT)";
+            command = new SqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
             if (addnameActivity)
             {
                 stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') ";
@@ -285,11 +286,19 @@ namespace ApplicationTimeCounter
                 stringCommand = "INSERT INTO activeapplications (Title , idNameActivity) VALUES ('Wył. komputer', -2),('Brak Aktyw.', -1)";
                 command = new SqlCommand(stringCommand, Connection);
                 ExecuteNonQuery(command);
+
+                stringCommand = "ALTER TABLE activeapplications WITH NOCHECK ADD FOREIGN KEY (IdNameActivity) REFERENCES nameActivity(Id)";
+                command = new SqlCommand(stringCommand, Connection);
+                ExecuteNonQuery(command);
             }
 
             if (addDateFirstStartApplication)
             {
                 stringCommand = "INSERT INTO alldate (Date , IdTitle , ActivityTime) VALUES (DATEADD(day, -1, GETDATE()), 0, 0)";
+                command = new SqlCommand(stringCommand, Connection);
+                ExecuteNonQuery(command);
+
+                stringCommand = "ALTER TABLE alldate WITH NOCHECK ADD FOREIGN KEY (IdTitle) REFERENCES activeapplications(Id)";
                 command = new SqlCommand(stringCommand, Connection);
                 ExecuteNonQuery(command);
 
