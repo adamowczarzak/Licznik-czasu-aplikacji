@@ -1,6 +1,4 @@
-﻿
-
-using ApplicationTimeCounter.Controls;
+﻿using ApplicationTimeCounter.Controls;
 using ApplicationTimeCounter.Other;
 using System.Collections.Generic;
 using System.ComponentModel;

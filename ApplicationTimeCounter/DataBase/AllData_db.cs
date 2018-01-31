@@ -264,12 +264,13 @@ namespace ApplicationTimeCounter
                 ", sum(alldate.ActivityTime) AS " + ColumnNames.ActivityTime+
                 ", alldate.Date AS " + ColumnNames.Date +
                 ", activeapplications.Id AS " + ColumnNames.ID +
+                ", activeapplications.IdNameActivity AS " + ColumnNames.IdNameActivity +
                 " FROM alldate " +
                 " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
                 " INNER JOIN membership ON membership.Id = activeapplications.IdMembership " +
                 "WHERE activeapplications.Id > 2 ";
             query += CommandParameters.CheckParameters(parameters).Replace("Date", "alldate.Date").Replace("ID", "activeapplications.ID");
-            query += " GROUP BY membership.Title, alldate.Date, activeapplications.Id ";
+            query += " GROUP BY membership.Title, alldate.Date, activeapplications.Id, activeapplications.IdNameActivity";
 
             if (DataBase.ConnectToDataBase())
             {

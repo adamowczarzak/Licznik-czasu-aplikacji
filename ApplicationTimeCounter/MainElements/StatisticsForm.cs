@@ -97,11 +97,11 @@ namespace ApplicationTimeCounter
         {
             new MyRectangle(MainCanvasStatistics, 600, 35, Color.FromArgb(255, 0, 125, 255), 0, 0);
             ImageCreator.CreateImage(MainCanvasStatistics, 40, 50, 4, -8, "Pictures/application.png");
-            countTitleApplication = new MyLabel(MainCanvasStatistics, "946", 60, 30, 14, 45, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
+            countTitleApplication = new MyLabel(MainCanvasStatistics, "", 60, 30, 14, 45, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
 
             ImageCreator.CreateImage(MainCanvasStatistics, 26, 26, 110, 4, "Pictures/ActivityImages.png");
-            countActivityApplication = new MyLabel(MainCanvasStatistics, "5", 60, 30, 14, 140, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
+            countActivityApplication = new MyLabel(MainCanvasStatistics, "", 60, 30, 14, 140, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
 
             CreateButtonShowFilter();
@@ -348,24 +348,18 @@ namespace ApplicationTimeCounter
             if (ifActivity.Visibility == Visibility.Visible)
             {
                 List<Activity> activity;
-                //if (!string.IsNullOrEmpty(searchingNames.Text) && !searchingNames.Text.Equals("Wpisz nazwę aktywności") && indexResultFilter > -1)
-                    //parameters.ID.Add(Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key));
-
                 activity = allData_db.GetDailyActivity(parameters);
                 CreateChartActivity(activity);
             }
             else if (ifTitleApplication.Visibility == Visibility.Visible)
             {
                 List<ActiveApplication> activeApplication;
-                //if (!string.IsNullOrEmpty(searchingNames.Text) && !searchingNames.Text.Equals("Wpisz nazwę aktywności") && indexResultFilter > -1)
-                    //parameters.ID.Add(Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key));
-
                 activeApplication = allData_db.GetActiveApplicationGrouping(parameters);
                 parameters.IdMembership = -1;
                 activeApplication.AddRange(allData_db.GetActiveApplication(parameters));
                 CreateChartActiveApplication(activeApplication);
             }
-            
+
         }
 
         private void CreateChartActiveApplication(List<ActiveApplication> activeApplication)
@@ -396,11 +390,11 @@ namespace ApplicationTimeCounter
                         }
                     if (!string.IsNullOrEmpty(searchingNames.Text) && !searchingNames.Text.Equals("Wpisz nazwę aktywności") && indexResultFilter > -1)
                     {
-                        if(activeApplication[i].ID == Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key))
+                        if (activeApplication[i].ID == Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key))
                         {
                             MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activeApplication[i].ActivityTime * scaleMultiplier),
                                 colorTable[i % 4], 40 + space + ((width + 40) * numberElement) + 2, 320 - activeApplication[i].ActivityTime * scaleMultiplier, 1);
-                            r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                            SetStrokeAndToolTip(r, activeApplication, i);
                             chartContentCanvas.Width += width * 5;
                             lenghtLabelDate += width * 5;
                             numberElement++;
@@ -410,16 +404,18 @@ namespace ApplicationTimeCounter
                     {
                         MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activeApplication[i].ActivityTime * scaleMultiplier),
                             colorTable[i % 4], 20 + space + ((width + 2) * i) + 2, 320 - activeApplication[i].ActivityTime * scaleMultiplier, 1);
-                        r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                        SetStrokeAndToolTip(r, activeApplication, i);
                         chartContentCanvas.Width += (width + 2);
                         lenghtLabelDate += width + 2;
                     }
-                    
                 }
                 lenghtLabelDate += 21;
                 DrawDateLabel(activeApplication[activeApplication.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
                 chartContentCanvas.Width += space + 50;
                 SetScalePercent(maxValue, sumDateList.Max());
+
+                countTitleApplication.SetContent(activeApplication.Select(x => x.Title).Distinct().Count().ToString());
+                countActivityApplication.SetContent(activeApplication.Select(x => x.IdNameActivity).Distinct().Count().ToString());
             }
         }
 
@@ -449,14 +445,14 @@ namespace ApplicationTimeCounter
                             positionXLabelDate += lenghtLabelDate - 1;
                             lenghtLabelDate = 0;
                         }
-                    if (((searchingNames != null) ? !string.IsNullOrEmpty(searchingNames.Text) : true) 
+                    if (((searchingNames != null) ? !string.IsNullOrEmpty(searchingNames.Text) : true)
                         && ((searchingNames != null) ? !searchingNames.Text.Equals("Wpisz nazwę aktywności") : true) && indexResultFilter > -1)
                     {
                         if (activity[i].ID == Convert.ToInt32(foundList.ElementAt(indexResultFilter).Key))
                         {
                             MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activity[i].ActivityTime * scaleMultiplier),
                                 colorTable[i % 4], 40 + space + ((width + 36) * numberElement) + 2, 320 - activity[i].ActivityTime * scaleMultiplier, 1);
-                            r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                            SetStrokeAndToolTip(r, activity, i);
                             chartContentCanvas.Width += width * 3;
                             lenghtLabelDate += width * 3;
                             numberElement++;
@@ -466,7 +462,7 @@ namespace ApplicationTimeCounter
                     {
                         MyRectangle r = new MyRectangle(chartContentCanvas, width, (int)(activity[i].ActivityTime * scaleMultiplier),
                             colorTable[i % 4], 20 + space + ((width + 4) * i) + 4, 320 - activity[i].ActivityTime * scaleMultiplier, 1);
-                        r.SetStroke(Color.FromArgb(100, 255, 255, 255));
+                        SetStrokeAndToolTip(r, activity, i);
                         chartContentCanvas.Width += (width + 4);
                         lenghtLabelDate += width + 4;
                     }
@@ -475,7 +471,31 @@ namespace ApplicationTimeCounter
                 DrawDateLabel(activity[activity.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
                 chartContentCanvas.Width += space + 50;
                 SetScalePercent(maxValue, sumDateList.Max());
+
+                if (countTitleApplication != null)
+                {
+                    countTitleApplication.SetContent(activity.Select(x => x.Name).Distinct().Count().ToString());
+                    countActivityApplication.SetContent(activity.Select(x => x.Name).Distinct().Count().ToString());
+                }
             }
+        }
+
+        private void SetStrokeAndToolTip(MyRectangle rectangle, List<Activity> activity, int index)
+        {
+            rectangle.SetStroke(Color.FromArgb(100, 255, 255, 255));
+            rectangle.ToolTip(activity[index].Name + " - [" + ActionOnTime.GetTimeAndDays(activity[index].ActivityTime) + " / "
+                                + ActionOnTime.GetTimeAndDays(activity.Where(x => x.Name == activity[index].Name).Sum(x => x.ActivityTime)) + "] [" +
+                                ActionOnNumbers.DivisionI(activity[index].ActivityTime * 100, activity.Where(x => x.Date == activity[index].Date).Sum(x => x.ActivityTime))
+                                + "% / " + ActionOnNumbers.DivisionI(activity.Where(x => x.Name == activity[index].Name).Sum(x => x.ActivityTime) * 100, activity.Sum(x => x.ActivityTime)) + "%]");
+        }
+
+        private void SetStrokeAndToolTip(MyRectangle rectangle, List<ActiveApplication> activeApplication, int index)
+        {
+            rectangle.SetStroke(Color.FromArgb(100, 255, 255, 255));
+            rectangle.ToolTip(activeApplication[index].Title + " \n[" + ActionOnTime.GetTimeAndDays(activeApplication[index].ActivityTime) + " / "
+                                + ActionOnTime.GetTimeAndDays(activeApplication.Where(x => x.Title == activeApplication[index].Title).Sum(x => x.ActivityTime)) + "] [" +
+                                ActionOnNumbers.DivisionI(activeApplication[index].ActivityTime * 100, activeApplication.Where(x => x.Date == activeApplication[index].Date).Sum(x => x.ActivityTime))
+                                + "% / " + ActionOnNumbers.DivisionI(activeApplication.Where(x => x.Title == activeApplication[index].Title).Sum(x => x.ActivityTime) * 100, activeApplication.Sum(x => x.ActivityTime)) + "%]");
         }
 
         private void SetScalePercent(int maxValue, int sumValue)
@@ -542,7 +562,6 @@ namespace ApplicationTimeCounter
             {
                 intervalTimeCanvas.Visibility = Visibility.Hidden;
             }
-
         }
 
         private void searchingNames_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
