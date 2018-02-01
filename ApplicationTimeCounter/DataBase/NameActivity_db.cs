@@ -13,6 +13,13 @@ namespace ApplicationTimeCounter
             return nameActivity;
         }
 
+        public static Dictionary<string, string> GetAllNameActivityDictionary()
+        {
+            string contentCommand = "SELECT Id, NameActivity FROM nameactivity ";
+            Dictionary<string, string> nameActivity = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "NameActivity");
+            return nameActivity;
+        }
+
         public static string GetAllNameActivity()
         {
             string contentCommand = "SELECT COUNT(*) AS numberNameActivity FROM nameactivity WHERE ID != 1";

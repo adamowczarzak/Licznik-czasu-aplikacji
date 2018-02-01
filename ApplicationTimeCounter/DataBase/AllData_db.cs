@@ -293,5 +293,23 @@ namespace ApplicationTimeCounter
             }
             return activeApplication;
         }
+
+        public string CountApplicationInInterwalTime(string dateFrom, string dateTo)
+        {
+            string contentCommand = "SELECT COUNT(DISTINCT IdTitle) as countIdTitle FROM alldate "
+                + " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle "
+                + " WHERE IdTitle > 2 AND activeapplications.IdMembership IS NULL "
+                + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo);
+
+            int returnCount = Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "countIdTitle")[0]);
+
+            contentCommand = "SELECT COUNT(DISTINCT activeapplications.IdMembership) as countIdTitle FROM alldate "
+               + " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle "
+               + " WHERE IdTitle > 2 AND activeapplications.IdMembership IS NOT NULL "
+               + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo);
+
+            returnCount += Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "countIdTitle")[0]);
+            return returnCount.ToString();
+        }
     }
 }

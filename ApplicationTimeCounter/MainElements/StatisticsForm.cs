@@ -40,6 +40,7 @@ namespace ApplicationTimeCounter
         private string[] tableNameTitleInterval;
         private Color[] colorTable;
         private MyLabel[] scalePercent;
+        private string[] tempDateCount;
 
         private Dictionary<string, string> titleApplication;
         private Dictionary<string, string> namesActivity;
@@ -97,12 +98,13 @@ namespace ApplicationTimeCounter
         {
             new MyRectangle(MainCanvasStatistics, 600, 35, Color.FromArgb(255, 0, 125, 255), 0, 0);
             ImageCreator.CreateImage(MainCanvasStatistics, 40, 50, 4, -8, "Pictures/application.png");
-            countTitleApplication = new MyLabel(MainCanvasStatistics, "", 60, 30, 14, 45, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
+            countTitleApplication = new MyLabel(MainCanvasStatistics, tempDateCount[0], 60, 30, 14, 45, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
 
             ImageCreator.CreateImage(MainCanvasStatistics, 26, 26, 110, 4, "Pictures/ActivityImages.png");
-            countActivityApplication = new MyLabel(MainCanvasStatistics, "", 60, 30, 14, 140, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
+            countActivityApplication = new MyLabel(MainCanvasStatistics, tempDateCount[1], 60, 30, 14, 140, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
+
 
             CreateButtonShowFilter();
             CreateFilter();
@@ -128,7 +130,7 @@ namespace ApplicationTimeCounter
             parameters.StartDate = DateTime.Now.AddDays(-5).ToShortDateString();
             parameters.EndDate = DateTime.Now.ToShortDateString();
             List<Activity> activity = allData_db.GetDailyActivity(parameters);
-            CreateChartActivity(activity);
+            CreateChartActivity(activity, parameters);
         }
 
         private void CreateButtonShowFilter()
@@ -349,7 +351,7 @@ namespace ApplicationTimeCounter
             {
                 List<Activity> activity;
                 activity = allData_db.GetDailyActivity(parameters);
-                CreateChartActivity(activity);
+                CreateChartActivity(activity, parameters);
             }
             else if (ifTitleApplication.Visibility == Visibility.Visible)
             {
@@ -359,7 +361,6 @@ namespace ApplicationTimeCounter
                 activeApplication.AddRange(allData_db.GetActiveApplication(parameters));
                 CreateChartActiveApplication(activeApplication);
             }
-
         }
 
         private void CreateChartActiveApplication(List<ActiveApplication> activeApplication)
@@ -419,7 +420,7 @@ namespace ApplicationTimeCounter
             }
         }
 
-        private void CreateChartActivity(List<Activity> activity)
+        private void CreateChartActivity(List<Activity> activity, CommandParameters parameters)
         {
             if (activity.Any())
             {
@@ -474,8 +475,14 @@ namespace ApplicationTimeCounter
 
                 if (countTitleApplication != null)
                 {
-                    countTitleApplication.SetContent(activity.Select(x => x.Name).Distinct().Count().ToString());
+                    countTitleApplication.SetContent(allData_db.CountApplicationInInterwalTime(parameters.StartDate, parameters.EndDate));
                     countActivityApplication.SetContent(activity.Select(x => x.Name).Distinct().Count().ToString());
+                }
+                else
+                {
+                    tempDateCount = new string[2];
+                    tempDateCount[0] = allData_db.CountApplicationInInterwalTime(parameters.StartDate, parameters.EndDate);
+                    tempDateCount[1] = activity.Select(x => x.Name).Distinct().Count().ToString();
                 }
             }
         }
@@ -491,8 +498,9 @@ namespace ApplicationTimeCounter
 
         private void SetStrokeAndToolTip(MyRectangle rectangle, List<ActiveApplication> activeApplication, int index)
         {
+            Dictionary<string, string> nameActivity = NameActivity_db.GetAllNameActivityDictionary();
             rectangle.SetStroke(Color.FromArgb(100, 255, 255, 255));
-            rectangle.ToolTip(activeApplication[index].Title + " \n[" + ActionOnTime.GetTimeAndDays(activeApplication[index].ActivityTime) + " / "
+            rectangle.ToolTip(activeApplication[index].Title + " \nAktywność [ " + nameActivity[activeApplication[index].IdNameActivity.ToString()] + " ][" + ActionOnTime.GetTimeAndDays(activeApplication[index].ActivityTime) + " / "
                                 + ActionOnTime.GetTimeAndDays(activeApplication.Where(x => x.Title == activeApplication[index].Title).Sum(x => x.ActivityTime)) + "] [" +
                                 ActionOnNumbers.DivisionI(activeApplication[index].ActivityTime * 100, activeApplication.Where(x => x.Date == activeApplication[index].Date).Sum(x => x.ActivityTime))
                                 + "% / " + ActionOnNumbers.DivisionI(activeApplication.Where(x => x.Title == activeApplication[index].Title).Sum(x => x.ActivityTime) * 100, activeApplication.Sum(x => x.ActivityTime)) + "%]");
