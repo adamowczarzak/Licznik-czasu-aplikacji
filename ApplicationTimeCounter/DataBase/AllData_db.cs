@@ -216,7 +216,7 @@ namespace ApplicationTimeCounter
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        internal List<ActiveApplication> GetActiveApplication(CommandParameters parameters)
+        internal List<ActiveApplication> GetActiveApplication(CommandParameters parameters, bool ifGetOnlyOtherActivity = false)
         {
             List<ActiveApplication> activeApplication = new List<ActiveApplication>();
             string query = "SELECT activeapplications.Id AS " + ColumnNames.ID +
@@ -225,9 +225,11 @@ namespace ApplicationTimeCounter
                 ", activeapplications.IdNameActivity AS " + ColumnNames.IdNameActivity +
                 ", alldate.Date AS " + ColumnNames.Date +
                 " FROM alldate " +
-                " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
-                "WHERE activeapplications.Id > 2 ";
+                " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle ";
+            if (!ifGetOnlyOtherActivity) query += "WHERE activeapplications.Id > 2 ";
+            else query += "WHERE activeapplications.Id in (1, 2) ";
             query += CommandParameters.CheckParameters(parameters).Replace("ID", "activeapplications.ID");
+            if (ifGetOnlyOtherActivity) query += " ORDER BY Date , ActivityTime DESC";
 
             if (DataBase.ConnectToDataBase())
             {

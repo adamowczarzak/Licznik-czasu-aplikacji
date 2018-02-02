@@ -130,7 +130,8 @@ namespace ApplicationTimeCounter
             parameters.StartDate = DateTime.Now.AddDays(-5).ToShortDateString();
             parameters.EndDate = DateTime.Now.ToShortDateString();
             List<Activity> activity = allData_db.GetDailyActivity(parameters);
-            CreateChartActivity(activity, parameters);
+            List<ActiveApplication> otherActivity = allData_db.GetActiveApplication(parameters, true);
+            CreateChartActivity(activity, parameters, otherActivity);
         }
 
         private void CreateButtonShowFilter()
@@ -349,21 +350,21 @@ namespace ApplicationTimeCounter
 
             if (ifActivity.Visibility == Visibility.Visible)
             {
-                List<Activity> activity;
-                activity = allData_db.GetDailyActivity(parameters);
-                CreateChartActivity(activity, parameters);
+                List<Activity> activity = allData_db.GetDailyActivity(parameters);
+                List<ActiveApplication> otherActivity = allData_db.GetActiveApplication(parameters, true);
+                CreateChartActivity(activity, parameters, otherActivity);
             }
             else if (ifTitleApplication.Visibility == Visibility.Visible)
             {
-                List<ActiveApplication> activeApplication;
-                activeApplication = allData_db.GetActiveApplicationGrouping(parameters);
+                List<ActiveApplication> activeApplication = allData_db.GetActiveApplicationGrouping(parameters);
                 parameters.IdMembership = -1;
                 activeApplication.AddRange(allData_db.GetActiveApplication(parameters));
-                CreateChartActiveApplication(activeApplication);
+                List<ActiveApplication> otherActivity = allData_db.GetActiveApplication(parameters, true);
+                CreateChartActiveApplication(activeApplication, otherActivity);
             }
         }
 
-        private void CreateChartActiveApplication(List<ActiveApplication> activeApplication)
+        private void CreateChartActiveApplication(List<ActiveApplication> activeApplication, List<ActiveApplication> otherActivity)
         {
             if (activeApplication.Any())
             {
@@ -377,6 +378,7 @@ namespace ApplicationTimeCounter
                 int lenghtLabelDate = 0;
                 int positionXLabelDate = 16;
                 int numberElement = 0;
+                int numberDateLabel = 0;
                 chartContentCanvas.Width = 0;
                 for (int i = 0; i < activeApplication.Count; i++)
                 {
@@ -385,7 +387,7 @@ namespace ApplicationTimeCounter
                         {
                             space += 10;
                             lenghtLabelDate += 11;
-                            DrawDateLabel(activeApplication[i - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
+                            DrawDateLabel(activeApplication[i - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate, otherActivity, ref numberDateLabel);
                             positionXLabelDate += lenghtLabelDate - 1;
                             lenghtLabelDate = 0;
                         }
@@ -411,7 +413,7 @@ namespace ApplicationTimeCounter
                     }
                 }
                 lenghtLabelDate += 21;
-                DrawDateLabel(activeApplication[activeApplication.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
+                DrawDateLabel(activeApplication[activeApplication.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate, otherActivity, ref numberDateLabel);
                 chartContentCanvas.Width += space + 50;
                 SetScalePercent(maxValue, sumDateList.Max());
 
@@ -420,7 +422,7 @@ namespace ApplicationTimeCounter
             }
         }
 
-        private void CreateChartActivity(List<Activity> activity, CommandParameters parameters)
+        private void CreateChartActivity(List<Activity> activity, CommandParameters parameters, List<ActiveApplication> otherActivity)
         {
             if (activity.Any())
             {
@@ -434,6 +436,7 @@ namespace ApplicationTimeCounter
                 int lenghtLabelDate = 0;
                 int positionXLabelDate = 12;
                 int numberElement = 0;
+                int numberDateLabel = 0;
                 chartContentCanvas.Width = 0;
                 for (int i = 0; i < activity.Count; i++)
                 {
@@ -442,7 +445,7 @@ namespace ApplicationTimeCounter
                         {
                             space += 20;
                             lenghtLabelDate += 21;
-                            DrawDateLabel(activity[i - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
+                            DrawDateLabel(activity[i - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate, otherActivity, ref numberDateLabel);
                             positionXLabelDate += lenghtLabelDate - 1;
                             lenghtLabelDate = 0;
                         }
@@ -469,7 +472,7 @@ namespace ApplicationTimeCounter
                     }
                 }
                 lenghtLabelDate += 21;
-                DrawDateLabel(activity[activity.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate);
+                DrawDateLabel(activity[activity.Count - 1].Date.Remove(10), lenghtLabelDate, positionXLabelDate, otherActivity, ref numberDateLabel);
                 chartContentCanvas.Width += space + 50;
                 SetScalePercent(maxValue, sumDateList.Max());
 
@@ -553,10 +556,19 @@ namespace ApplicationTimeCounter
             return tupleList;
         }
 
-        private void DrawDateLabel(string content, int lenghtLabelDate, int positionXLabelDate)
+        private void DrawDateLabel(string content, int lenghtLabelDate, int positionXLabelDate, List<ActiveApplication> otherActivity, ref int numberDateLabel)
         {
+            int tempNumberDateLabel = numberDateLabel;
             MyLabel l2 = new MyLabel(chartContentCanvas, content, lenghtLabelDate, 22, 9, positionXLabelDate, 326, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 255, 255, 255), 1);
             l2.SetBackgroundColor(Color.FromArgb(60, 255, 255, 255));
+            string toolTip = "Wyłączony komputer [" + ActionOnTime.GetTimeAndDays(otherActivity[numberDateLabel].ActivityTime) + " / " + ActionOnTime.GetTimeAndDays(otherActivity.Where(x => x.ID == 1).Sum(x => x.ActivityTime)) + "] [" +
+                ActionOnNumbers.DivisionI(otherActivity[numberDateLabel].ActivityTime * 100, otherActivity.Where(x => x.Date == otherActivity[tempNumberDateLabel].Date).Sum(x => x.ActivityTime))
+                                + "% / " + ActionOnNumbers.DivisionI(otherActivity.Where(x => x.ID == 1).Sum(x => x.ActivityTime) * 100, otherActivity.Sum(x => x.ActivityTime)) + "%]" 
+                + "\nBrak aktywności [" + ActionOnTime.GetTimeAndDays(otherActivity[++numberDateLabel].ActivityTime) + "/ " + ActionOnTime.GetTimeAndDays(otherActivity.Where(x => x.ID == 2).Sum(x => x.ActivityTime)) + "] [" +
+            ActionOnNumbers.DivisionI(otherActivity[numberDateLabel].ActivityTime * 100, otherActivity.Where(x => x.Date == otherActivity[tempNumberDateLabel].Date).Sum(x => x.ActivityTime))
+                            + "% / " + ActionOnNumbers.DivisionI(otherActivity.Where(x => x.ID == 2).Sum(x => x.ActivityTime) * 100, otherActivity.Sum(x => x.ActivityTime)) + "%]";
+            l2.ToolTip(toolTip);
+            numberDateLabel++;
         }
 
 
