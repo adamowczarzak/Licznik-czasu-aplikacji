@@ -184,6 +184,7 @@ namespace ApplicationTimeCounter
                     {
                         idNameTitle.Add(Convert.ToInt32(ActiveApplication_db.GetIdActivityByName(nameTitle)));
                         ActiveApplication_db.AddGroupToApplications(idNameTitle, (filter.Key).ToString());
+                        ActiveApplication_db.AddActivityToApplicationWithGroup((filter.Key).ToString(), idNameTitle.First().ToString());
                     }
                 }
             }

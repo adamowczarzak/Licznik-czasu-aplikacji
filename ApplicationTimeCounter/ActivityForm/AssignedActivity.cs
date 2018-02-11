@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Linq;
 using ApplicationTimeCounter.Controls;
 using ApplicationTimeCounter.Other;
 
@@ -63,7 +64,8 @@ namespace ApplicationTimeCounter
         private void LoadNonAssignedApplication()
         {
             List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetNonAssignedApplication();
-
+            titlesAllNotAssignedApplication.AddRange(ActiveApplication_db.GetNonAssignedApplicationWithGroup());
+            titlesAllNotAssignedApplication = titlesAllNotAssignedApplication.OrderByDescending(x => x.Date).ToList();
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {
                 Thread.Sleep(10);

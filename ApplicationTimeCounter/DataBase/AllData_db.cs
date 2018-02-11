@@ -270,7 +270,7 @@ namespace ApplicationTimeCounter
                 " FROM alldate " +
                 " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle " +
                 " INNER JOIN membership ON membership.Id = activeapplications.IdMembership " +
-                "WHERE activeapplications.Id > 2 ";
+                "WHERE activeapplications.Id > 2 AND AsOneApplication = 1 ";
             query += CommandParameters.CheckParameters(parameters).Replace("Date", "alldate.Date").Replace("ID", "activeapplications.ID");
             query += " GROUP BY membership.Title, alldate.Date, activeapplications.Id, activeapplications.IdNameActivity";
 
@@ -300,15 +300,17 @@ namespace ApplicationTimeCounter
         {
             string contentCommand = "SELECT COUNT(DISTINCT IdTitle) as countIdTitle FROM alldate "
                 + " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle "
-                + " WHERE IdTitle > 2 AND activeapplications.IdMembership IS NULL "
-                + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo);
+                + " LEFT JOIN membership ON membership.Id = activeapplications.IdMembership  "
+                + " WHERE IdTitle > 2 AND activeapplications.IdMembership IS NULL OR membership.AsOneApplication = 0 "
+                + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo).Replace("Date", "alldate.Date");
 
             int returnCount = Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "countIdTitle")[0]);
 
             contentCommand = "SELECT COUNT(DISTINCT activeapplications.IdMembership) as countIdTitle FROM alldate "
                + " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle "
-               + " WHERE IdTitle > 2 AND activeapplications.IdMembership IS NOT NULL "
-               + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo);
+               + " INNER JOIN membership ON membership.Id = activeapplications.IdMembership "
+               + " WHERE IdTitle > 2 AND membership.AsOneApplication = 1 "
+               + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo).Replace("Date", "alldate.Date");
 
             returnCount += Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "countIdTitle")[0]);
             return returnCount.ToString();

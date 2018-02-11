@@ -102,12 +102,12 @@ namespace ApplicationTimeCounter
 
             if (DataBase.ExecuteNonQuery(contentCommand))
             {
-                ApplicationLog.LogService.AddRaportInformation("Została usunięta aktywność '" + nameGroup + "'");
+                ApplicationLog.LogService.AddRaportInformation("Została usunięta grupa '" + nameGroup + "'");
                 return true;
             }
             else
             {
-                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć aktywności '" + nameGroup + "'");
+                ApplicationLog.LogService.AddRaportWarning("Nie udało się usunąć grupa '" + nameGroup + "'");
                 return false;
             }
 
@@ -183,7 +183,7 @@ namespace ApplicationTimeCounter
 
         public static bool SetAsOneApplication(int idGroup, bool ifAsOneApplication)
         {
-            string contentCommand = "UPDATE membership SET AsOneApplication = " + Convert.ToInt32(ifAsOneApplication) + " WHERE Id = " + idGroup;
+            string contentCommand = "UPDATE membership SET AsOneApplication = " + Convert.ToInt32(ifAsOneApplication) + " WHERE Id = " + idGroup;            
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 

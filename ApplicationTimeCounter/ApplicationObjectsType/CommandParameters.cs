@@ -21,6 +21,7 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
         /// </summary>
         public int IdMembership { get; set; }
         public IdNameActivityEnum IdNameActivity { get; set; }
+        public string IfAsOneApplication { get; set; }
 
         public CommandParameters()
         {
@@ -35,6 +36,7 @@ namespace ApplicationTimeCounter.ApplicationObjectsType
             IfActiveConfiguration = string.Empty;
             IdMembership = 0;
             IdNameActivity = IdNameActivityEnum.NonActive;
+            IfAsOneApplication = string.Empty;
         }
 
         public static string CheckParameters(CommandParameters parameters)

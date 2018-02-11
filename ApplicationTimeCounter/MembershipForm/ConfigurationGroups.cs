@@ -35,7 +35,7 @@ namespace ApplicationTimeCounter
         private MyLabel addingByFilter;
         private MyLabel effectivenessFilter;
         private Label buttonChangeActivity;
-        private Label buttontreatAsOne;
+        private Label buttonTreatAsOne;
 
         private int selectGroupId;
 
@@ -206,11 +206,11 @@ namespace ApplicationTimeCounter
             treatAsOne = new MyLabel(addConfigurationCanvas, "x", 30, 50, 24, 400, 120, Color.FromArgb(255, 0, 155, 0),
                 Color.FromArgb(255, 70, 70, 70), 0);
             treatAsOne.Visibility = System.Windows.Visibility.Hidden;
-            buttontreatAsOne = ButtonCreator.CreateButton(addConfigurationCanvas, "    Jako applikacja", 160, 30, 14, 400, 130,
+            buttonTreatAsOne = ButtonCreator.CreateButton(addConfigurationCanvas, "    Jako applikacja", 160, 30, 14, 400, 130,
                 Color.FromArgb(255, 155, 155, 155), Color.FromArgb(255, 155, 155, 155));
-            buttontreatAsOne.MouseEnter += buttonChangeTreatAsOne_MouseEnter;
-            buttontreatAsOne.MouseLeave += buttonChangeTreatAsOne_MouseLeave;
-            buttontreatAsOne.MouseLeftButtonDown += buttonChangeTreatAsOne_MouseLeftButtonDown;
+            buttonTreatAsOne.MouseEnter += buttonChangeTreatAsOne_MouseEnter;
+            buttonTreatAsOne.MouseLeave += buttonChangeTreatAsOne_MouseLeave;
+            buttonTreatAsOne.MouseLeftButtonDown += buttonChangeTreatAsOne_MouseLeftButtonDown;
         }
 
         private void CreateLabelWithInformation()
@@ -303,7 +303,7 @@ namespace ApplicationTimeCounter
             ifActivity.Visibility = System.Windows.Visibility.Hidden;
             buttonChangeActivity.Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
             treatAsOne.Visibility = System.Windows.Visibility.Hidden;
-            buttontreatAsOne.Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
+            buttonTreatAsOne.Foreground = new SolidColorBrush(Color.FromArgb(255, 155, 155, 155));
             applicationInGroup.SetContent("0");
             addingByFilter.SetContent("0");
             effectivenessFilter.SetContent("0.00 %");
@@ -355,6 +355,7 @@ namespace ApplicationTimeCounter
                 {
                     if (Membership_db.SetAsOneApplication(selectGroupId, true))
                     {
+                        ActiveApplication_db.DeleteNameActivityForIdMembership(selectGroupId);
                         treatAsOne.Visibility = System.Windows.Visibility.Visible;
                         (sender as Label).Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
                     }          
@@ -500,7 +501,7 @@ namespace ApplicationTimeCounter
             if (groups[0].IfAsOneApplication)
             {
                 treatAsOne.Visibility = System.Windows.Visibility.Visible;
-                buttontreatAsOne.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
+                buttonTreatAsOne.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 155, 0));
             }
         }
 

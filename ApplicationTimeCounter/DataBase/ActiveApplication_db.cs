@@ -14,14 +14,26 @@ namespace ApplicationTimeCounter
 
         public static string GetAllNotAssignedApplication()
         {
-            string contentCommand = "SELECT COUNT(*) as noAssigmentApplication from activeapplications " +
-                "WHERE idNameActivity = 1";
+            string contentCommand = "SELECT ((SELECT COUNT(*) as noAssigmentApplication from activeapplications "
+                + " LEFT JOIN membership ON membership.Id = activeapplications.IdMembership "
+                + " WHERE idNameActivity = 1 AND (membership.AsOneApplication = 0 OR activeapplications.IdMembership IS NULL)) + "
+				+ " (SELECT COUNT(DISTINCT activeapplications.IdMembership) as noAssigmentApplication from activeapplications "
+                + " INNER JOIN membership ON membership.Id = activeapplications.IdMembership "
+                + " WHERE idNameActivity = 1 AND membership.AsOneApplication = 1)) as noAssigmentApplication ";
             return DataBase.GetListStringFromExecuteReader(contentCommand, "noAssigmentApplication")[0];
         }
 
         public static bool AddActivityToApplication(string idApplication, string idActivity)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = " + idActivity + " WHERE Id  = " + idApplication;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
+        public static bool AddActivityToApplicationWithGroup(string idMembership, string idActivity)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
+                + " (select top 1 IdNameActivity from activeapplications where IdMembership = " + idMembership + ") "
+                + " WHERE Id = " + idActivity;
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
@@ -102,8 +114,41 @@ namespace ApplicationTimeCounter
         {
             CommandParameters parameters = new CommandParameters();
             parameters.IdNameActivity = IdNameActivityEnum.Lack;
+            parameters.IfAsOneApplication = (Convert.ToInt32(false)).ToString();
             List<ActiveApplication> activeApplication = GetActiveApplication(parameters);
             return GetDateForActiveApplication(activeApplication);
+        }
+
+        internal static List<ActiveApplication> GetNonAssignedApplicationWithGroup()
+        {
+            List<ActiveApplication> activeApplications = new List<ActiveApplication>();
+            string query = "SELECT Id AS " + ColumnNames.ID +
+                " ,Title AS " + ColumnNames.Title +
+                " ,Date AS " + ColumnNames.Date +
+                " ,Id AS " + ColumnNames.IdMembership +
+                " FROM membership WHERE AsOneApplication = 1 ";
+
+
+            if (DataBase.ConnectToDataBase())
+            {
+                command.Connection = DataBase.Connection;
+                command.CommandText = query;
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    try
+                    {
+                        activeApplications.Add(ActiveApplication.GetActiveApplicationFromReader(reader));
+                    }
+                    catch (SqlException message)
+                    {
+                        ApplicationLog.LogService.AddRaportCatchException("Error!!!\tZapytanie nie zwróciło żadnej wartości.", message);
+                    }
+                }
+                DataBase.CloseConnection();
+                reader.Dispose();
+            }
+            return activeApplications;
         }
 
         public static bool CheckIfExistTitle(string title)
@@ -122,9 +167,12 @@ namespace ApplicationTimeCounter
                 ", nameactivity.Id AS " + ColumnNames.IdNameActivity +
                 ", activeapplications.IdMembership AS " + ColumnNames.IdMembership +
                 ", activeapplications.AutoGrouping AS " + ColumnNames.IfAutoGrouping +
+                ", membership.AsOneApplication AS " + ColumnNames.IfAsOneApplication +
                 " FROM activeapplications " +
                 " LEFT JOIN nameactivity ON activeapplications.IdNameActivity = nameactivity.Id " +
-                " WHERE activeapplications.Id > 2 ";
+                " LEFT JOIN membership ON membership.Id = activeapplications.IdMembership " +
+                " WHERE activeapplications.Id > 2 " + ((parameters.IfAsOneApplication == (Convert.ToInt32(false)).ToString()) ? 
+                " AND (membership.AsOneApplication = 0 OR activeapplications.IdMembership IS NULL) " : "");
             query += CommandParameters.CheckParameters(parameters);
             
 
@@ -240,6 +288,12 @@ namespace ApplicationTimeCounter
                 " INNER JOIN nameactivity ON nameactivity.Id = activeapplications.IdNameActivity " +
                 " WHERE activeapplications.Id = " + idTitle;
             return DataBase.GetListStringFromExecuteReader(contentCommand, "nameActivity")[0];
+        }
+
+        public static bool DeleteNameActivityForIdMembership(int idMembership)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = 1 WHERE IdMembership  = " + idMembership;
+            return DataBase.ExecuteNonQuery(contentCommand);
         }
     }
 }

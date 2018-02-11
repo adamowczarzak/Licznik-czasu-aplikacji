@@ -589,6 +589,7 @@ namespace ApplicationTimeCounter
             searchingNames.Background = new SolidColorBrush(Color.FromArgb(255, 235, 235, 235));
             searchingNames.Foreground = new SolidColorBrush(Color.FromArgb(255, 30, 30, 30));
             searchingNames.Text = "";
+            indexResultFilter = -1;
         }
 
         private void searchingNames_LostFocus(object sender, RoutedEventArgs e)
@@ -596,6 +597,7 @@ namespace ApplicationTimeCounter
             searchingNames.Background = new SolidColorBrush(Color.FromArgb(255, 205, 205, 205));
             searchingNames.Foreground = new SolidColorBrush(Color.FromArgb(255, 85, 85, 85));
             searchingNames.Text = "Wpisz nazwę aktywności";
+            indexResultFilter = -1;
         }
 
         private void buttonShowFilter_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
