@@ -29,6 +29,12 @@ namespace ApplicationTimeCounter
             return DataBase.ExecuteNonQuery(contentCommand);
         }
 
+        public static bool AddActivityToApplicationGroup(int idMembership, string idActivity)
+        {
+            string contentCommand = "UPDATE activeapplications SET IdNameActivity = " + idActivity + " WHERE IdMembership  = " + idMembership;
+            return DataBase.ExecuteNonQuery(contentCommand);
+        }
+
         public static bool AddActivityToApplicationWithGroup(string idMembership, string idActivity)
         {
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = "
@@ -122,11 +128,12 @@ namespace ApplicationTimeCounter
         internal static List<ActiveApplication> GetNonAssignedApplicationWithGroup()
         {
             List<ActiveApplication> activeApplications = new List<ActiveApplication>();
-            string query = "SELECT Id AS " + ColumnNames.ID +
-                " ,Title AS " + ColumnNames.Title +
-                " ,Date AS " + ColumnNames.Date +
-                " ,Id AS " + ColumnNames.IdMembership +
-                " FROM membership WHERE AsOneApplication = 1 ";
+            string query = "SELECT Distinct membership.Id AS " + ColumnNames.ID +
+                " ,membership.Title AS " + ColumnNames.Title +
+                " ,membership.Date AS " + ColumnNames.Date +
+                " ,membership.Id AS " + ColumnNames.IdMembership +
+                " FROM membership INNER JOIN activeapplications ON activeapplications.IdMembership = membership.Id " +
+                " WHERE AsOneApplication = 1 and activeapplications.IdNameActivity = 1";
 
 
             if (DataBase.ConnectToDataBase())
@@ -295,5 +302,6 @@ namespace ApplicationTimeCounter
             string contentCommand = "UPDATE activeapplications SET IdNameActivity = 1 WHERE IdMembership  = " + idMembership;
             return DataBase.ExecuteNonQuery(contentCommand);
         }
+
     }
 }

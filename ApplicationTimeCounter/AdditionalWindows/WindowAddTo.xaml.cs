@@ -18,6 +18,7 @@ namespace ApplicationTimeCounter
     {
         private bool IsClosed;
         private string idApplication;
+        private int idMembership;
         private Canvas parentCanvas;
         private DispatcherTimer timerAnimation;
         private int repeatIntervals;
@@ -28,19 +29,23 @@ namespace ApplicationTimeCounter
         public WindowAddTo(Canvas parent, bool revert, AddTo addTo)
         {
             IsClosed = false;
-            bool ifAdd = false;
-            idApplication = parent.Name.Replace("ID_", "");
+            bool ifAdd = false;               
             parentCanvas = parent;
             windowAddTo = addTo;
+
+            if (parent.Tag is int) idMembership = Convert.ToInt32(parent.Tag);
+            if (idMembership == 0) idApplication = parent.Name.Replace("ID_", "");  
 
             timerAnimation = new DispatcherTimer();
             timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 10);
             repeatIntervals = 0;
 
-            if (addTo == AddTo.Activity)
+            if (windowAddTo == AddTo.Activity && idMembership == 0)
                 if (ActiveApplication_db.AddActivityToApplication(idApplication, "1")) ifAdd = true;
             if (addTo == AddTo.Group)
                 if (ActiveApplication_db.AddGroupToApplication(idApplication, "NULL")) ifAdd = true;
+            if (windowAddTo == AddTo.Activity && idMembership > 0)
+                if (ActiveApplication_db.AddActivityToApplicationGroup(idMembership, "1")) ifAdd = true;
             
             if (ifAdd)
             {
@@ -49,17 +54,18 @@ namespace ApplicationTimeCounter
                 timerAnimation.Tick += new EventHandler(AnimationButtonRestart);
                 timerAnimation.Start();
             }
-
-
         }
+
         public WindowAddTo(Canvas parent, AddTo addTo)
         {
             InitializeComponent();
             IsClosed = false;
-            idApplication = parent.Name.Replace("ID_", "");
             parentCanvas = parent;
             windowAddTo = addTo;
 
+            if (parent.Tag is int)idMembership = Convert.ToInt32(parent.Tag);
+            if (idMembership == 0) idApplication = parent.Name.Replace("ID_", "");                     
+                                 
             timerAnimation = new DispatcherTimer();
             timerAnimation.Interval = new TimeSpan(0, 0, 0, 0, 10);
             repeatIntervals = 0;
@@ -109,10 +115,12 @@ namespace ApplicationTimeCounter
         }
         private bool ActionOnBase(string idActivity)
         {
-            if (windowAddTo == AddTo.Activity)
+            if (windowAddTo == AddTo.Activity && idMembership == 0)
                 return ActiveApplication_db.AddActivityToApplication(idApplication, idActivity);
             else if (windowAddTo == AddTo.Group)
                 return ActiveApplication_db.AddGroupToApplication(idApplication, idActivity);
+            if (windowAddTo == AddTo.Activity && idMembership > 0)
+                return ActiveApplication_db.AddActivityToApplicationGroup(idMembership, idActivity);
             else return false;
         }
 

@@ -87,7 +87,7 @@ namespace ApplicationTimeCounter
                     new MyLabel(applicationWithoutGroup, ActionOnString.GetFirstLetterFromString(titleApplication), 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240),
                         Color.FromArgb(0, 100, 100, 100), 0, HorizontalAlignment.Center, fontWeight: FontWeights.ExtraBold);
 
-                    new MyLabel(applicationWithoutGroup, "Brak aktywności", 300, 30, 12, 60, 30,
+                    new MyLabel(applicationWithoutGroup, titlesAllNotAssignedApplication[i].NameActivity, 300, 30, 12, 60, 30,
                         Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
 
                     new MyLabel(applicationWithoutGroup, ActionOnTime.GetNumberDayAgo(titlesAllNotAssignedApplication[i].Date), 100, 30, 13, 466, 0, Color.FromArgb(255, 120, 120, 120),

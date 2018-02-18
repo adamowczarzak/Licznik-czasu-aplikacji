@@ -66,6 +66,9 @@ namespace ApplicationTimeCounter
             List<ActiveApplication> titlesAllNotAssignedApplication = ActiveApplication_db.GetNonAssignedApplication();
             titlesAllNotAssignedApplication.AddRange(ActiveApplication_db.GetNonAssignedApplicationWithGroup());
             titlesAllNotAssignedApplication = titlesAllNotAssignedApplication.OrderByDescending(x => x.Date).ToList();
+            Dictionary<string, string> titleMembership = Membership_db.GetNameGroupsDictionaryIfIsActive(false);
+            titleMembership["0"] = "Brak przynależności";
+
             for (int i = 0; i < titlesAllNotAssignedApplication.Count; i++)
             {
                 Thread.Sleep(10);
@@ -89,7 +92,7 @@ namespace ApplicationTimeCounter
                     new MyLabel(nonAssignedAppCanvas, ActionOnString.GetFirstLetterFromString(titleApplication), 50, 50, 20, 6, 11, Color.FromArgb(255, 240, 240, 240),
                         Color.FromArgb(0, 100, 100, 100), 0, HorizontalAlignment.Center, fontWeight: FontWeights.ExtraBold);
 
-                    new MyLabel(nonAssignedAppCanvas, "Brak przynależności", 300, 30, 12, 60, 30,
+                    new MyLabel(nonAssignedAppCanvas, titleMembership[titlesAllNotAssignedApplication[i].IdMembership.ToString()], 300, 30, 12, 60, 30,
                         Color.FromArgb(255, 120, 120, 120), Color.FromArgb(30, 100, 100, 100), horizontalAlignment: HorizontalAlignment.Left);
 
                     new MyLabel(nonAssignedAppCanvas, ActionOnTime.GetNumberDayAgo(titlesAllNotAssignedApplication[i].Date), 100, 30, 13, 466, 0, Color.FromArgb(255, 120, 120, 120),
@@ -104,6 +107,7 @@ namespace ApplicationTimeCounter
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(200, 255, 0, 0), 0, fontWeight: FontWeights.ExtraBold);
                     buttonAddActivity.Margin = new Thickness(0, -8, 0, 0);
                     nonAssignedAppCanvas.Name = "ID_" + titlesAllNotAssignedApplication[i].ID;
+                    nonAssignedAppCanvas.Tag = titlesAllNotAssignedApplication[i].IdMembership;
                     buttonAddActivity.MouseLeftButtonDown += buttonAddActivity_MouseLeftButtonDown;
                     nonAssignedApplications.Height += 59;
                 });

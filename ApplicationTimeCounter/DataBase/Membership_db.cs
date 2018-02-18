@@ -86,11 +86,12 @@ namespace ApplicationTimeCounter
                  return allGroups;
         }
 
-        public static Dictionary<string, string> GetNameGroupsDictionaryIfIsActive()
+        public static Dictionary<string, string> GetNameGroupsDictionaryIfIsActive(bool useIsActive = true)
         {
-            string contentCommand = "SELECT Id, Title FROM membership WHERE Active = 1";
-            Dictionary<string, string> nameGroups = DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
-            return nameGroups;
+            string isActive = string.Empty;
+            if (useIsActive) isActive = "WHERE Active = 1";
+            string contentCommand = "SELECT Id, Title FROM membership " + isActive;
+            return DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
         }
 
         public static bool DeleteGroup(int idGroup)
