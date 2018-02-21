@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ApplicationTimeCounter
 {
@@ -8,6 +9,7 @@ namespace ApplicationTimeCounter
 
         public RunApplication()
         {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
             if (!System.IO.File.Exists("Config.file"))
             {
                 GetDataBaseWindow getDataBaseWindow = new GetDataBaseWindow();

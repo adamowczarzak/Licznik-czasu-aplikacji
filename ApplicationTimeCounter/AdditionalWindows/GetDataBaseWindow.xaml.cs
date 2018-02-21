@@ -1,4 +1,7 @@
-﻿using System.Data.Sql;
+﻿using Microsoft.Win32;
+using System;
+using System.Data.Sql;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +20,7 @@ namespace ApplicationTimeCounter
         {
             InitializeComponent();
             CanRunApplication = false;
+            SetRegistry();
         }
 
         private void acceptButton_Click(object sender, RoutedEventArgs e)
@@ -56,7 +60,6 @@ namespace ApplicationTimeCounter
             this.Close();
             CanRunApplication = false;
             System.Windows.Application.Current.Shutdown();
-
         }
 
 
@@ -98,6 +101,20 @@ namespace ApplicationTimeCounter
         {
             loginMessages.Text = "Połączenie z Bazą Danych nie powiodło się.";
             loginMessages.Foreground = Brushes.Coral;
+        }
+
+        private void SetRegistry()
+        {
+            try
+            {
+                RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                var path = AppDomain.CurrentDomain.BaseDirectory;
+                rk.SetValue("ApplicationTimeCounter", path + "ApplicationTimeCounter.exe");
+            }
+            catch (Exception ex)
+            {
+                ApplicationLog.LogService.AddRaportCatchException("Nie udało się ustawić rejestru", ex);
+            }          
         }
 
         private void nameUser_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

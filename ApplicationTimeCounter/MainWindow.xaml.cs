@@ -10,10 +10,7 @@ namespace ApplicationTimeCounter
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private int frequencyCheckingUsingApplication = 60;
-        
-
         private IconInTaskbar notifyIcon;
         private InterfaceApplication interfaceApplication;
         private Counter counter;
@@ -23,9 +20,7 @@ namespace ApplicationTimeCounter
         private StatisticsForm statisticsForm;
         private SettingsForm settingsForm;
         private ActivityUser activity;
-        private RunApplication runApplication;
-
-        
+        private RunApplication runApplication;       
 
         private DispatcherTimer timer;
 
@@ -92,7 +87,6 @@ namespace ApplicationTimeCounter
             {
                 counter.UpdateTimeNonActive();
             }
-            
         }
 
         
