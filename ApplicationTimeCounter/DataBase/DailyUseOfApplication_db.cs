@@ -61,11 +61,11 @@ namespace ApplicationTimeCounter
             string contentCommand = "SELECT ActivityTime FROM dailyuseofapplication INNER JOIN " +
                 "activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id " +
                 "WHERE 1 = 1";
-            for(int i = 0; i < numbers.Count; i++)
+            for (int i = 0; i < numbers.Count; i++)
             {
-                contentCommand += " AND activeapplications.IdNameActivity " + (ifExcept? "!":"") + "= " + numbers[i];
+                contentCommand += " AND activeapplications.IdNameActivity " + (ifExcept ? "!" : "") + "= " + numbers[i];
             }
-            
+
             SqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read()) time += Convert.ToInt32(reader["ActivityTime"]);
             reader.Dispose();
@@ -98,6 +98,12 @@ namespace ApplicationTimeCounter
             RestartContentTable();
             DataBase.CloseConnection();
 
+            contentCommand = "INSERT INTO noactivewindow (IdNoActiveWindow) SELECT ID FROM alldate WHERE IdTitle = ";
+            contentCommand += "(SELECT ID FROM activeapplications ";
+            contentCommand += "LEFT JOIN noactivewindow ON noactivewindow.IdNoActiveWindow = alldate.Id ";
+            contentCommand += "WHERE Title = 'Brak aktywnego okna' AND noactivewindow.IdNoActiveWindow IS NULL) ";
+            contentCommand += "AND Date > CONVERT(VARCHAR(10), DATEADD(day, -20, GETDATE()), 23)";
+            DataBase.ExecuteNonQuery(contentCommand);
         }
 
         public string[,] GetBiggestResults()
@@ -192,8 +198,8 @@ namespace ApplicationTimeCounter
 
         private void UpDateTimeThisTitle()
         {
-            string contentCommand = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + 1 FROM dailyuseofapplication " + 
-                "INNER JOIN activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id " + 
+            string contentCommand = "UPDATE dailyuseofapplication SET ActivityTime = ActivityTime + 1 FROM dailyuseofapplication " +
+                "INNER JOIN activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id " +
                 "WHERE activeapplications.Title = " + nameTitle;
             DataBase.ExecuteNonQuery(contentCommand);
         }

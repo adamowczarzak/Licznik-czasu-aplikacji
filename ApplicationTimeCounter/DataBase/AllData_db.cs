@@ -301,7 +301,7 @@ namespace ApplicationTimeCounter
             string contentCommand = "SELECT COUNT(DISTINCT IdTitle) as countIdTitle FROM alldate "
                 + " INNER JOIN activeapplications ON activeapplications.Id = alldate.IdTitle "
                 + " LEFT JOIN membership ON membership.Id = activeapplications.IdMembership  "
-                + " WHERE IdTitle > 2 AND activeapplications.IdMembership IS NULL OR membership.AsOneApplication = 0 "
+                + " WHERE IdTitle > 2 AND (activeapplications.IdMembership IS NULL OR membership.AsOneApplication = 0) "
                 + " AND " + SqlValidator.Validate_BETWEEN(ColumnNames.Date, dateFrom, dateTo).Replace("Date", "alldate.Date");
 
             int returnCount = Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "countIdTitle")[0]);

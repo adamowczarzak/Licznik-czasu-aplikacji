@@ -274,6 +274,12 @@ namespace ApplicationTimeCounter
             command = new SqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
+            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'noactivewindow') 
+                            CREATE TABLE noactivewindow (
+                                IdNoActiveWindow INT NOT NULL FOREIGN KEY REFERENCES alldate(Id))";
+            command = new SqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
             if (addnameActivity)
             {
                 stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') ";
