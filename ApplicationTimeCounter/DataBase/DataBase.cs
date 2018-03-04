@@ -280,6 +280,12 @@ namespace ApplicationTimeCounter
             command = new SqlCommand(stringCommand, Connection);
             ExecuteNonQuery(command);
 
+            stringCommand = @"IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'exceptionapplication') 
+                            CREATE TABLE exceptionapplication (
+                                IdExceptionApplication INT NOT NULL FOREIGN KEY REFERENCES activeapplications(Id))";
+            command = new SqlCommand(stringCommand, Connection);
+            ExecuteNonQuery(command);
+
             if (addnameActivity)
             {
                 stringCommand = "INSERT INTO nameactivity (NameActivity) VALUES ('Brak') , ('Programowanie') ";

@@ -1,5 +1,7 @@
 ﻿using ApplicationTimeCounter.Controls;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -145,16 +147,25 @@ namespace ApplicationTimeCounter
             exceptionApplicationCanvas.Height = 220;
             int nextIndex = 0;
 
-            //foreach (KeyValuePair<string, string> name in namesGroup)
-            for (int i = 0; i < 10; i++ )
+            Dictionary<string, string> nameApplicationDictionary = ExceptionApplication_db.GetNameApplicationDictionary();
+
+            foreach (KeyValuePair<string, string> name in nameApplicationDictionary)
             {
-                Label application = ButtonCreator.CreateButton(exceptionApplicationCanvas, (i + 1) + ".    " + "Nazwa", 250, 29, 12, 20, 0 + (nextIndex * 32),
+                Label application = ButtonCreator.CreateButton(exceptionApplicationCanvas, (nextIndex + 1) + ".    " + name.Value, 250, 29, 12, 20, 0 + (nextIndex * 32),
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155), horizontalAlignment:HorizontalAlignment.Left);
                 application.Background = new SolidColorBrush(Color.FromArgb((byte)(50 + (nextIndex % 2 * 30)), 0, 125, 255));
-                // application.Name = "ID_" + name.Key;
+                application.Name = "ID_" + name.Key;
                 application.MouseEnter += buttonContent_MouseEnter;
                 application.MouseLeave += buttonContent_MouseLeave;
                 application.MouseLeftButtonDown += selectApplication_MouseLeftButtonDown;
+
+                Label deleteButton = ButtonCreator.CreateButton(exceptionApplicationCanvas, "X", 22, 22, 8, 244, 3 + (nextIndex * 32),
+                    Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155), 1);
+                deleteButton.Background = new SolidColorBrush(Color.FromArgb(100, 250, 0, 0));
+                application.Name = "ID_" + name.Key;
+                deleteButton.MouseEnter += deleteButton_MouseEnter;
+                deleteButton.MouseLeave += deleteButton_MouseLeave;
+                deleteButton.MouseLeftButtonDown += deleteExceptionButton_MouseLeftButtonDown;
 
                 exceptionApplicationCanvas.Height += 32;
                 nextIndex++;
@@ -201,8 +212,8 @@ namespace ApplicationTimeCounter
             {
                 if (!string.IsNullOrEmpty(nameApplicationToException.Text) && !nameApplicationToException.Text.Equals(defaultContentnameApplicationToException))
                 {
-                    // jeśli wybrano, dodaj
-
+                    if (!ExceptionApplication_db.CheckIfExistApplication(idAddExceptionApplication))
+                        ExceptionApplication_db.AddExceptionApplication(idAddExceptionApplication);
                     buttonAcceptAddException.Content = "Szukaj";
                     buttonAcceptAddException.Visibility = Visibility.Hidden;
                     nameApplicationToException.Text = defaultContentnameApplicationToException;
@@ -221,15 +232,36 @@ namespace ApplicationTimeCounter
 
         private int FindApplication()
         {
+            Regex regex = new Regex(nameApplicationToException.Text.Trim(), RegexOptions.IgnoreCase);
+            Dictionary<string, string> titleApplication = ActiveApplication_db.GetNameApplicationDictionaryWithoutGroup();
+            Dictionary<string, string> titleMembership = Membership_db.GetNameGroupsDictionaryWithConfiguration();
+            Dictionary<string, string> titleFindApplication = new Dictionary<string, string>();
+
+            foreach (KeyValuePair<string, string> title in titleApplication)
+            {
+                if (regex.Matches(title.Value).Count > 0)
+                {
+                    titleFindApplication[title.Key] = title.Value;
+                }
+            }
+
+            foreach (KeyValuePair<string, string> title in titleMembership)
+            {
+                if (regex.Matches(title.Value).Count > 0)
+                {
+                    titleFindApplication[title.Key + "M"] = title.Value;
+                }
+            }
+
             searchApplicationCanvas.Children.Clear();
             searchApplicationCanvas.Height = 252;
             int nextIndex = 0;
-            for (int i = 0; i < 10; i++)
+            foreach (KeyValuePair<string, string> name in titleFindApplication)
             {
-                Label application = ButtonCreator.CreateButton(searchApplicationCanvas, "Nazwa", 250, 29, 12, 20, 0 + (nextIndex * 32),
+                Label application = ButtonCreator.CreateButton(searchApplicationCanvas, name.Value, 250, 29, 12, 20, 0 + (nextIndex * 32),
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155), horizontalAlignment: HorizontalAlignment.Left);
                 application.Background = new SolidColorBrush(Color.FromArgb(155, 0, 125, 255));
-                // application.Name = "ID_" + name.Key;
+                application.Name = "ID_" + name.Key;
                 application.MouseEnter += buttonContent_MouseEnter;
                 application.MouseLeave += buttonContent_MouseLeave;
                 application.MouseLeftButtonDown += findApplication_MouseLeftButtonDown;
@@ -289,11 +321,17 @@ namespace ApplicationTimeCounter
 
         private void findApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //idAddExceptionApplication = Convert.ToInt32((sender as Label).Name.Replace("ID_", string.Empty));
-            idAddExceptionApplication = 10;
+            if ((sender as Label).Name.Contains("M"))
+                 idAddExceptionApplication = Convert.ToInt32((sender as Label).Name.Replace("ID_", string.Empty).Replace("M", string.Empty));
+            else idAddExceptionApplication = Convert.ToInt32((sender as Label).Name.Replace("ID_", string.Empty));
             searchApplicationCanvas.Children.Clear();
             searchApplicationCanvas.Visibility = Visibility.Hidden;
             nameApplicationToException.Text = (sender as Label).Content.ToString();
+        }
+
+        private void deleteExceptionButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //
         }
 
         private void deleteButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

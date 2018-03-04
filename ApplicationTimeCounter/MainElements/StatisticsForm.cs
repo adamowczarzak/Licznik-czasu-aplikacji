@@ -356,7 +356,7 @@ namespace ApplicationTimeCounter
             }
             else if (ifTitleApplication.Visibility == Visibility.Visible)
             {
-                List<ActiveApplication> activeApplication = allData_db.GetActiveApplicationGrouping(parameters);
+                List<ActiveApplication> activeApplication = SumTheSameElement(allData_db.GetActiveApplicationGrouping(parameters));
                 parameters.IdMembership = -1;
                 activeApplication.AddRange(allData_db.GetActiveApplication(parameters));
                 List<ActiveApplication> otherActivity = allData_db.GetActiveApplication(parameters, true);
@@ -538,6 +538,19 @@ namespace ApplicationTimeCounter
             if (sumActivityTime != 0)
                 sumActivityTimeList.Add(sumActivityTime);
             return sumActivityTimeList;
+        }
+
+        private List<ActiveApplication> SumTheSameElement(List<ActiveApplication> activeApplication)
+        {
+            List<ActiveApplication> returnActiveApplication = new List<ActiveApplication>();
+            foreach (ActiveApplication application in activeApplication)
+            {
+                if (!(returnActiveApplication.Any(x => x.Date == application.Date && x.Title == application.Title)))
+                    returnActiveApplication.Add(application);
+                else
+                    returnActiveApplication.Where(x => x.Date == application.Date && x.Title == application.Title).First().ActivityTime += application.ActivityTime;
+            }
+            return returnActiveApplication;
         }
 
         private List<Tuple<int, string>> GetTupleList(List<ActiveApplication> activeApplication)

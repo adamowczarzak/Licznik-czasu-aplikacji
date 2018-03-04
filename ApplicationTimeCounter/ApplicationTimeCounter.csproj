@@ -84,6 +84,7 @@
     <Compile Include="ApplicationObjectsType\Enums.cs" />
     <Compile Include="ApplicationObjectsType\ColumnNames.cs" />
     <Compile Include="ApplicationObjectsType\Membership.cs" />
+    <Compile Include="DataBase\ExceptionApplication_db.cs" />
     <Compile Include="DataBase\Membership_db.cs" />
     <Compile Include="AdditionalWindows\WindowAddTo.xaml.cs">
       <DependentUpon>WindowAddTo.xaml</DependentUpon>
