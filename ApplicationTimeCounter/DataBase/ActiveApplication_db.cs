@@ -257,7 +257,7 @@ namespace ApplicationTimeCounter
 
         public static Dictionary<string, string> GetNameApplicationDictionaryWithGroup(int idGroup)
         {
-            string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership " + idGroup + " AND AutoGrouping = 1";
+            string contentCommand = "SELECT Id, Title FROM activeapplications WHERE IdMembership = " + idGroup + " AND AutoGrouping = 1";
             return DataBase.GetDictionaryFromExecuteReader(contentCommand, "Id", "Title");
         }
 
