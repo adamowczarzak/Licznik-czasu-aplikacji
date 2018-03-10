@@ -110,9 +110,6 @@ namespace ApplicationTimeCounter
             Canvas.SetTop(nameApplicationToException, 100);
             MainCanvasSettings.Children.Add(nameApplicationToException);
             nameApplicationToException.PreviewMouseLeftButtonDown += nameApplicationToException_MouseLeftButtonDown;
-            //mameApplicationToException.LostFocus += searchingNames_LostFocus;
-            //mameApplicationToException.PreviewKeyDown += searchingNames_KeyDown;
-            //mameApplicationToException.TextChanged += searchingNames_TextChanged;
             nameApplicationToException.Visibility = Visibility.Hidden;
 
             buttonAcceptAddException = ButtonCreator.CreateButton(MainCanvasSettings, "Szukaj", 54, 30, 13, 232, 98,
@@ -297,21 +294,21 @@ namespace ApplicationTimeCounter
 
         private void buttonSaveNewName_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //if(idAddNewTitleApplication > 0)
-            // {
-            if (!string.IsNullOrEmpty(nameApplicationToChange.Text) && !nameApplicationToChange.Text.Equals(defaultContentnameApplicationToChange))
+            if (idAddNewTitleApplication > 0)
             {
-                // zapisanie zmian
-
-                if (highlightRect != null)
-                    nonTitleApplicationCanvas.Children.Remove(highlightRect);
-                nameApplicationToChange.Text = defaultContentnameApplicationToChange;
-                nameApplicationToChange.Foreground = new SolidColorBrush(Color.FromArgb(255, 85, 85, 85));
-                nameApplicationToChange.Visibility = Visibility.Hidden;
-                buttonSaveNewName.Visibility = Visibility.Hidden;
-                idAddNewTitleApplication = 0;
+                if (!string.IsNullOrEmpty(nameApplicationToChange.Text) && !nameApplicationToChange.Text.Equals(defaultContentnameApplicationToChange))
+                {
+                    NonActiveWindow_db.ChangeNameNonActiveWindow(idAddNewTitleApplication.ToString(), nameApplicationToChange.Text);
+                    if (highlightRect != null)
+                        nonTitleApplicationCanvas.Children.Remove(highlightRect);
+                    nameApplicationToChange.Text = defaultContentnameApplicationToChange;
+                    nameApplicationToChange.Foreground = new SolidColorBrush(Color.FromArgb(255, 85, 85, 85));
+                    nameApplicationToChange.Visibility = Visibility.Hidden;
+                    buttonSaveNewName.Visibility = Visibility.Hidden;
+                    idAddNewTitleApplication = 0;
+                    LoadNonTitleApplication();
+                }
             }
-            // }
         }
 
         private void buttonAddException_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -342,7 +339,7 @@ namespace ApplicationTimeCounter
                 Color.FromArgb(80, 0, 250, 0), Color.FromArgb(0, 0, 0, 0));
             highlightRect.Background = new SolidColorBrush(Color.FromArgb(80, 0, 250, 0));
             highlightRect.MouseLeftButtonDown += highlightRect_MouseLeftButtonDown;
-            //idAddNewTitleApplication = Convert.ToInt32((sender as Label).Name.Replace("ID_", string.Empty));           
+            idAddNewTitleApplication = Convert.ToInt32((sender as Label).Name.Replace("ID_", string.Empty));           
             nameApplicationToChange.Visibility = Visibility.Visible;
             buttonSaveNewName.Visibility = Visibility.Visible;
         }

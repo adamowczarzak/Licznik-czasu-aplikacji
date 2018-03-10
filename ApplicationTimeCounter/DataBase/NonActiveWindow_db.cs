@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationTimeCounter.Other;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,20 @@ namespace ApplicationTimeCounter
         {
             string contentCommand = "DELETE FROM noactivewindow WHERE IdNoActiveWindow = " + idNonActiveWindow;
             DataBase.ExecuteNonQuery(contentCommand);
+        }
+
+        public static void ChangeNameNonActiveWindow(string idNonActiveWindow, string newName)
+        {
+            if (!ActiveApplication_db.CheckIfExistTitle(SqlValidator.Validate(newName)))
+            {
+                string contentCommand = "INSERT INTO activeapplications (Title, IdNameActivity) VALUES ( " + SqlValidator.Validate(newName) + " , 1 )";
+                DataBase.ExecuteNonQuery(contentCommand);
+
+                string newIDApplication = ActiveApplication_db.GetIdActivityByName(SqlValidator.Validate(newName));
+                new AllData_db().UpdateIDApplication(newIDApplication, idNonActiveWindow);
+
+                DeleteNonActiveWindow(idNonActiveWindow);
+            }
         }
 
     }

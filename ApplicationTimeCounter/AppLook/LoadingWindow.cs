@@ -50,7 +50,6 @@ namespace ApplicationTimeCounter
                 }
                 if (notClose == false)
                 {
-                    Thread.ResetAbort();
                     break;
                 }
                 else

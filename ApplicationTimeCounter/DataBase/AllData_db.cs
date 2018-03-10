@@ -315,5 +315,11 @@ namespace ApplicationTimeCounter
             returnCount += Convert.ToInt32(DataBase.GetListStringFromExecuteReader(contentCommand, "countIdTitle")[0]);
             return returnCount.ToString();
         }
+
+        public void UpdateIDApplication(string newIDTitle, string oldIDTitle)
+        {
+            string contentCommand = "UPDATE alldate SET IdTitle = " + newIDTitle + " WHERE Id = " + oldIDTitle;
+            DataBase.ExecuteNonQuery(contentCommand);
+        }
     }
 }
