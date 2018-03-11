@@ -164,7 +164,6 @@ namespace ApplicationTimeCounter
                 application.Background = new SolidColorBrush(Color.FromArgb((byte)(50 + (nextIndex % 2 * 30)), 0, 125, 255));
                 application.MouseEnter += buttonContent_MouseEnter;
                 application.MouseLeave += buttonContent_MouseLeave;
-                application.MouseLeftButtonDown += selectApplication_MouseLeftButtonDown;
 
                 Label deleteButton = ButtonCreator.CreateButton(exceptionApplicationCanvas, "X", 22, 22, 8, 244, 3 + (nextIndex * 32),
                     Color.FromArgb(255, 255, 255, 255), Color.FromArgb(255, 155, 155, 155), 1);
@@ -400,12 +399,6 @@ namespace ApplicationTimeCounter
             idAddNewTitleApplication = 0;
             LoadNonTitleApplication();
         }
-
-        private void selectApplication_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            idAddExceptionApplication = Convert.ToInt32((sender as Label).Name.Replace("ID_", string.Empty));
-        }
-
 
         private void nameApplicationToChange_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

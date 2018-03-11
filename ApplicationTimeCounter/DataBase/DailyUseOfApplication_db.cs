@@ -111,9 +111,13 @@ namespace ApplicationTimeCounter
             string[,] biggestResults = new string[4, 2];
             int i = 0;
             string contentCommand =
-                "SELECT TOP 4 activeapplications.Title as Title, ActivityTime from dailyuseofapplication INNER JOIN " +
-                "activeapplications on dailyuseofapplication.IdTitle = activeapplications.Id " +
-                "WHERE IdTitle > 2 ORDER BY ActivityTime DESC";
+                "SELECT TOP 4 * FROM ( SELECT membership.Title AS Title ,sum(dailyuseofapplication.ActivityTime) AS ActivityTime " +
+                "FROM dailyuseofapplication INNER JOIN activeapplications ON activeapplications.Id = dailyuseofapplication.IdTitle " +
+                "INNER JOIN membership ON membership.Id = activeapplications.IdMembership GROUP BY membership.Title UNION " +
+                "SELECT activeapplications.Title AS Title, dailyuseofapplication.ActivityTime AS ActivityTime FROM dailyuseofapplication " +
+                "INNER JOIN activeapplications ON dailyuseofapplication.IdTitle = activeapplications.Id " +
+                "LEFT JOIN membership ON membership.Id = activeapplications.IdMembership WHERE activeapplications.Id > 2 " +
+                "AND ( activeapplications.IdMembership IS NULL OR membership.AsOneApplication = 0 )) d ORDER BY ActivityTime DESC";
             SqlDataReader reader = GetExecuteReader(contentCommand);
             while (reader.Read())
             {
@@ -182,15 +186,16 @@ namespace ApplicationTimeCounter
             if (filters.Any())
             {
                 Regex regex;
-                List<int> idNameTitle = new List<int>();
+                int idNameTitle = 0;
                 foreach (KeyValuePair<string, string> filter in filters)
                 {
                     regex = new Regex(filter.Value, RegexOptions.IgnoreCase);
                     if (regex.Matches(nameTitle).Count > 0)
                     {
-                        idNameTitle.Add(Convert.ToInt32(ActiveApplication_db.GetIdActivityByName(nameTitle)));
-                        ActiveApplication_db.AddGroupToApplications(idNameTitle, (filter.Key).ToString());
-                        ActiveApplication_db.AddActivityToApplicationWithGroup((filter.Key).ToString(), idNameTitle.First().ToString());
+                        idNameTitle = (Convert.ToInt32(ActiveApplication_db.GetIdActivityByName(nameTitle)));
+                        ActiveApplication_db.AddGroupToApplications(new List<int> { idNameTitle }, (filter.Key).ToString());
+                        ActiveApplication_db.AddActivityToApplicationWithGroup((filter.Key).ToString(), idNameTitle.ToString());
+                        ExceptionApplication_db.AddExceptionApplication(idNameTitle);
                     }
                 }
             }
