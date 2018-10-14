@@ -98,11 +98,11 @@ namespace ApplicationTimeCounter
         {
             new MyRectangle(MainCanvasStatistics, 600, 35, Color.FromArgb(255, 0, 125, 255), 0, 0);
             ImageCreator.CreateImage(MainCanvasStatistics, 40, 50, 4, -8, "Pictures/application.png");
-            countTitleApplication = new MyLabel(MainCanvasStatistics, tempDateCount[0], 60, 30, 14, 45, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
+            countTitleApplication = new MyLabel(MainCanvasStatistics, (tempDateCount != null ? tempDateCount[0] : "0"), 60, 30, 14, 45, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
 
             ImageCreator.CreateImage(MainCanvasStatistics, 26, 26, 110, 4, "Pictures/ActivityImages.png");
-            countActivityApplication = new MyLabel(MainCanvasStatistics, tempDateCount[1], 60, 30, 14, 140, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
+            countActivityApplication = new MyLabel(MainCanvasStatistics, tempDateCount != null ? tempDateCount[1] : "0", 60, 30, 14, 140, 2, Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 0, 0, 0),
                 horizontalAlignment: HorizontalAlignment.Left);
 
 
@@ -580,6 +580,7 @@ namespace ApplicationTimeCounter
                 + "\nBrak aktywności [" + ActionOnTime.GetTimeAndDays(otherActivity[++numberDateLabel].ActivityTime) + "/ " + ActionOnTime.GetTimeAndDays(otherActivity.Where(x => x.ID == 2).Sum(x => x.ActivityTime)) + "] [" +
             ActionOnNumbers.DivisionI(otherActivity[numberDateLabel].ActivityTime * 100, otherActivity.Where(x => x.Date == otherActivity[tempNumberDateLabel].Date).Sum(x => x.ActivityTime))
                             + "% / " + ActionOnNumbers.DivisionI(otherActivity.Where(x => x.ID == 2).Sum(x => x.ActivityTime) * 100, otherActivity.Sum(x => x.ActivityTime)) + "%]";
+            
             l2.ToolTip(toolTip);
             numberDateLabel++;
         }

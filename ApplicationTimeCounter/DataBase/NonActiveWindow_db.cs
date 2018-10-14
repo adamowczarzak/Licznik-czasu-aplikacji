@@ -42,6 +42,14 @@ namespace ApplicationTimeCounter
 
                 DeleteNonActiveWindow(idNonActiveWindow);
             }
+            else
+            {
+                // tu musi być jakieś sumowanie czasu dla danej aplikacji, albo dodawanie jego na nowo
+                string newIDApplication = ActiveApplication_db.GetIdActivityByName(SqlValidator.Validate(newName));
+                new AllData_db().UpdateIDApplication(newIDApplication, idNonActiveWindow);
+
+                DeleteNonActiveWindow(idNonActiveWindow);
+            }
         }
 
     }
